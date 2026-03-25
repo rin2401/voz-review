@@ -74,7 +74,11 @@
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav ms-auto">
+                <form class="d-flex ms-auto me-3" action="/search" method="get">
+                    <input type="text" name="q" class="form-control form-control-sm me-2" placeholder="Search reviews...">
+                    <button type="submit" class="btn btn-primary btn-sm">Search</button>
+                </form>
+                <ul class="navbar-nav">
                     <li class="nav-item"><a class="nav-link" href="/">🏠 Home</a></li>
                     <li class="nav-item"><a class="nav-link" href="/threads">🧵 Threads</a></li>
                 </ul>
@@ -114,11 +118,7 @@
         <div class="card mb-4">
             <div class="card-body">
                 <form action="/" method="get" class="row g-3 align-items-end">
-                    <div class="col-md-6">
-                        <label for="q" class="form-label text-muted">Search company</label>
-                        <input type="text" id="q" name="q" class="form-control" placeholder="Ví dụ: Fsoft, Zalo, CMC..." value="{{ query or '' }}">
-                    </div>
-                    <div class="col-md-4">
+                    <div class="col-md-10">
                         <label for="sort" class="form-label text-muted">Sort by</label>
                         <select id="sort" name="sort" class="form-select">
                             <option value="az" {% if sort == 'az' %}selected{% endif %}>A-Z</option>
