@@ -209,9 +209,9 @@ class VozCrawler:
         # Drop trailing note after comma, e.g. "A***s, Singapore"
         company = re.split(r'\s*,\s*', company, maxsplit=1)[0].strip()
 
-        # Clean punctuation around edges
+        # Clean punctuation around edges but keep wildcard '*' used in censored names
         company = company.rstrip('.,;:')
-        company = re.sub(r'^[^\w\s&]+|[^\w\s&]+$', '', company)
+        company = re.sub(r'^[^\w\s&*]+|[^\w\s&*]+$', '', company)
         return company.strip()
 
     def _extract_company(self, content: str) -> str:
