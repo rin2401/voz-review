@@ -27,6 +27,7 @@
             --link-color: #2f6fec;
             --input-bg: #f8fafd;
             --hover-bg: #e8eef8;
+            --table-hover-bg: #f4f7fc;
         }
         body { 
             background: var(--bg-body) !important; 
@@ -139,7 +140,10 @@
             color: var(--text-color) !important;
         }
         body.light-mode .table-hover > tbody > tr:hover,
-        body.light-mode .table-hover > tbody > tr:hover > *,
+        body.light-mode .table-hover > tbody > tr:hover > * {
+            background: var(--table-hover-bg) !important;
+            color: var(--text-color) !important;
+        }
         body.light-mode .page-link:hover {
             background: var(--hover-bg) !important;
             color: var(--text-color) !important;
