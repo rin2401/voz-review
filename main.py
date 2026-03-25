@@ -49,15 +49,20 @@ jinja_env = Environment(loader=FileSystemLoader("templates"))
 # ============== PAGES ==============
 
 @app.get("/", response_class=HTMLResponse)
-async def home(request: Request):
+async def home(request: Request, q: str = "", sort: str = "az"):
     """Main page - list companies"""
-    companies = await get_all_companies()
+    companies = await get_all_companies(sort_by=sort)
+    if q:
+        keyword = q.lower().strip()
+        companies = [c for c in companies if keyword in c.get("name", "").lower()]
     total_reviews = await get_review_count()
     template = jinja_env.get_template("index.html")
     return HTMLResponse(template.render(
         request=request,
-        companies=companies, 
-        total_reviews=total_reviews
+        companies=companies,
+        total_reviews=total_reviews,
+        query=q,
+        sort=sort,
     ))
 
 
