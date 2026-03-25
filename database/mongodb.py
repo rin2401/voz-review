@@ -69,7 +69,7 @@ async def get_all_companies(sort_by: str = "recent_review") -> List[dict]:
         "most_review": [("review_count", -1), ("name", ASCENDING)],
         "recent_review": [("updated_at", -1), ("name", ASCENDING)],
     }
-    cursor = db.companies.find({"name": {"$nin": [None, "", "Unknown"]}}).sort(sort_map.get(sort_by, sort_map["az"]))
+    cursor = db.companies.find({}).sort(sort_map.get(sort_by, sort_map["az"]))
     return await cursor.to_list(length=None)
 
 
