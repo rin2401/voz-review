@@ -21,7 +21,8 @@
             --bg-body: #e9eef5;
             --bg-card: #fdfefe;
             --bg-card-header: #f3f6fb;
-            --border-color: #cfd8e3;
+            --border-color: #d6e0ea;
+            --border-soft: #e6edf5;
             --text-color: #223042;
             --muted-color: #5f6f82;
             --link-color: #2f6fec;
@@ -108,6 +109,14 @@
         body.light-mode .navbar,
         body.light-mode .card-header {
             background: var(--bg-card-header) !important;
+        }
+        body.light-mode .card,
+        body.light-mode .card-header,
+        body.light-mode .navbar,
+        body.light-mode .table,
+        body.light-mode .table-dark,
+        body.light-mode .form-control {
+            border-color: var(--border-soft) !important;
         }
         body.light-mode .form-control {
             background: var(--input-bg) !important;

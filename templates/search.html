@@ -21,7 +21,8 @@
             --bg-body: #edf2f7;
             --bg-card: #ffffff;
             --bg-card-header: #f8fafc;
-            --border-color: #d8dee9;
+            --border-color: #d6e0ea;
+            --border-soft: #e6edf5;
             --text-color: #1f2937;
             --muted-color: #64748b;
             --link-color: #2563eb;
@@ -143,6 +144,15 @@
         body.light-mode .card-header {
             background: var(--bg-card-header) !important;
         }
+        body.light-mode .card,
+        body.light-mode .card-header,
+        body.light-mode .navbar,
+        body.light-mode .page-link,
+        body.light-mode .form-control,
+        body.light-mode .form-select,
+        body.light-mode .reply-node {
+            border-color: var(--border-soft) !important;
+        }
         body.light-mode input,
         body.light-mode select {
             background: var(--input-bg) !important;
@@ -150,7 +160,7 @@
         }
         body.light-mode .reply-group,
         body.light-mode .reply-context {
-            border-color: #d7e3f4 !important;
+            border-color: var(--border-soft) !important;
         }
         body.light-mode h2,
         body.light-mode small,
