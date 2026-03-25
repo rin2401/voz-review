@@ -110,9 +110,9 @@ class VozCrawler:
                         except:
                             pass
                 
-                # Extract post content
+                # Extract post content while preserving line breaks better
                 content_elem = post.select_one(".message-content, .bbWrapper")
-                content = content_elem.text.strip() if content_elem else ""
+                content = content_elem.get_text("\n", strip=True) if content_elem else ""
                 
                 # Extract post ID from data-content or id
                 post_id = post.get("data-content", "").replace("post-", "")
