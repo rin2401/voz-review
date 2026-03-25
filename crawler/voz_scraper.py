@@ -140,6 +140,12 @@ class VozCrawler:
                 # Extract company name from content
                 company = self._extract_company(content)
                 
+                # Build full URL with page and post anchor
+                if post_id:
+                    voz_url = f"{forum_url.rstrip('/')}#post-{post_id}"
+                else:
+                    voz_url = forum_url
+                
                 posts.append({
                     "voz_thread_id": self._extract_thread_id(forum_url),
                     "voz_post_id": post_id,
@@ -148,7 +154,7 @@ class VozCrawler:
                     "author": author,
                     "author_url": author_url,
                     "post_date": post_date or datetime.utcnow(),
-                    "url": forum_url,
+                    "url": voz_url,
                     "likes": likes,
                     "awards": 0,
                 })
@@ -289,8 +295,8 @@ async def quick_crawl_thread(thread_url: str) -> List[dict]:
 # Updated based on current Voz structure (2026)
 REVIEW_FORUMS = {
     "salary_thread": "https://voz.vn/t/thread-tong-hop-chia-se-ve-muc-luong-tai-cac-cong-ty-part-2.515355/",  # Thread tổng hợp salary
-    "it_career": "https://voz.vn/f/f60.60/",  # Lập trình / CNTT
-    "salary": "https://voz.vn/f/f58.58/",  # Tuyển dụng - Tìm việc
+    # "it_career": "https://voz.vn/f/f60.60/",  # Lập trình / CNTT
+    # "salary": "https://voz.vn/f/f58.58/",  # Tuyển dụng - Tìm việc
 }
 
 # Direct thread URLs to crawl
@@ -304,7 +310,7 @@ if __name__ == "__main__":
     async def test():
         async with VozCrawler() as crawler:
             # Test single page
-            url = REVIEW_FORUMS["it_career"]
+            url = REVIEW_FORUMS["salary_thread"]
             html = await crawler.get_page_html(url)
             posts = crawler.parse_thread_page(html, url)
             print(f"Found {len(posts)} posts")

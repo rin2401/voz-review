@@ -3,6 +3,7 @@ from motor.motor_asyncio import AsyncIOMotorClient
 from pymongo import ASCENDING, TEXT
 from datetime import datetime
 from typing import Optional, List
+import re
 import config
 
 client: Optional[AsyncIOMotorClient] = None
@@ -60,7 +61,9 @@ async def get_reviews_by_company(
     status: str = None
 ) -> List[dict]:
     """Get reviews for a specific company"""
-    query = {"company": {"$regex": f"^{company}$", "$options": "i"}}
+    # Escape regex special characters in company name
+    escaped_company = re.escape(company)
+    query = {"company": {"$regex": f"^{escaped_company}$", "$options": "i"}}
     if status:
         query["status"] = status
     
@@ -81,10 +84,11 @@ async def get_review_count(company: str = None, status: str = None) -> int:
 async def upsert_company(name: str) -> dict:
     """Create or update company, return updated doc"""
     now = datetime.utcnow()
+    # Use exact match for upsert to avoid regex issues
     result = await db.companies.find_one_and_update(
-        {"name": {"$regex": f"^{name}$", "$options": "i"}},
+        {"name": name},
         {
-            "$set": {"name": name, "updated_at": now},
+            "$set": {"updated_at": now},
             "$setOnInsert": {"created_at": now, "review_count": 0}
         },
         upsert=True,
@@ -96,7 +100,7 @@ async def upsert_company(name: str) -> dict:
 async def increment_company_review_count(company_name: str):
     """Increment review count for company"""
     await db.companies.update_one(
-        {"name": {"$regex": f"^{company_name}$", "$options": "i"}},
+        {"name": company_name},
         {"$inc": {"review_count": 1}}
     )
 
