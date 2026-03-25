@@ -207,6 +207,14 @@ async def get_replies_for_posts(post_ids: List[str]) -> List[dict]:
     return await cursor.to_list(length=None)
 
 
+async def get_posts_by_ids(post_ids: List[str]) -> List[dict]:
+    """Get posts by voz_post_id for reply context rendering."""
+    if not post_ids:
+        return []
+    cursor = db.reviews.find({"voz_post_id": {"$in": post_ids}})
+    return await cursor.to_list(length=None)
+
+
 async def get_all_threads() -> List[dict]:
     """Get all configured crawl threads from DB."""
     return await db.threads.find({}).sort("created_at", -1).to_list(length=None)

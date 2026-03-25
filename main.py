@@ -15,6 +15,7 @@ from database.mongodb import (
     get_reviews_by_company,
     get_review_count,
     get_replies_for_posts,
+    get_posts_by_ids,
     get_company_thread_ids,
     search_reviews,
     insert_review,
@@ -133,6 +134,16 @@ async def company_detail(request: Request, company_name: str, page: int = 1, thr
         if review.get("voz_post_id")
     }
 
+    missing_parent_ids = sorted({
+        str(review.get("reply_post_id"))
+        for review in reviews
+        if review.get("reply_post_id") and str(review.get("reply_post_id")) not in review_by_post_id
+    })
+    for parent_review in await get_posts_by_ids(missing_parent_ids):
+        post_id = parent_review.get("voz_post_id")
+        if post_id:
+            review_by_post_id[str(post_id)] = parent_review
+
     root_post_ids = [str(review.get("voz_post_id")) for review in reviews if review.get("voz_post_id")]
     all_reply_ids_to_fetch = set(root_post_ids)
     reply_children_by_post_id = {}
@@ -210,6 +221,16 @@ async def search_page(request: Request, q: str = "", company: str = "", sort: st
         for review in results
         if review.get("voz_post_id")
     }
+
+    missing_parent_ids = sorted({
+        str(review.get("reply_post_id"))
+        for review in results
+        if review.get("reply_post_id") and str(review.get("reply_post_id")) not in review_by_post_id
+    })
+    for parent_review in await get_posts_by_ids(missing_parent_ids):
+        post_id = parent_review.get("voz_post_id")
+        if post_id:
+            review_by_post_id[str(post_id)] = parent_review
 
     root_post_ids = [str(review.get("voz_post_id")) for review in results if review.get("voz_post_id")]
     all_reply_ids_to_fetch = set(root_post_ids)
