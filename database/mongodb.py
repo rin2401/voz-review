@@ -1,6 +1,7 @@
 """MongoDB database connection and operations"""
 from motor.motor_asyncio import AsyncIOMotorClient
 from pymongo import ASCENDING, TEXT
+from pymongo.errors import DuplicateKeyError
 from datetime import datetime
 from typing import Optional, List
 import re
@@ -37,7 +38,11 @@ async def create_indexes():
     await reviews.create_index("company")
     await reviews.create_index("created_at")
     await reviews.create_index("voz_thread_id")
-    await reviews.create_index("voz_post_id")
+    await reviews.create_index(
+        "voz_post_id",
+        unique=True,
+        partialFilterExpression={"voz_post_id": {"$type": "string", "$ne": ""}}
+    )
     await reviews.create_index("reply_post_id")
     await reviews.create_index([("company", ASCENDING), ("created_at", ASCENDING)])
     
@@ -107,12 +112,15 @@ async def increment_company_review_count(company_name: str):
     )
 
 
-async def insert_review(review_data: dict) -> str:
-    """Insert a new review, return inserted ID"""
+async def insert_review(review_data: dict) -> tuple[str | None, bool]:
+    """Insert a new review, return (inserted_id, inserted_new)"""
     review_data["created_at"] = datetime.utcnow()
     review_data["status"] = config.STATUS_PENDING
-    result = await db.reviews.insert_one(review_data)
-    return str(result.inserted_id)
+    try:
+        result = await db.reviews.insert_one(review_data)
+        return str(result.inserted_id), True
+    except DuplicateKeyError:
+        return None, False
 
 
 async def get_crawl_state(forum_id: str) -> Optional[dict]:

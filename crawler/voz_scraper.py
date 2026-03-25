@@ -280,11 +280,13 @@ class VozCrawler:
                         if post_data["company"] and post_data["company"] != "Unknown":
                             await upsert_company(post_data["company"])
                         
-                        # Insert review
-                        await insert_review(post_data)
+                        # Insert review if not duplicated by voz_post_id
+                        _, inserted = await insert_review(post_data)
+                        if not inserted:
+                            continue
                         total_reviews += 1
                         
-                        # Update company count
+                        # Update company count only for newly inserted reviews
                         if post_data["company"] != "Unknown":
                             await increment_company_review_count(post_data["company"])
                     except Exception as e:

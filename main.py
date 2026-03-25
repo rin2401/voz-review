@@ -212,16 +212,23 @@ async def crawl_thread(url: str, max_pages: int):
 async def process_thread_page(crawler, page_url: str, html: str):
     """Process a single thread page - insert all reviews"""
     posts = crawler.parse_thread_page(html, page_url)
+    inserted_count = 0
+    skipped_count = 0
+
     for post_data in posts:
         try:
             if post_data["company"] and post_data["company"] != "Unknown":
                 await upsert_company(post_data["company"])
-            await insert_review(post_data)
-            if post_data["company"] != "Unknown":
-                await increment_company_review_count(post_data["company"])
+            _, inserted = await insert_review(post_data)
+            if inserted:
+                inserted_count += 1
+                if post_data["company"] != "Unknown":
+                    await increment_company_review_count(post_data["company"])
+            else:
+                skipped_count += 1
         except Exception as e:
             print(f"Error inserting review: {e}")
-    print(f"  ✅ Page: {len(posts)} reviews inserted")
+    print(f"  ✅ Page: {inserted_count} inserted, {skipped_count} skipped duplicates")
 
 
 async def run_crawler(forum_key: str, forum_url: str, max_pages: int):
