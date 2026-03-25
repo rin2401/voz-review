@@ -52,6 +52,8 @@ templates = Jinja2Templates(directory="templates")
 # Also create a direct Jinja env for manual rendering
 jinja_env = Environment(loader=FileSystemLoader("templates"))
 
+RUNNING_CRAWL_URLS: set[str] = set()
+
 
 # ============== PAGES ==============
 
@@ -140,9 +142,20 @@ async def search_page(request: Request, q: str = ""):
     return HTMLResponse(template.render(request=request, results=results, query=q))
 
 
+async def refresh_thread_job_statuses():
+    threads = await get_all_threads()
+    for thread in threads:
+        url = thread.get("url")
+        if not url:
+            continue
+        if thread.get("crawl_status") == "running" and url not in RUNNING_CRAWL_URLS:
+            await set_thread_crawl_status(url, "idle")
+
+
 @app.get("/threads", response_class=HTMLResponse)
 async def threads_page(request: Request):
     """List configured crawl threads"""
+    await refresh_thread_job_statuses()
     threads = await get_all_threads()
     template = jinja_env.get_template("threads.html")
     return HTMLResponse(template.render(request=request, threads=threads))
@@ -210,8 +223,11 @@ async def api_crawl_thread(url: str, max_pages: int = 0):
     """Crawl a specific thread by URL. max_pages=0 means crawl all pages"""
     thread = await get_thread_state(url=url)
     if thread and thread.get("crawl_status") == "running":
-        return {"status": "already_running", "url": url}
+        if url in RUNNING_CRAWL_URLS:
+            return {"status": "already_running", "url": url}
+        await set_thread_crawl_status(url, "idle")
     await set_thread_crawl_status(url, "running")
+    RUNNING_CRAWL_URLS.add(url)
     asyncio.create_task(crawl_thread(url, max_pages))
     return {"status": "started", "url": url, "max_pages": "all" if max_pages == 0 else max_pages}
 
@@ -254,6 +270,8 @@ async def crawl_thread(url: str, max_pages: int):
     except Exception as e:
         await set_thread_crawl_status(url, "error", error=str(e))
         print(f"❌ Thread crawl failed: {e}")
+    finally:
+        RUNNING_CRAWL_URLS.discard(url)
 
 
 async def process_thread_page(crawler, page_url: str, html: str):
@@ -305,6 +323,7 @@ async def crawl_all_forums(max_pages: int):
 @app.get("/api/threads")
 async def api_threads():
     """Get configured thread URLs from DB"""
+    await refresh_thread_job_statuses()
     return await get_all_threads()
 
 

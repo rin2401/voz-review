@@ -60,7 +60,10 @@
         <div class="card">
             <div class="card-header d-flex justify-content-between align-items-center">
                 <h5 class="mb-0">🧵 Threads</h5>
-                <small class="text-muted">{{ threads|length }} threads</small>
+                <div class="d-flex align-items-center gap-3">
+                    <button class="btn btn-sm btn-primary" onclick="window.location.reload()">↻ Refresh</button>
+                    <small class="text-muted">{{ threads|length }} threads</small>
+                </div>
             </div>
             <div class="card-body p-0">
                 <table class="table table-dark table-hover mb-0">
