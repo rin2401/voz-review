@@ -18,34 +18,45 @@
             --hover-bg: #21262d;
         }
         body.light-mode {
-            --bg-body: #edf2f7;
-            --bg-card: #ffffff;
-            --bg-card-header: #f8fafc;
-            --border-color: #d8dee9;
-            --text-color: #1f2937;
-            --muted-color: #64748b;
-            --link-color: #2563eb;
-            --input-bg: #ffffff;
-            --hover-bg: #eef2ff;
+            --bg-body: #e9eef5;
+            --bg-card: #fdfefe;
+            --bg-card-header: #f3f6fb;
+            --border-color: #cfd8e3;
+            --text-color: #223042;
+            --muted-color: #5f6f82;
+            --link-color: #2f6fec;
+            --input-bg: #f8fafd;
+            --hover-bg: #e8eef8;
         }
         body { background: var(--bg-body) !important; color: var(--text-color) !important; }
         .card { background: #161b22 !important; border: 1px solid #30363d !important; }
         .card-header { background: #21262d !important; border-bottom: 1px solid #30363d !important; color: #e6edf3 !important; }
-        .text-muted { color: #8b949e !important; }
-        a { color: #58a6ff !important; text-decoration: none; }
+        .text-muted { color: var(--muted-color) !important; }
+        a { color: var(--link-color) !important; text-decoration: none; }
         a:hover { text-decoration: underline; }
-        .navbar { background: #161b22 !important; border-bottom: 1px solid #30363d !important; }
-        .navbar-dark .navbar-brand, .navbar-dark .nav-link { color: #e6edf3 !important; }
-        .navbar-dark .nav-link:hover { color: #58a6ff !important; }
-        .table { color: #e6edf3 !important; }
-        .table-dark { --bs-table-bg: #161b22; --bs-table-color: #e6edf3; }
-        .table-hover > tbody > tr:hover { background-color: #21262d !important; }
+        .navbar { background: var(--bg-card) !important; border-bottom: 1px solid var(--border-color) !important; }
+        .navbar-dark .navbar-brand, .navbar-dark .nav-link { color: var(--text-color) !important; }
+        .navbar-dark .nav-link:hover { color: var(--link-color) !important; }
+        .table { color: var(--text-color) !important; }
+        .table-dark { --bs-table-bg: var(--bg-card); --bs-table-color: var(--text-color); }
+        .table-hover > tbody > tr:hover { background-color: var(--hover-bg) !important; }
         .badge { background: #30363d !important; }
+        body.light-mode .badge { background: #dbe6f5 !important; color: #38506d !important; }
         .btn-primary { background: #238636 !important; border: none !important; }
         .btn-primary:hover { background: #2ea043 !important; }
-        .form-control { background: #0d1117 !important; border: 1px solid #30363d !important; color: #e6edf3 !important; }
+        body.light-mode .btn-primary {
+            background: #2f6fec !important;
+            color: #ffffff !important;
+            border: 1px solid #2f6fec !important;
+        }
+        body.light-mode .btn-primary:hover {
+            background: #255fd1 !important;
+            border-color: #255fd1 !important;
+        }
+        .form-control { background: var(--input-bg) !important; border: 1px solid var(--border-color) !important; color: var(--text-color) !important; }
         .form-control::placeholder { color: #6e7681 !important; }
         .stats-number { color: #58a6ff !important; }
+        body.light-mode .stats-number { color: #2f6fec !important; }
         .theme-toggle {
             width: 38px;
             height: 38px;
@@ -56,18 +67,29 @@
             border-radius: 999px;
         }
         body.light-mode .btn-secondary {
-            background: #ffffff !important;
-            border-color: #d8dee9 !important;
-            color: #1f2937 !important;
+            background: #f8fafd !important;
+            border-color: #cfd8e3 !important;
+            color: #334155 !important;
         }
         body.light-mode .btn-secondary:hover {
-            background: #eef2ff !important;
+            background: #e8eef8 !important;
+            color: #223042 !important;
         }
         body.light-mode .card,
         body.light-mode .navbar,
         body.light-mode .table,
         body.light-mode .form-control,
         body.light-mode .badge {
+            color: var(--text-color) !important;
+        }
+        body.light-mode .card-header,
+        body.light-mode .card-body,
+        body.light-mode .navbar-brand,
+        body.light-mode .nav-link,
+        body.light-mode h3,
+        body.light-mode h5,
+        body.light-mode td,
+        body.light-mode th {
             color: var(--text-color) !important;
         }
     </style>
