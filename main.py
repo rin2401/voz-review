@@ -444,14 +444,22 @@ async def run_crawler(thread_url: str, max_pages: int):
 
 
 async def crawl_all_forums(max_pages: int):
-    """Crawl all configured threads from DB"""
+    """Crawl all configured threads from DB, sequentially using the same per-thread flow."""
     threads = await get_all_threads()
     for thread in threads:
         url = thread.get("url")
-        if not url or thread.get("crawl_status") == "running":
+        if not url:
             continue
+
+        current_state = await get_thread_state(url=url)
+        if current_state and current_state.get("crawl_status") == "running":
+            if url in RUNNING_CRAWL_URLS:
+                continue
+            await set_thread_crawl_status(url, "idle")
+
         await set_thread_crawl_status(url, "running")
-        await run_crawler(url, max_pages)
+        RUNNING_CRAWL_URLS.add(url)
+        await crawl_thread(url, max_pages)
         await asyncio.sleep(5)  # Be nice between threads
 
 
