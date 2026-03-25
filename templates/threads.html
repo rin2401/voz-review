@@ -57,6 +57,16 @@
         }
         .form-control { background: var(--input-bg) !important; border: 1px solid var(--border-color) !important; color: var(--text-color) !important; }
         .form-control::placeholder { color: #6e7681 !important; }
+        .form-control:focus {
+            background: var(--input-bg) !important;
+            border-color: var(--link-color) !important;
+            color: var(--text-color) !important;
+            box-shadow: 0 0 0 0.25rem rgba(88, 166, 255, 0.25);
+        }
+        body.light-mode .form-control:focus {
+            border-color: #bfd3f2 !important;
+            box-shadow: 0 0 0 0.14rem rgba(47, 111, 236, 0.12) !important;
+        }
         .stats-number { color: #58a6ff !important; }
         body.light-mode .stats-number { color: #2f6fec !important; }
         .theme-toggle {
