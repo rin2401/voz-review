@@ -42,6 +42,33 @@
     </nav>
 
     <div class="container mt-4">
+        <div class="row g-3 mb-4">
+            <div class="col-12 col-md-6 col-lg-4">
+                <div class="card text-center h-100">
+                    <div class="card-body d-flex flex-column justify-content-center py-4">
+                        <h3 class="mb-1">{{ total_reviews }}</h3>
+                        <small class="text-muted">Total Reviews</small>
+                    </div>
+                </div>
+            </div>
+            <div class="col-12 col-md-6 col-lg-4">
+                <div class="card text-center h-100">
+                    <div class="card-body d-flex flex-column justify-content-center py-4">
+                        <h3 class="mb-1">{{ total_companies }}</h3>
+                        <small class="text-muted">Company</small>
+                    </div>
+                </div>
+            </div>
+            <div class="col-12 col-md-6 col-lg-4">
+                <div class="card text-center h-100">
+                    <div class="card-body d-flex flex-column justify-content-center py-4">
+                        <h3 class="mb-1">{{ total_threads }}</h3>
+                        <small class="text-muted">Threads</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <div class="card mb-4">
             <div class="card-body">
                 <form id="addThreadForm" class="row g-3 align-items-end" onsubmit="addThread(event)">

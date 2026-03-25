@@ -65,14 +65,10 @@ async def home(request: Request, q: str = "", sort: str = "recent_review"):
     if q:
         keyword = q.lower().strip()
         companies = [c for c in companies if keyword in c.get("name", "").lower()]
-    total_reviews = await get_review_count()
-    total_threads = len(await get_all_threads())
     template = jinja_env.get_template("index.html")
     return HTMLResponse(template.render(
         request=request,
         companies=companies,
-        total_reviews=total_reviews,
-        total_threads=total_threads,
         query=q,
         sort=sort,
     ))
@@ -168,8 +164,16 @@ async def threads_page(request: Request):
     """List configured crawl threads"""
     await refresh_thread_job_statuses()
     threads = await get_all_threads()
+    total_reviews = await get_review_count()
+    total_companies = len(await get_all_companies())
     template = jinja_env.get_template("threads.html")
-    return HTMLResponse(template.render(request=request, threads=threads))
+    return HTMLResponse(template.render(
+        request=request,
+        threads=threads,
+        total_reviews=total_reviews,
+        total_companies=total_companies,
+        total_threads=len(threads),
+    ))
 
 
 # ============== API ==============
