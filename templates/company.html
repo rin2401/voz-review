@@ -368,7 +368,7 @@
             </li>
             {% for tid in available_thread_ids %}
             <li class="nav-item">
-                <a class="nav-link {% if active_thread_id == tid %}active{% endif %}" href="/company/{{ company }}?thread_id={{ tid }}&view={{ active_view }}">{{ tid }}</a>
+                <a class="nav-link {% if active_thread_id == tid %}active{% endif %}" href="/company/{{ company }}?thread_id={{ tid }}&view=all">{{ tid }}</a>
             </li>
             {% endfor %}
         </ul>
