@@ -196,6 +196,21 @@ class VozCrawler:
         match = re.search(r'/t\.(\d+)', url)
         return match.group(1) if match else ""
     
+    def _clean_company_name(self, company: str) -> str:
+        """Normalize extracted company names by removing trailing notes."""
+        company = company.strip()
+
+        # Drop trailing notes in parentheses, e.g. "OANDA Coinpass (làm remote, giờ UK"
+        company = re.split(r'\s*\(', company, maxsplit=1)[0].strip()
+
+        # Drop obvious trailing note separators like dash/en dash/em dash
+        company = re.split(r'\s+[\-–—]\s+', company, maxsplit=1)[0].strip()
+
+        # Clean punctuation around edges
+        company = company.rstrip('.,;:')
+        company = re.sub(r'^[^\w\s&]+|[^\w\s&]+$', '', company)
+        return company.strip()
+
     def _extract_company(self, content: str) -> str:
         """
         Extract company name from review content.
@@ -232,9 +247,7 @@ class VozCrawler:
                 if any(x in company.lower() for x in ['xin', 'hỏi', 'review', 'cho', 'em ', 'mình ']):
                     return "Unknown"
                 
-                # Clean punctuation
-                company = re.sub(r'^[^\w\s&]+|[^\w\s&]+$', '', company)
-                company = company.strip()
+                company = self._clean_company_name(company)
                 
                 if len(company) >= 2 and len(company) <= 60:
                     return company
@@ -242,9 +255,10 @@ class VozCrawler:
         # Also try: starts with "Công ty" as a standalone line
         for line in lines:
             line = line.strip()
-            if line.lower().startswith('công ty ') and len(line) < 50:
-                company = line.split('công ty', 1)[1].strip()
-                company = re.sub(r'^[^\w\s&]+|[^\w\s&]+$', '', company)
+            lower_line = line.lower()
+            if lower_line.startswith('công ty ') and len(line) < 80:
+                company = line[len('công ty '):].strip()
+                company = self._clean_company_name(company)
                 if len(company) >= 2:
                     return company
         
