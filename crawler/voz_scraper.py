@@ -113,12 +113,18 @@ class VozCrawler:
                 # Extract post content while preserving line breaks better
                 content_elem = post.select_one(".message-content, .bbWrapper")
 
-                # Extract quoted/replied post ID if present
+                # Extract quoted/replied post ID only from quote attribution
                 reply_post_id = None
-                quote_link = post.select_one(".bbCodeBlock-sourceJump a[href*='#post-'], .bbCodeBlock-title a[href*='/post-'], a[href*='/post-']")
+                quote_link = post.select_one("a.bbCodeBlock-sourceJump, .bbCodeBlock-sourceJump")
                 if quote_link:
-                    href = quote_link.get("href", "")
-                    match = re.search(r'post-(\d+)', href)
+                    content_selector = quote_link.get("data-content-selector", "")
+                    match = re.search(r'#post-(\d+)', content_selector)
+                    if not match:
+                        href = quote_link.get("href", "")
+                        match = re.search(r'[?&]id=(\d+)', href)
+                    if not match:
+                        href = quote_link.get("href", "")
+                        match = re.search(r'#post-(\d+)', href)
                     if match:
                         reply_post_id = match.group(1)
 
