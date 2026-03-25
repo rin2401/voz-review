@@ -297,6 +297,12 @@ class VozCrawler:
                     return "Unknown"
                 
                 company = self._clean_company_name(company)
+
+                words = [w for w in company.split() if w]
+                if not company or not company[0].isupper():
+                    return "Unknown"
+                if len(words) > 4:
+                    return "Unknown"
                 
                 if len(company) >= 2 and len(company) <= 60:
                     return company
@@ -308,6 +314,11 @@ class VozCrawler:
             if lower_line.startswith('công ty ') and len(line) < 80:
                 company = line[len('công ty '):].strip()
                 company = self._clean_company_name(company)
+                words = [w for w in company.split() if w]
+                if not company or not company[0].isupper():
+                    return "Unknown"
+                if len(words) > 4:
+                    return "Unknown"
                 if len(company) >= 2:
                     return company
         
