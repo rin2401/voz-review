@@ -267,9 +267,10 @@ class VozCrawler:
         
         return "Unknown"
     
-    async def crawl_forum(self, forum_url: str, max_pages: int = 5) -> Tuple[int, int]:
+    async def crawl_forum(self, forum_url: str, max_pages: int = 0) -> Tuple[int, int]:
         """
         Crawl a forum for review threads.
+        max_pages=0 means continue from crawl state until no more pages.
         Returns (threads_found, reviews_extracted)
         """
         print(f"🔍 Crawling forum: {forum_url}")
@@ -284,8 +285,12 @@ class VozCrawler:
             start_page = state["last_page"]
         
         total_reviews = 0
-        
-        for page in range(start_page, start_page + max_pages):
+        page = start_page
+
+        while True:
+            if max_pages and page >= start_page + max_pages:
+                break
+
             page_url = f"{forum_url}?page={page}" if page > 1 else forum_url
             
             try:
@@ -320,10 +325,12 @@ class VozCrawler:
                     await update_crawl_state(forum_id, last_post_date, page)
                 
                 print(f"  📄 Page {page}: {len(posts)} reviews")
+                page += 1
                 await asyncio.sleep(config.CRAWL_DELAY)
                 
             except Exception as e:
                 print(f"Error crawling page {page}: {e}")
+                page += 1
                 continue
         
         print(f"✅ Done! Extracted {total_reviews} reviews")

@@ -182,7 +182,7 @@ async def api_stats():
 # ============== CRAWLER ENDPOINTS ==============
 
 @app.post("/api/crawl/forum/{forum_key}")
-async def api_crawl_forum(forum_key: str, max_pages: int = 3):
+async def api_crawl_forum(forum_key: str, max_pages: int = 0):
     """Trigger crawl for a specific forum"""
     if forum_key not in REVIEW_FORUMS:
         raise HTTPException(400, f"Unknown forum: {forum_key}")
@@ -196,7 +196,7 @@ async def api_crawl_forum(forum_key: str, max_pages: int = 3):
 
 
 @app.post("/api/crawl/all")
-async def api_crawl_all(max_pages: int = 3):
+async def api_crawl_all(max_pages: int = 0):
     """Crawl all configured forums"""
     asyncio.create_task(crawl_all_forums(max_pages))
     return {"status": "started", "forums": list(REVIEW_FORUMS.keys())}
