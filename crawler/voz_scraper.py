@@ -29,6 +29,7 @@ class VozCrawler:
     def __init__(self):
         self.base_url = config.VOZ_BASE_URL
         self.alias_map = self._load_company_alias_map()
+        self.company_candidates = self._build_company_candidates()
         self.session = httpx.AsyncClient(
             timeout=config.VOZ_TIMEOUT,
             follow_redirects=True,
@@ -211,6 +212,22 @@ class VozCrawler:
         except Exception:
             return {}
 
+    def _build_company_candidates(self) -> list[tuple[str, str]]:
+        candidates = []
+        seen = set()
+        for alias, canonical in self.alias_map.items():
+            for raw_name in [alias, canonical]:
+                name = (raw_name or '').strip()
+                if len(name) < 3:
+                    continue
+                key = name.lower()
+                if key in seen:
+                    continue
+                seen.add(key)
+                candidates.append((name, canonical))
+        candidates.sort(key=lambda item: len(item[0]), reverse=True)
+        return candidates
+
     def _apply_company_alias(self, company: str) -> str:
         return self.alias_map.get(company, company)
     
@@ -300,9 +317,9 @@ class VozCrawler:
 
                 words = [w for w in company.split() if w]
                 if not company or not company[0].isupper():
-                    return "Unknown"
+                    continue
                 if len(words) > 4:
-                    return "Unknown"
+                    continue
                 
                 if len(company) >= 2 and len(company) <= 60:
                     return company
@@ -316,11 +333,17 @@ class VozCrawler:
                 company = self._clean_company_name(company)
                 words = [w for w in company.split() if w]
                 if not company or not company[0].isupper():
-                    return "Unknown"
+                    continue
                 if len(words) > 4:
-                    return "Unknown"
+                    continue
                 if len(company) >= 2:
                     return company
+
+        # Fallback: longest matching alias/canonical name inside content for Unknown posts
+        normalized_content = content.lower()
+        for candidate, canonical in self.company_candidates:
+            if candidate.lower() in normalized_content:
+                return canonical
         
         return "Unknown"
     
