@@ -74,11 +74,7 @@
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
-                <form class="d-flex ms-auto me-3" action="/search" method="get">
-                    <input type="text" name="q" class="form-control form-control-sm me-2" placeholder="Search reviews...">
-                    <button type="submit" class="btn btn-primary btn-sm">Search</button>
-                </form>
-                <ul class="navbar-nav">
+                <ul class="navbar-nav ms-auto">
                     <li class="nav-item"><a class="nav-link" href="/">🏠 Home</a></li>
                     <li class="nav-item"><a class="nav-link" href="/threads">🧵 Threads</a></li>
                 </ul>
@@ -87,6 +83,20 @@
     </nav>
 
     <div class="container mt-4">
+        <div class="card mb-4">
+            <div class="card-body">
+                <form action="/search" method="get" class="row g-3 align-items-end">
+                    <div class="col-md-10">
+                        <label for="search-q" class="form-label text-muted">Search reviews</label>
+                        <input type="text" id="search-q" name="q" class="form-control form-control-lg" placeholder="Ví dụ: Fsoft, Zalo, CMC, lương, backend...">
+                    </div>
+                    <div class="col-md-2 d-grid">
+                        <button type="submit" class="btn btn-primary btn-lg">Search</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
         <!-- Stats -->
         <div class="row mb-4">
             <div class="col-md-3">
