@@ -58,3 +58,15 @@ Script này sẽ xóa toàn bộ dữ liệu trong các collection:
 - `reviews`
 - `companies`
 - `crawl_state`
+
+## Migrate tên công ty
+
+Nếu muốn làm sạch lại field `company` trong database theo rule parser mới:
+
+```bash
+python scripts/migrate_company_names.py
+```
+
+Script này sẽ:
+- normalize lại `reviews.company`
+- rebuild lại collection `companies`
