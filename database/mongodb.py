@@ -41,7 +41,7 @@ async def create_indexes():
     await reviews.create_index(
         "voz_post_id",
         unique=True,
-        partialFilterExpression={"voz_post_id": {"$type": "string", "$ne": ""}}
+        partialFilterExpression={"voz_post_id": {"$exists": True, "$type": "string"}}
     )
     await reviews.create_index("reply_post_id")
     await reviews.create_index([("company", ASCENDING), ("created_at", ASCENDING)])

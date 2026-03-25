@@ -146,6 +146,10 @@ class VozCrawler:
                         if match:
                             post_id = match.group(1)
                 
+                # Normalize empty post IDs so DB unique index works safely
+                if not post_id:
+                    post_id = None
+
                 # Extract likes
                 likes = 0
                 like_elem = post.select_one(".reactions-value")
