@@ -366,6 +366,9 @@
             <li class="nav-item">
                 <a class="nav-link {% if active_view == 'salary' and not active_thread_id %}active{% endif %}" href="/company/{{ company }}?view=salary">Salary</a>
             </li>
+            <li class="nav-item">
+                <a class="nav-link {% if active_view == 'interview' and not active_thread_id %}active{% endif %}" href="/company/{{ company }}?view=interview">Interview</a>
+            </li>
             {% for tid in available_thread_ids %}
             <li class="nav-item">
                 <a class="nav-link {% if active_thread_id == tid %}active{% endif %}" href="/company/{{ company }}?thread_id={{ tid }}&view=all">{{ tid }}</a>

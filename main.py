@@ -83,11 +83,24 @@ async def company_detail(request: Request, company_name: str, page: int = 1, thr
 
     available_thread_ids = await get_company_thread_ids(company_name)
     active_thread_id = thread_id if thread_id in available_thread_ids else ""
-    active_view = "salary" if view == "salary" else "all"
+    active_view = view if view in {"all", "salary", "interview"} else "all"
     salary_only = active_view == "salary"
+    interview_only = active_view == "interview"
 
-    reviews = await get_reviews_by_company(company_name, limit=limit, skip=skip, thread_id=active_thread_id or None, salary_only=salary_only)
-    total = await get_review_count(company=company_name, thread_id=active_thread_id or None, salary_only=salary_only)
+    reviews = await get_reviews_by_company(
+        company_name,
+        limit=limit,
+        skip=skip,
+        thread_id=active_thread_id or None,
+        salary_only=salary_only,
+        interview_only=interview_only,
+    )
+    total = await get_review_count(
+        company=company_name,
+        thread_id=active_thread_id or None,
+        salary_only=salary_only,
+        interview_only=interview_only,
+    )
 
     review_by_post_id = {
         str(review.get("voz_post_id")): review
