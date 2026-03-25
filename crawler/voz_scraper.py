@@ -206,6 +206,9 @@ class VozCrawler:
         # Drop obvious trailing note separators like dash/en dash/em dash
         company = re.split(r'\s+[\-–—]\s+', company, maxsplit=1)[0].strip()
 
+        # Drop trailing note after comma, e.g. "A***s, Singapore"
+        company = re.split(r'\s*,\s*', company, maxsplit=1)[0].strip()
+
         # Clean punctuation around edges
         company = company.rstrip('.,;:')
         company = re.sub(r'^[^\w\s&]+|[^\w\s&]+$', '', company)
