@@ -7,4 +7,17 @@ wheels/
 *.egg-info
 
 # Virtual environments
-.venv
+.venv/
+
+# Environment / local config
+.env
+.env.*
+
+# Logs and runtime artifacts
+*.log
+*.sock
+
+# Local data
+*.db
+*.sqlite
+*.sqlite3

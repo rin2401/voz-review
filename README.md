@@ -1,6 +1,6 @@
-# Voz Review Crawler
+# Voz Review
 
-Crawl và tổng hợp review công ty từ voz.vn
+Crawler + web app để thu thập và tra cứu review công ty từ voz.vn.
 
 ## Setup
 
@@ -14,26 +14,26 @@ playwright install chromium
 # 3. Start MongoDB (Docker)
 docker run -d -p 27017:27017 --name mongodb mongo:latest
 
-# 4. Run
+# 4. Run app
 uvicorn main:app --reload --host 0.0.0.0 --port 8000
 ```
 
 ## Features
 
 - Crawl review threads từ nhiều sub-forum Voz
-- Tổng hợp reviews theo công ty
+- Tổng hợp review theo công ty
 - Full-text search
 - API endpoints
-- Dark theme UI
+- Giao diện dark theme
 
 ## API Endpoints
 
 - `GET /` - Trang chủ
-- `GET /company/{name}` - Reviews của công ty
+- `GET /company/{name}` - Xem review của công ty
 - `GET /search?q=...` - Tìm kiếm
 - `POST /api/crawl/forum/{key}` - Crawl 1 forum
-- `POST /api/crawl/all` - Crawl tất cả forums
-- `GET /api/stats` - Thống kê
+- `POST /api/crawl/all` - Crawl tất cả forum
+- `GET /api/stats` - Xem thống kê
 
 ## Forum Keys
 
@@ -41,3 +41,7 @@ uvicorn main:app --reload --host 0.0.0.0 --port 8000
 - `salary` - Review salary
 - `interview` - Review interview
 - `work_life` - Review work life
+
+## Notes
+
+Một số file runtime local như `.venv/`, `*.log`, `*.sock` đã được ignore để repo sạch hơn và tránh đẩy rác môi trường lên GitHub.
