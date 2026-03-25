@@ -233,7 +233,7 @@ class VozCrawler:
         return company.strip()
 
     def _extract_monthly_salary_million(self, content: str) -> Optional[float]:
-        """Extract monthly salary only, normalized to million VND when possible."""
+        """Extract monthly salary only for Vietnamese-style million units like 50m/50M/50 triệu."""
         for raw_line in content.split('\n'):
             line = raw_line.strip()
             lower_line = line.lower()
@@ -246,27 +246,14 @@ class VozCrawler:
                 salary_text = line
 
             lower_salary = salary_text.lower()
-            if any(token in lower_salary for token in ['năm', '/năm', 'year', '/year', 'package']):
+            if any(token in lower_salary for token in ['năm', '/năm', 'year', '/year', 'package', 'usd', 'sgd', '$', 'vnd', 'k']):
                 return None
 
-            m = re.search(r'(\d+(?:[.,]\d+)?)\s*(k|tr|triệu|m|mil|million|usd|sgd|vnd)?', lower_salary)
+            m = re.search(r'(\d+(?:[.,]\d+)?)\s*(m|tr|triệu)\b', lower_salary)
             if not m:
                 return None
 
-            value = float(m.group(1).replace(',', '.'))
-            unit = (m.group(2) or '').lower()
-
-            if unit in {'tr', 'triệu', 'm'}:
-                return value
-            if unit == 'k':
-                return value * 25  # rough fallback for common USD/SGD shorthand, sortable only
-            if unit in {'mil', 'million'}:
-                return value * 25
-            if unit == 'vnd':
-                return value / 1_000_000
-            if value >= 1000:
-                return value / 1_000_000
-            return value
+            return float(m.group(1).replace(',', '.'))
 
         return None
 
