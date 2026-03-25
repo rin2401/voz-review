@@ -63,13 +63,14 @@ async def main():
     scanned = 0
     normalized_updates = 0
     salary_updates = 0
+    thread_id_updates = 0
     alias_updates = 0
     rebuilt_companies = 0
 
     try:
         cursor = db.reviews.find(
             {"content": {"$exists": True, "$nin": [None, ""]}},
-            {"_id": 1, "company": 1, "content": 1, "monthly_salary_million": 1},
+            {"_id": 1, "company": 1, "content": 1, "monthly_salary_million": 1, "url": 1, "voz_thread_id": 1},
         )
         async for doc in cursor:
             scanned += 1
@@ -84,6 +85,11 @@ async def main():
             if salary != doc.get("monthly_salary_million"):
                 updates["monthly_salary_million"] = salary
                 salary_updates += 1
+
+            thread_id = crawler._extract_thread_id(doc.get("url") or "")
+            if thread_id and thread_id != doc.get("voz_thread_id"):
+                updates["voz_thread_id"] = thread_id
+                thread_id_updates += 1
 
             if updates:
                 await db.reviews.update_one({"_id": doc["_id"]}, {"$set": updates})
@@ -104,6 +110,7 @@ async def main():
                 "scanned_reviews": scanned,
                 "normalized_updates": normalized_updates,
                 "salary_updates": salary_updates,
+                "thread_id_updates": thread_id_updates,
                 "alias_updates": alias_updates,
                 "aliases_loaded": len(alias_map),
                 "rebuilt_companies": rebuilt_companies,
