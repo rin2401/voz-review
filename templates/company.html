@@ -136,7 +136,7 @@
                 {{ render_reply_nodes(reply_children_by_post_id.get(child.voz_post_id), reply_children_by_post_id, default_visible_replies, depth + 1, child_path) }}
             </div>
             {% endfor %}
-            {% if children|length > default_visible_replies %}
+            {% if children|length > default_visible_replies and depth > 1 %}
             <button class="show-more-replies" type="button" onclick="showMoreReplies('{{ path }}', this)">
                 Xem thêm {{ children|length - default_visible_replies }} reply
             </button>
@@ -215,6 +215,11 @@
                     {% set child_replies = reply_children_by_post_id.get(review.voz_post_id) %}
                     {% if child_replies %}
                     <div class="reply-tree">
+                        {% if child_replies|length > default_visible_replies %}
+                        <button class="show-more-replies" type="button" onclick="showMoreReplies('root-{{ loop.index }}', this)">
+                            Xem reply ({{ child_replies|length }})
+                        </button>
+                        {% endif %}
                         {{ render_reply_nodes(child_replies, reply_children_by_post_id, default_visible_replies, 1, 'root-' ~ loop.index) }}
                     </div>
                     {% endif %}
