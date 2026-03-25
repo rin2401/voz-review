@@ -1,0 +1,247 @@
+"""FastAPI main application"""
+from fastapi import FastAPI, Request, HTTPException
+from fastapi.responses import HTMLResponse, JSONResponse
+from fastapi.staticfiles import StaticFiles
+from fastapi.templating import Jinja2Templates
+from jinja2 import Environment, FileSystemLoader
+from contextlib import asynccontextmanager
+from typing import Optional, List
+import asyncio
+
+from database.mongodb import (
+    connect, close,
+    get_all_companies,
+    get_reviews_by_company,
+    get_review_count,
+    search_reviews,
+    insert_review,
+    upsert_company,
+    increment_company_review_count
+)
+from crawler.voz_scraper import VozCrawler, REVIEW_FORUMS
+import config
+
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    """Startup and shutdown events"""
+    await connect()
+    yield
+    await close()
+
+
+app = FastAPI(
+    title="Voz Review Crawler",
+    description="Crawl và tổng hợp review công ty từ voz.vn",
+    version="1.0.0",
+    lifespan=lifespan
+)
+
+# Static files and templates
+app.mount("/static", StaticFiles(directory="static"), name="static")
+templates = Jinja2Templates(directory="templates")
+
+# Also create a direct Jinja env for manual rendering
+jinja_env = Environment(loader=FileSystemLoader("templates"))
+
+
+# ============== PAGES ==============
+
+@app.get("/", response_class=HTMLResponse)
+async def home(request: Request):
+    """Main page - list companies"""
+    companies = await get_all_companies()
+    total_reviews = await get_review_count()
+    template = jinja_env.get_template("index.html")
+    return HTMLResponse(template.render(
+        request=request,
+        companies=companies, 
+        total_reviews=total_reviews
+    ))
+
+
+@app.get("/company/{company_name}", response_class=HTMLResponse)
+async def company_detail(request: Request, company_name: str, page: int = 1):
+    """Company detail page - list reviews"""
+    limit = 20
+    skip = (page - 1) * limit
+    
+    reviews = await get_reviews_by_company(company_name, limit=limit, skip=skip)
+    total = await get_review_count(company=company_name)
+    
+    template = jinja_env.get_template("company.html")
+    return HTMLResponse(template.render(
+        request=request,
+        company=company_name,
+        reviews=reviews,
+        page=page,
+        total=total,
+        pages=(total + limit - 1) // limit
+    ))
+
+
+@app.get("/search", response_class=HTMLResponse)
+async def search_page(request: Request, q: str = ""):
+    """Search reviews"""
+    if not q:
+        template = jinja_env.get_template("search.html")
+        return HTMLResponse(template.render(request=request, results=[], query=""))
+    
+    results = await search_reviews(q, limit=50)
+    template = jinja_env.get_template("search.html")
+    return HTMLResponse(template.render(request=request, results=results, query=q))
+
+
+# ============== API ==============
+
+@app.get("/api/companies")
+async def api_companies():
+    """Get all companies"""
+    return await get_all_companies()
+
+
+@app.get("/api/companies/{company}/reviews")
+async def api_company_reviews(
+    company: str,
+    limit: int = 20,
+    skip: int = 0
+):
+    """Get reviews for a company"""
+    reviews = await get_reviews_by_company(company, limit=limit, skip=skip)
+    total = await get_review_count(company=company)
+    return {"reviews": reviews, "total": total}
+
+
+@app.get("/api/search")
+async def api_search(q: str, limit: int = 20, skip: int = 0):
+    """Search reviews API"""
+    results = await search_reviews(q, limit=limit, skip=skip)
+    return {"results": results, "query": q}
+
+
+@app.post("/api/reviews")
+async def api_create_review(review: dict):
+    """Manually add a review"""
+    review_id = await insert_review(review)
+    return {"id": review_id, "status": "created"}
+
+
+@app.get("/api/stats")
+async def api_stats():
+    """Get overall stats"""
+    companies = await get_all_companies()
+    total_reviews = await get_review_count()
+    return {
+        "total_companies": len(companies),
+        "total_reviews": total_reviews,
+        "forums": list(REVIEW_FORUMS.keys())
+    }
+
+
+# ============== CRAWLER ENDPOINTS ==============
+
+@app.post("/api/crawl/forum/{forum_key}")
+async def api_crawl_forum(forum_key: str, max_pages: int = 3):
+    """Trigger crawl for a specific forum"""
+    if forum_key not in REVIEW_FORUMS:
+        raise HTTPException(400, f"Unknown forum: {forum_key}")
+    
+    forum_url = REVIEW_FORUMS[forum_key]
+    
+    # Run crawler in background
+    asyncio.create_task(run_crawler(forum_key, forum_url, max_pages))
+    
+    return {"status": "started", "forum": forum_key, "url": forum_url}
+
+
+@app.post("/api/crawl/all")
+async def api_crawl_all(max_pages: int = 3):
+    """Crawl all configured forums"""
+    asyncio.create_task(crawl_all_forums(max_pages))
+    return {"status": "started", "forums": list(REVIEW_FORUMS.keys())}
+
+
+@app.post("/api/crawl/thread")
+async def api_crawl_thread(url: str, max_pages: int = 0):
+    """Crawl a specific thread by URL. max_pages=0 means crawl all pages"""
+    asyncio.create_task(crawl_thread(url, max_pages))
+    return {"status": "started", "url": url, "max_pages": "all" if max_pages == 0 else max_pages}
+
+
+async def crawl_thread(url: str, max_pages: int):
+    """Crawl a specific thread - if max_pages=0, crawl all pages"""
+    try:
+        async with VozCrawler() as crawler:
+            # First, get the first page to determine total pages
+            first_page_url = url if url.endswith('/') else url + '/'
+            first_html = await crawler.get_page_html(first_page_url)
+            
+            # Detect total pages from pagination
+            import re
+            page_numbers = re.findall(r'/page-(\d+)', first_html)
+            total_pages = max([int(p) for p in page_numbers]) if page_numbers else 1
+            
+            if max_pages == 0:
+                max_pages = total_pages
+            
+            print(f"📊 Thread: {total_pages} pages detected, will crawl {max_pages} pages")
+            
+            # Crawl first page
+            await process_thread_page(crawler, first_page_url, first_html)
+            
+            # Crawl remaining pages
+            for page in range(2, max_pages + 1):
+                page_url = f"{first_page_url}page-{page}/"
+                print(f"📄 Crawling page {page}/{max_pages}")
+                html = await crawler.get_page_html(page_url)
+                await process_thread_page(crawler, page_url, html)
+                await asyncio.sleep(2)
+            
+        print(f"✅ Thread crawl complete: {url}")
+    except Exception as e:
+        print(f"❌ Thread crawl failed: {e}")
+
+
+async def process_thread_page(crawler, page_url: str, html: str):
+    """Process a single thread page - insert all reviews"""
+    posts = crawler.parse_thread_page(html, page_url)
+    for post_data in posts:
+        try:
+            if post_data["company"] and post_data["company"] != "Unknown":
+                await upsert_company(post_data["company"])
+            await insert_review(post_data)
+            if post_data["company"] != "Unknown":
+                await increment_company_review_count(post_data["company"])
+        except Exception as e:
+            print(f"Error inserting review: {e}")
+    print(f"  ✅ Page: {len(posts)} reviews inserted")
+
+
+async def run_crawler(forum_key: str, forum_url: str, max_pages: int):
+    """Run crawler for a single forum"""
+    try:
+        async with VozCrawler() as crawler:
+            threads, reviews = await crawler.crawl_forum(forum_url, max_pages=max_pages)
+            print(f"✅ Crawl complete for {forum_key}: {threads} threads, {reviews} reviews")
+    except Exception as e:
+        print(f"❌ Crawl failed for {forum_key}: {e}")
+
+
+async def crawl_all_forums(max_pages: int):
+    """Crawl all configured forums"""
+    for forum_key, forum_url in REVIEW_FORUMS.items():
+        await run_crawler(forum_key, forum_url, max_pages)
+        await asyncio.sleep(5)  # Be nice between forums
+
+
+# ============== INFO ==============
+
+@app.get("/api/forums")
+async def api_forums():
+    """Get configured forum URLs"""
+    return REVIEW_FORUMS
+
+
+if __name__ == "__main__":
+    import uvicorn
+    uvicorn.run("main:app", host="0.0.0.0", port=18004, reload=True)

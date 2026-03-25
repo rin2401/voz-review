@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Voz Review Crawler</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body { 
+            background: #0d1117 !important; 
+            color: #e6edf3 !important;
+        }
+        .card { 
+            background: #161b22 !important; 
+            border: 1px solid #30363d !important;
+        }
+        .card-header { 
+            background: #21262d !important; 
+            border-bottom: 1px solid #30363d !important;
+            color: #e6edf3 !important;
+        }
+        .card-body {
+            color: #e6edf3 !important;
+        }
+        .table {
+            color: #e6edf3 !important;
+        }
+        .table-dark {
+            --bs-table-bg: #161b22;
+            --bs-table-color: #e6edf3;
+        }
+        .table-hover > tbody > tr:hover {
+            background-color: #21262d !important;
+        }
+        .text-muted { color: #8b949e !important; }
+        a { color: #58a6ff !important; text-decoration: none; }
+        a:hover { text-decoration: underline; }
+        .company-name { color: #f0883e !important; font-weight: 600; }
+        .review-content { font-size: 0.95rem; line-height: 1.6; color: #e6edf3 !important; }
+        .badge-count { background: #238636 !important; }
+        .btn-primary { background: #238636 !important; border: none !important; }
+        .btn-primary:hover { background: #2ea043 !important; }
+        .btn-secondary { background: #21262d !important; border: 1px solid #30363d !important; color: #e6edf3 !important; }
+        .btn-secondary:hover { background: #30363d !important; }
+        input, select { 
+            background: #0d1117 !important; 
+            border: 1px solid #30363d !important; 
+            color: #e6edf3 !important;
+        }
+        input::placeholder { color: #6e7681 !important; }
+        .navbar { background: #161b22 !important; border-bottom: 1px solid #30363d !important; }
+        .navbar-dark .navbar-brand { color: #e6edf3 !important; }
+        .navbar-dark .nav-link { color: #e6edf3 !important; }
+        .navbar-dark .nav-link:hover { color: #58a6ff !important; }
+        .pagination { --bs-pagination-bg: #161b22; --bs-pagination-color: #e6edf3; --bs-pagination-border-color: #30363d; }
+        .page-link { background: #161b22 !important; color: #e6edf3 !important; border-color: #30363d !important; }
+        .page-link:hover { background: #21262d !important; }
+        .page-item.active .page-link { background: #238636 !important; border-color: #238636 !important; }
+        h2, h3, h4, h5 { color: #e6edf3 !important; }
+        small { color: #8b949e !important; }
+        .form-control:focus { 
+            background: #0d1117 !important;
+            border-color: #58a6ff !important;
+            color: #e6edf3 !important;
+            box-shadow: 0 0 0 0.25rem rgba(88, 166, 255, 0.25);
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark" style="background: #161b22; border-bottom: 1px solid #30363d;">
+        <div class="container">
+            <a class="navbar-brand" href="/">🔍 Voz Review Crawler</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item"><a class="nav-link" href="/">🏠 Home</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/search">🔎 Search</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/admin">⚙️ Admin</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mt-4">
+        <!-- Stats -->
+        <div class="row mb-4">
+            <div class="col-md-3">
+                <div class="card text-center">
+                    <div class="card-body">
+                        <h3 class="mb-0">{{ total_reviews }}</h3>
+                        <small class="text-muted">Total Reviews</small>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card text-center">
+                    <div class="card-body">
+                        <h3 class="mb-0">{{ companies|length }}</h3>
+                        <small class="text-muted">Companies</small>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card text-center">
+                    <div class="card-body">
+                        <h3 class="mb-0">4</h3>
+                        <small class="text-muted">Forums</small>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card text-center">
+                    <div class="card-body">
+                        <button class="btn btn-primary w-100" onclick="crawlAll()">🚀 Crawl Now</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Companies List -->
+        <div class="card">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h5 class="mb-0">🏢 Companies</h5>
+                <input type="text" id="filter" placeholder="Filter companies..." onkeyup="filterCompanies()" style="width: 200px;">
+            </div>
+            <div class="card-body p-0">
+                <table class="table table-dark table-hover mb-0">
+                    <thead>
+                        <tr>
+                            <th>Company</th>
+                            <th>Reviews</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="companyTable">
+                        {% for company in companies %}
+                        <tr>
+                            <td><a href="/company/{{ company.name }}" class="company-name">{{ company.name }}</a></td>
+                            <td><span class="badge badge-count">{{ company.review_count }}</span></td>
+                            <td><a href="/company/{{ company.name }}" class="btn btn-sm btn-secondary">View</a></td>
+                        </tr>
+                        {% else %}
+                        <tr>
+                            <td colspan="3" class="text-center text-muted py-4">
+                                Chưa có công ty nào. Bấm "Crawl Now" để bắt đầu!
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        function filterCompanies() {
+            const filter = document.getElementById('filter').value.toLowerCase();
+            const rows = document.getElementById('companyTable').getElementsByTagName('tr');
+            for (let row of rows) {
+                const text = row.textContent.toLowerCase();
+                row.style.display = text.includes(filter) ? '' : 'none';
+            }
+        }
+        
+        async function crawlAll() {
+            if (!confirm('Bắt đầu crawl tất cả forums?')) return;
+            const btn = event.target;
+            btn.disabled = true;
+            btn.textContent = '⏳ Crawling...';
+            
+            try {
+                const res = await fetch('/api/crawl/all', { method: 'POST' });
+                const data = await res.json();
+                alert('Đã bắt đầu crawl! Refresh trang sau vài phút.');
+            } catch (e) {
+                alert('Lỗi: ' + e.message);
+            } finally {
+                btn.disabled = false;
+                btn.textContent = '🚀 Crawl Now';
+            }
+        }
+    </script>
+</body>
+</html>

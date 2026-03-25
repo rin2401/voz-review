@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Search - Voz Review Crawler</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body { 
+            background: #0d1117 !important; 
+            color: #e6edf3 !important;
+        }
+        .card { 
+            background: #161b22 !important; 
+            border: 1px solid #30363d !important;
+        }
+        .card-header {
+            background: #21262d !important;
+            border-bottom: 1px solid #30363d !important;
+            color: #e6edf3 !important;
+        }
+        .card-body {
+            color: #e6edf3 !important;
+        }
+        .text-muted { color: #8b949e !important; }
+        a { color: #58a6ff !important; text-decoration: none; }
+        a:hover { text-decoration: underline; }
+        .company-name { color: #f0883e !important; font-weight: 600; }
+        .navbar { background: #161b22 !important; border-bottom: 1px solid #30363d !important; }
+        .navbar-dark .navbar-brand { color: #e6edf3 !important; }
+        .navbar-dark .nav-link { color: #e6edf3 !important; }
+        .navbar-dark .nav-link:hover { color: #58a6ff !important; }
+        .btn-primary { background: #238636 !important; border: none !important; }
+        .btn-primary:hover { background: #2ea043 !important; }
+        input { 
+            background: #0d1117 !important; 
+            border: 1px solid #30363d !important; 
+            color: #e6edf3 !important;
+        }
+        input::placeholder { color: #6e7681 !important; }
+        input:focus {
+            background: #0d1117 !important;
+            border-color: #58a6ff !important;
+            color: #e6edf3 !important;
+            box-shadow: 0 0 0 0.25rem rgba(88, 166, 255, 0.25);
+        }
+        h2 { color: #e6edf3 !important; }
+        small { color: #8b949e !important; }
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark" style="background: #161b22; border-bottom: 1px solid #30363d;">
+        <div class="container">
+            <a class="navbar-brand" href="/">🔍 Voz Review Crawler</a>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item"><a class="nav-link" href="/">🏠 Home</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/search">🔎 Search</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mt-4">
+        <h2 class="mb-4">🔎 Search Reviews</h2>
+        
+        <form action="/search" method="get" class="mb-4">
+            <div class="input-group">
+                <input type="text" name="q" class="form-control" placeholder="Tìm kiếm công ty, nội dung..." value="{{ query }}" autofocus>
+                <button type="submit" class="btn btn-primary">Search</button>
+            </div>
+        </form>
+
+        {% if query %}
+        <div class="text-muted mb-3">
+            {% if results %}
+            Tìm thấy {{ results|length }} kết quả cho "{{ query }}"
+            {% else %}
+            Không tìm thấy kết quả nào cho "{{ query }}"
+            {% endif %}
+        </div>
+        {% endif %}
+
+        <div class="results-list">
+            {% for result in results %}
+            <div class="card mb-3">
+                <div class="card-header">
+                    <a href="/company/{{ result.company }}" class="company-name">{{ result.company }}</a>
+                    <span class="text-muted ms-2">by {{ result.author }}</span>
+                </div>
+                <div class="card-body">
+                    <p class="mb-2">{{ result.content[:300] }}{% if result.content|length > 300 %}...{% endif %}</p>
+                    <small class="text-muted">
+                        {% if result.post_date %}
+                        {{ result.post_date.strftime('%Y-%m-%d') }}
+                        {% endif %}
+                        | ❤️ {{ result.likes }}
+                        | <a href="{{ result.url }}" target="_blank">View on Voz</a>
+                    </small>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
