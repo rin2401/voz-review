@@ -66,11 +66,13 @@ async def home(request: Request, q: str = "", sort: str = "recent_review"):
         keyword = q.lower().strip()
         companies = [c for c in companies if keyword in c.get("name", "").lower()]
     total_reviews = await get_review_count()
+    total_threads = len(await get_all_threads())
     template = jinja_env.get_template("index.html")
     return HTMLResponse(template.render(
         request=request,
         companies=companies,
         total_reviews=total_reviews,
+        total_threads=total_threads,
         query=q,
         sort=sort,
     ))
