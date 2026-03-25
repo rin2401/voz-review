@@ -112,7 +112,6 @@ class VozCrawler:
                 
                 # Extract post content while preserving line breaks better
                 content_elem = post.select_one(".message-content, .bbWrapper")
-                content = content_elem.get_text("\n", strip=True) if content_elem else ""
 
                 # Extract quoted/replied post ID if present
                 reply_post_id = None
@@ -122,6 +121,14 @@ class VozCrawler:
                     match = re.search(r'post-(\d+)', href)
                     if match:
                         reply_post_id = match.group(1)
+
+                # Remove quoted blocks from main content so reply text stays cleaner
+                content = ""
+                if content_elem:
+                    content_for_text = BeautifulSoup(str(content_elem), "html.parser")
+                    for quoted in content_for_text.select(".bbCodeBlock, blockquote, .message-userContent .bbCodeBlock"):
+                        quoted.decompose()
+                    content = content_for_text.get_text("\n", strip=True)
                 
                 # Extract post ID from data-content or id
                 post_id = post.get("data-content", "").replace("post-", "")
