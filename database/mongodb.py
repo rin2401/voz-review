@@ -95,7 +95,7 @@ async def get_reviews_by_company(
     if salary_only:
         query["content"] = {"$regex": r"(^|\n)\s*Tên công ty:", "$options": "i"}
     if interview_only:
-        query["content"] = {"$regex": r"(^|\n)\s*Thời điểm phỏng vấn:", "$options": "i"}
+        query["content"] = {"$regex": r"phỏng vấn", "$options": "i"}
 
     cursor = db.reviews.find(query).sort("post_date", -1).skip(skip).limit(limit)
     return await cursor.to_list(length=limit)
@@ -114,7 +114,7 @@ async def get_review_count(company: str = None, status: str = None, thread_id: s
     if salary_only:
         query["content"] = {"$regex": r"(^|\n)\s*Tên công ty:", "$options": "i"}
     if interview_only:
-        query["content"] = {"$regex": r"(^|\n)\s*Thời điểm phỏng vấn:", "$options": "i"}
+        query["content"] = {"$regex": r"phỏng vấn", "$options": "i"}
     return await db.reviews.count_documents(query)
 
 
