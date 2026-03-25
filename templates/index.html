@@ -249,6 +249,7 @@
                         <tr>
                             <th>Name</th>
                             <th>Reviews</th>
+                            <th>Monthly Salary</th>
                             <th>Last</th>
                         </tr>
                     </thead>
@@ -257,6 +258,13 @@
                         <tr>
                             <td><a href="/company/{{ company.name }}" class="company-name">{{ company.name }}</a></td>
                             <td><span class="badge badge-count">{{ company.review_count }}</span></td>
+                            <td>
+                                {% if company.max_monthly_salary_million %}
+                                {{ company.max_monthly_salary_million }}M
+                                {% else %}
+                                -
+                                {% endif %}
+                            </td>
                             <td>
                                 {% if company.latest_post_date %}
                                 {{ company.latest_post_date.strftime('%Y-%m-%d') }}
@@ -267,7 +275,7 @@
                         </tr>
                         {% else %}
                         <tr>
-                            <td colspan="3" class="text-center text-muted py-4">
+                            <td colspan="4" class="text-center text-muted py-4">
                                 Chưa có công ty nào. Vào tab Threads để bắt đầu crawl!
                             </td>
                         </tr>
