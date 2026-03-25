@@ -40,6 +40,7 @@ async def rebuild_companies(db) -> int:
                 "review_count": row["review_count"],
                 "created_at": row.get("created_at"),
                 "updated_at": row.get("latest_review"),
+                "latest_post_date": row.get("latest_review"),
                 "max_monthly_salary_million": row.get("max_monthly_salary_million"),
             }
         )
