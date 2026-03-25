@@ -6,6 +6,7 @@ from fastapi.templating import Jinja2Templates
 from jinja2 import Environment, FileSystemLoader
 from contextlib import asynccontextmanager
 from typing import Optional, List
+from zoneinfo import ZoneInfo
 import asyncio
 
 from database.mongodb import (
@@ -55,6 +56,15 @@ templates = Jinja2Templates(directory="templates")
 jinja_env = Environment(loader=FileSystemLoader("templates"))
 
 RUNNING_CRAWL_URLS: set[str] = set()
+VN_TZ = ZoneInfo("Asia/Ho_Chi_Minh")
+
+
+def format_dt_vn(dt, fmt: str = "%Y-%m-%d %H:%M") -> str:
+    if not dt:
+        return "-"
+    if dt.tzinfo is None:
+        dt = dt.replace(tzinfo=ZoneInfo("UTC"))
+    return dt.astimezone(VN_TZ).strftime(fmt)
 
 
 def company_to_slug(name: str) -> str:
@@ -77,6 +87,7 @@ async def resolve_company_name(slug_or_name: str) -> str:
 
 
 jinja_env.globals["company_to_slug"] = company_to_slug
+jinja_env.globals["format_dt_vn"] = format_dt_vn
 
 
 # ============== PAGES ==============

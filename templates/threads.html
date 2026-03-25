@@ -259,7 +259,7 @@
                             <td>{{ thread.last_page or '-' }}</td>
                             <td>
                                 {% if thread.last_crawl %}
-                                {{ thread.last_crawl.strftime('%Y-%m-%d %H:%M') }}
+                                {{ format_dt_vn(thread.last_crawl) }}
                                 {% else %}
                                 -
                                 {% endif %}
