@@ -8,6 +8,7 @@ class Review(BaseModel):
     """Review model"""
     voz_thread_id: str
     voz_post_id: str
+    reply_post_id: Optional[str] = None
     company: str
     content: str
     author: str

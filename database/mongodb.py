@@ -37,6 +37,8 @@ async def create_indexes():
     await reviews.create_index("company")
     await reviews.create_index("created_at")
     await reviews.create_index("voz_thread_id")
+    await reviews.create_index("voz_post_id")
+    await reviews.create_index("reply_post_id")
     await reviews.create_index([("company", ASCENDING), ("created_at", ASCENDING)])
     
     # Companies collection (for aggregation)

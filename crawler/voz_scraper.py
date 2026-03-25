@@ -113,6 +113,15 @@ class VozCrawler:
                 # Extract post content while preserving line breaks better
                 content_elem = post.select_one(".message-content, .bbWrapper")
                 content = content_elem.get_text("\n", strip=True) if content_elem else ""
+
+                # Extract quoted/replied post ID if present
+                reply_post_id = None
+                quote_link = post.select_one(".bbCodeBlock-sourceJump a[href*='#post-'], .bbCodeBlock-title a[href*='/post-'], a[href*='/post-']")
+                if quote_link:
+                    href = quote_link.get("href", "")
+                    match = re.search(r'post-(\d+)', href)
+                    if match:
+                        reply_post_id = match.group(1)
                 
                 # Extract post ID from data-content or id
                 post_id = post.get("data-content", "").replace("post-", "")
@@ -149,6 +158,7 @@ class VozCrawler:
                 posts.append({
                     "voz_thread_id": self._extract_thread_id(forum_url),
                     "voz_post_id": post_id,
+                    "reply_post_id": reply_post_id,
                     "company": company,
                     "content": content[:5000],
                     "author": author,
