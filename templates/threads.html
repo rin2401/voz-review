@@ -92,6 +92,33 @@
         body.light-mode th {
             color: var(--text-color) !important;
         }
+        body.light-mode .navbar,
+        body.light-mode .card,
+        body.light-mode .card-header,
+        body.light-mode .card-body,
+        body.light-mode .table,
+        body.light-mode .table-dark,
+        body.light-mode .table-dark > :not(caption) > * > *,
+        body.light-mode .form-control {
+            background: var(--bg-card) !important;
+            color: var(--text-color) !important;
+            border-color: var(--border-color) !important;
+        }
+        body.light-mode .navbar,
+        body.light-mode .card-header {
+            background: var(--bg-card-header) !important;
+        }
+        body.light-mode .form-control {
+            background: var(--input-bg) !important;
+        }
+        body.light-mode .table-hover > tbody > tr:hover {
+            background: var(--hover-bg) !important;
+        }
+        body.light-mode small,
+        body.light-mode .text-muted,
+        body.light-mode label.form-label {
+            color: var(--muted-color) !important;
+        }
     </style>
 </head>
 <body>

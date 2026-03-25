@@ -115,6 +115,51 @@
             background: #e8eef8 !important;
             color: #223042 !important;
         }
+        body.light-mode .navbar,
+        body.light-mode .card,
+        body.light-mode .card-header,
+        body.light-mode .card-body,
+        body.light-mode .table,
+        body.light-mode .table-dark,
+        body.light-mode .table-dark > :not(caption) > * > *,
+        body.light-mode .page-link,
+        body.light-mode .form-control,
+        body.light-mode .form-select {
+            background: var(--bg-card) !important;
+            color: var(--text-color) !important;
+            border-color: var(--border-color) !important;
+        }
+        body.light-mode .card-header,
+        body.light-mode .navbar {
+            background: var(--bg-card-header) !important;
+        }
+        body.light-mode input,
+        body.light-mode select {
+            background: var(--input-bg) !important;
+            color: var(--text-color) !important;
+        }
+        body.light-mode .table-hover > tbody > tr:hover,
+        body.light-mode .page-link:hover {
+            background: var(--hover-bg) !important;
+        }
+        body.light-mode h2,
+        body.light-mode h3,
+        body.light-mode h4,
+        body.light-mode h5,
+        body.light-mode small,
+        body.light-mode td,
+        body.light-mode th,
+        body.light-mode label,
+        body.light-mode .navbar-brand,
+        body.light-mode .nav-link,
+        body.light-mode .review-content {
+            color: var(--text-color) !important;
+        }
+        body.light-mode .text-muted,
+        body.light-mode small,
+        body.light-mode label.form-label {
+            color: var(--muted-color) !important;
+        }
     </style>
 </head>
 <body>
