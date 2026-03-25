@@ -49,7 +49,7 @@ jinja_env = Environment(loader=FileSystemLoader("templates"))
 # ============== PAGES ==============
 
 @app.get("/", response_class=HTMLResponse)
-async def home(request: Request, q: str = "", sort: str = "az"):
+async def home(request: Request, q: str = "", sort: str = "recent_review"):
     """Main page - list companies"""
     companies = await get_all_companies(sort_by=sort)
     if q:

@@ -62,7 +62,7 @@ async def create_indexes():
     await crawl_state.create_index("forum_id", unique=True)
 
 
-async def get_all_companies(sort_by: str = "az") -> List[dict]:
+async def get_all_companies(sort_by: str = "recent_review") -> List[dict]:
     """Get all companies with review counts"""
     sort_map = {
         "az": [("name", ASCENDING)],
