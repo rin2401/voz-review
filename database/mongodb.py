@@ -88,7 +88,7 @@ async def get_reviews_by_company(
     if status:
         query["status"] = status
     
-    cursor = db.reviews.find(query).sort("created_at", -1).skip(skip).limit(limit)
+    cursor = db.reviews.find(query).sort("post_date", -1).skip(skip).limit(limit)
     return await cursor.to_list(length=limit)
 
 

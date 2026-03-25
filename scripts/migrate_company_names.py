@@ -25,7 +25,7 @@ async def rebuild_companies(db) -> int:
             "$group": {
                 "_id": "$company",
                 "review_count": {"$sum": 1},
-                "latest_review": {"$max": "$created_at"},
+                "latest_review": {"$max": "$post_date"},
                 "created_at": {"$min": "$created_at"},
                 "max_monthly_salary_million": {"$max": "$monthly_salary_million"},
             }
