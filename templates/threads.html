@@ -111,8 +111,10 @@
         body.light-mode .form-control {
             background: var(--input-bg) !important;
         }
-        body.light-mode .table-hover > tbody > tr:hover {
+        body.light-mode .table-hover > tbody > tr:hover,
+        body.light-mode .table-hover > tbody > tr:hover > * {
             background: var(--hover-bg) !important;
+            color: var(--text-color) !important;
         }
         body.light-mode small,
         body.light-mode .text-muted,
