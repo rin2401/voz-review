@@ -11,15 +11,17 @@ import asyncio
 from database.mongodb import (
     connect, close,
     get_all_companies,
+    get_all_threads,
     get_reviews_by_company,
     get_review_count,
     get_replies_for_posts,
     search_reviews,
     insert_review,
     upsert_company,
-    increment_company_review_count
+    increment_company_review_count,
+    seed_threads,
 )
-from crawler.voz_scraper import VozCrawler, REVIEW_FORUMS
+from crawler.voz_scraper import VozCrawler, THREAD_URLS
 import config
 
 
@@ -27,6 +29,7 @@ import config
 async def lifespan(app: FastAPI):
     """Startup and shutdown events"""
     await connect()
+    await seed_threads(THREAD_URLS)
     yield
     await close()
 
@@ -133,6 +136,14 @@ async def search_page(request: Request, q: str = ""):
     return HTMLResponse(template.render(request=request, results=results, query=q))
 
 
+@app.get("/threads", response_class=HTMLResponse)
+async def threads_page(request: Request):
+    """List configured crawl threads"""
+    threads = await get_all_threads()
+    template = jinja_env.get_template("threads.html")
+    return HTMLResponse(template.render(request=request, threads=threads))
+
+
 # ============== API ==============
 
 @app.get("/api/companies")
@@ -172,34 +183,22 @@ async def api_stats():
     """Get overall stats"""
     companies = await get_all_companies()
     total_reviews = await get_review_count()
+    threads = await get_all_threads()
     return {
         "total_companies": len(companies),
         "total_reviews": total_reviews,
-        "forums": list(REVIEW_FORUMS.keys())
+        "threads": len(threads)
     }
 
 
 # ============== CRAWLER ENDPOINTS ==============
 
-@app.post("/api/crawl/forum/{forum_key}")
-async def api_crawl_forum(forum_key: str, max_pages: int = 0):
-    """Trigger crawl for a specific forum"""
-    if forum_key not in REVIEW_FORUMS:
-        raise HTTPException(400, f"Unknown forum: {forum_key}")
-    
-    forum_url = REVIEW_FORUMS[forum_key]
-    
-    # Run crawler in background
-    asyncio.create_task(run_crawler(forum_key, forum_url, max_pages))
-    
-    return {"status": "started", "forum": forum_key, "url": forum_url}
-
-
 @app.post("/api/crawl/all")
 async def api_crawl_all(max_pages: int = 0):
-    """Crawl all configured forums"""
+    """Crawl all configured threads from DB"""
     asyncio.create_task(crawl_all_forums(max_pages))
-    return {"status": "started", "forums": list(REVIEW_FORUMS.keys())}
+    threads = await get_all_threads()
+    return {"status": "started", "threads": len(threads)}
 
 
 @app.post("/api/crawl/thread")
@@ -265,29 +264,33 @@ async def process_thread_page(crawler, page_url: str, html: str):
     print(f"  ✅ Page: {inserted_count} inserted, {skipped_count} skipped duplicates")
 
 
-async def run_crawler(forum_key: str, forum_url: str, max_pages: int):
-    """Run crawler for a single forum"""
+async def run_crawler(thread_url: str, max_pages: int):
+    """Run crawler for a single thread URL"""
     try:
         async with VozCrawler() as crawler:
-            threads, reviews = await crawler.crawl_forum(forum_url, max_pages=max_pages)
-            print(f"✅ Crawl complete for {forum_key}: {threads} threads, {reviews} reviews")
+            threads, reviews = await crawler.crawl_forum(thread_url, max_pages=max_pages)
+            print(f"✅ Crawl complete for {thread_url}: {threads} threads, {reviews} reviews")
     except Exception as e:
-        print(f"❌ Crawl failed for {forum_key}: {e}")
+        print(f"❌ Crawl failed for {thread_url}: {e}")
 
 
 async def crawl_all_forums(max_pages: int):
-    """Crawl all configured forums"""
-    for forum_key, forum_url in REVIEW_FORUMS.items():
-        await run_crawler(forum_key, forum_url, max_pages)
-        await asyncio.sleep(5)  # Be nice between forums
+    """Crawl all configured threads from DB"""
+    threads = await get_all_threads()
+    for thread in threads:
+        url = thread.get("url")
+        if not url:
+            continue
+        await run_crawler(url, max_pages)
+        await asyncio.sleep(5)  # Be nice between threads
 
 
 # ============== INFO ==============
 
-@app.get("/api/forums")
-async def api_forums():
-    """Get configured forum URLs"""
-    return REVIEW_FORUMS
+@app.get("/api/threads")
+async def api_threads():
+    """Get configured thread URLs from DB"""
+    return await get_all_threads()
 
 
 if __name__ == "__main__":

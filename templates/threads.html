@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Threads - VOZ Review</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body { background: #0d1117 !important; color: #e6edf3 !important; }
+        .card { background: #161b22 !important; border: 1px solid #30363d !important; }
+        .card-header { background: #21262d !important; border-bottom: 1px solid #30363d !important; color: #e6edf3 !important; }
+        .text-muted { color: #8b949e !important; }
+        a { color: #58a6ff !important; text-decoration: none; }
+        a:hover { text-decoration: underline; }
+        .navbar { background: #161b22 !important; border-bottom: 1px solid #30363d !important; }
+        .navbar-dark .navbar-brand, .navbar-dark .nav-link { color: #e6edf3 !important; }
+        .navbar-dark .nav-link:hover { color: #58a6ff !important; }
+        .table { color: #e6edf3 !important; }
+        .table-dark { --bs-table-bg: #161b22; --bs-table-color: #e6edf3; }
+        .table-hover > tbody > tr:hover { background-color: #21262d !important; }
+        .badge { background: #30363d !important; }
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark">
+        <div class="container">
+            <a class="navbar-brand" href="/">🔍 VOZ Review</a>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item"><a class="nav-link" href="/">🏠 Home</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/search">🔎 Search</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/threads">🧵 Threads</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mt-4">
+        <div class="card">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h5 class="mb-0">🧵 Threads</h5>
+                <small class="text-muted">{{ threads|length }} threads</small>
+            </div>
+            <div class="card-body p-0">
+                <table class="table table-dark table-hover mb-0">
+                    <thead>
+                        <tr>
+                            <th>Title</th>
+                            <th>Thread ID</th>
+                            <th>Type</th>
+                            <th>URL</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for thread in threads %}
+                        <tr>
+                            <td>{{ thread.title or thread.url }}</td>
+                            <td><span class="badge">{{ thread.thread_id or '-' }}</span></td>
+                            <td>{{ thread.kind or 'thread' }}</td>
+                            <td><a href="{{ thread.url }}" target="_blank">Open</a></td>
+                        </tr>
+                        {% else %}
+                        <tr>
+                            <td colspan="4" class="text-center text-muted py-4">Chưa có thread nào trong DB.</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

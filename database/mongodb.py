@@ -61,6 +61,11 @@ async def create_indexes():
     crawl_state = db.crawl_state
     await crawl_state.create_index("forum_id", unique=True)
 
+    # Threads collection
+    threads = db.threads
+    await threads.create_index("url", unique=True)
+    await threads.create_index("thread_id", unique=True, sparse=True)
+
 
 async def get_all_companies(sort_by: str = "recent_review") -> List[dict]:
     """Get all companies with review counts"""
@@ -165,6 +170,38 @@ async def get_replies_for_posts(post_ids: List[str]) -> List[dict]:
         {"reply_post_id": {"$in": post_ids}}
     ).sort("created_at", 1)
     return await cursor.to_list(length=None)
+
+
+async def get_all_threads() -> List[dict]:
+    """Get all configured crawl threads from DB."""
+    cursor = db.threads.find({}).sort("created_at", -1)
+    return await cursor.to_list(length=None)
+
+
+async def upsert_thread(url: str, title: str = None, thread_id: str = None, kind: str = "thread"):
+    """Create or update a crawl thread config."""
+    now = datetime.utcnow()
+    await db.threads.update_one(
+        {"url": url},
+        {
+            "$set": {
+                "title": title or url,
+                "thread_id": thread_id,
+                "kind": kind,
+                "updated_at": now,
+            },
+            "$setOnInsert": {"created_at": now},
+        },
+        upsert=True,
+    )
+
+
+async def seed_threads(thread_urls: List[str]):
+    """Seed DB thread configs from legacy code constants if missing."""
+    for url in thread_urls:
+        thread_id_match = re.search(r'/t(?:/[^/]*?)?\.(\d+)(?:/|$)', url)
+        thread_id = thread_id_match.group(1) if thread_id_match else None
+        await upsert_thread(url=url, thread_id=thread_id)
 
 
 async def search_reviews(
