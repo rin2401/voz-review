@@ -71,14 +71,13 @@
                             <th>Crawled Page</th>
                             <th>Last Crawl</th>
                             <th>Type</th>
-                            <th>URL</th>
                             <th>Actions</th>
                         </tr>
                     </thead>
                     <tbody>
                         {% for thread in threads %}
                         <tr>
-                            <td>{{ thread.title or thread.url }}</td>
+                            <td><a href="{{ thread.url }}" target="_blank">{{ thread.title or thread.url }}</a></td>
                             <td><span class="badge">{{ thread.thread_id or '-' }}</span></td>
                             <td>{{ thread.crawl_state.last_page if thread.crawl_state else '-' }}</td>
                             <td>
@@ -89,12 +88,11 @@
                                 {% endif %}
                             </td>
                             <td>{{ thread.kind or 'thread' }}</td>
-                            <td><a href="{{ thread.url }}" target="_blank">Open</a></td>
                             <td><button class="btn btn-sm btn-primary" onclick="crawlThread('{{ thread.url }}', this)">Crawl</button></td>
                         </tr>
                         {% else %}
                         <tr>
-                            <td colspan="7" class="text-center text-muted py-4">Chưa có thread nào trong DB.</td>
+                            <td colspan="6" class="text-center text-muted py-4">Chưa có thread nào trong DB.</td>
                         </tr>
                         {% endfor %}
                     </tbody>
