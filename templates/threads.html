@@ -66,10 +66,9 @@
                 <table class="table table-dark table-hover mb-0">
                     <thead>
                         <tr>
-                            <th>Thread ID</th>
-                            <th>Crawled Page</th>
-                            <th>Last Crawl</th>
-                            <th>Type</th>
+                            <th>ID</th>
+                            <th>Page</th>
+                            <th>Last</th>
                             <th>Actions</th>
                         </tr>
                     </thead>
@@ -85,12 +84,11 @@
                                 -
                                 {% endif %}
                             </td>
-                            <td>{{ thread.kind or 'thread' }}</td>
                             <td><button class="btn btn-sm btn-primary" onclick="crawlThread('{{ thread.url }}', this)">Crawl</button></td>
                         </tr>
                         {% else %}
                         <tr>
-                            <td colspan="5" class="text-center text-muted py-4">Chưa có thread nào trong DB.</td>
+                            <td colspan="4" class="text-center text-muted py-4">Chưa có thread nào trong DB.</td>
                         </tr>
                         {% endfor %}
                     </tbody>
