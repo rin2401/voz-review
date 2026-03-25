@@ -61,6 +61,7 @@
             <div class="card-header d-flex justify-content-between align-items-center">
                 <h5 class="mb-0">🧵 Threads</h5>
                 <div class="d-flex align-items-center gap-3">
+                    <button class="btn btn-sm btn-primary" onclick="crawlAllThreads(this)">🚀 Crawl All</button>
                     <button class="btn btn-sm btn-primary" onclick="window.location.reload()">↻ Refresh</button>
                     <small class="text-muted">{{ threads|length }} threads</small>
                 </div>
@@ -139,6 +140,21 @@
                 button.textContent = '✅ Started';
             } catch (e) {
                 alert('Lỗi crawl thread: ' + e.message);
+                button.disabled = false;
+                button.textContent = oldText;
+            }
+        }
+
+        async function crawlAllThreads(button) {
+            const oldText = button.textContent;
+            button.disabled = true;
+            button.textContent = '⏳ Crawling...';
+            try {
+                const res = await fetch('/api/crawl/all?max_pages=0', { method: 'POST' });
+                if (!res.ok) throw new Error(await res.text());
+                button.textContent = '✅ Started';
+            } catch (e) {
+                alert('Lỗi crawl all: ' + e.message);
                 button.disabled = false;
                 button.textContent = oldText;
             }
