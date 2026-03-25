@@ -259,16 +259,16 @@
     <nav class="navbar navbar-expand-lg navbar-dark" style="background: #161b22; border-bottom: 1px solid #30363d;">
         <div class="container">
             <a class="navbar-brand" href="/">🔍 VOZ Review</a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-                <span class="navbar-toggler-icon"></span>
-            </button>
+            <div class="d-flex align-items-center gap-2 ms-auto">
+                <button type="button" class="btn btn-sm btn-secondary theme-toggle" onclick="toggleTheme()" aria-label="Toggle theme" title="Toggle theme">🌙</button>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+            </div>
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav ms-auto align-items-lg-center gap-lg-2">
                     <li class="nav-item"><a class="nav-link" href="/">🏢 Company</a></li>
                     <li class="nav-item"><a class="nav-link" href="/threads">🧵 Threads</a></li>
-                    <li class="nav-item ms-lg-2">
-                        <button type="button" class="btn btn-sm btn-secondary theme-toggle" onclick="toggleTheme()" aria-label="Toggle theme" title="Toggle theme">🌙</button>
-                    </li>
                 </ul>
             </div>
         </div>
