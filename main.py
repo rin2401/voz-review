@@ -20,6 +20,7 @@ from database.mongodb import (
     upsert_company,
     increment_company_review_count,
     seed_threads,
+    upsert_thread,
 )
 from crawler.voz_scraper import VozCrawler, THREAD_URLS
 import config
@@ -291,6 +292,19 @@ async def crawl_all_forums(max_pages: int):
 async def api_threads():
     """Get configured thread URLs from DB"""
     return await get_all_threads()
+
+
+@app.post("/api/threads")
+async def api_create_thread(payload: dict):
+    """Add or update a thread URL in DB."""
+    crawler = VozCrawler()
+    normalized_url = (payload.get("url") or "").strip()
+    title = (payload.get("title") or "").strip()
+    if not normalized_url:
+        raise HTTPException(400, "URL is required")
+    thread_id = crawler._extract_thread_id(normalized_url)
+    await upsert_thread(url=normalized_url, title=title.strip() or None, thread_id=thread_id)
+    return {"status": "created", "url": normalized_url, "thread_id": thread_id}
 
 
 if __name__ == "__main__":
