@@ -65,6 +65,9 @@
         .reply-tree-hidden {
             display: none;
         }
+        .reply-toggle-active {
+            margin-bottom: 0.5rem;
+        }
         .reply-group {
             margin-top: 0.8rem;
             padding-left: 1rem;
@@ -218,7 +221,7 @@
                     {% set child_replies = reply_children_by_post_id.get(review.voz_post_id) %}
                     {% if child_replies %}
                     <div class="reply-tree">
-                        <button class="show-more-replies" type="button" onclick="toggleReplyTree('root-{{ loop.index }}', this)">
+                        <button class="show-more-replies" type="button" onclick="toggleReplyTree('root-{{ loop.index }}', this)" data-count="{{ child_replies|length }}">
                             Xem reply ({{ child_replies|length }})
                         </button>
                         <div id="reply-tree-root-{{ loop.index }}" class="reply-tree-hidden">
@@ -275,9 +278,13 @@
 
         function toggleReplyTree(groupKey, button) {
             const tree = document.getElementById('reply-tree-' + groupKey);
-            if (!tree) return;
-            tree.classList.remove('reply-tree-hidden');
-            if (button) button.remove();
+            if (!tree || !button) return;
+            const isHidden = tree.classList.contains('reply-tree-hidden');
+            tree.classList.toggle('reply-tree-hidden');
+            button.textContent = isHidden
+                ? `Ẩn reply (${button.dataset.count})`
+                : `Xem reply (${button.dataset.count})`;
+            button.classList.toggle('reply-toggle-active', isHidden);
         }
 
         function showMoreReplies(groupKey, button) {
