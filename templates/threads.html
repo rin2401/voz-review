@@ -18,15 +18,15 @@
             --hover-bg: #21262d;
         }
         body.light-mode {
-            --bg-body: #f6f8fa;
+            --bg-body: #edf2f7;
             --bg-card: #ffffff;
-            --bg-card-header: #f6f8fa;
-            --border-color: #d0d7de;
-            --text-color: #24292f;
-            --muted-color: #57606a;
-            --link-color: #0969da;
+            --bg-card-header: #f8fafc;
+            --border-color: #d8dee9;
+            --text-color: #1f2937;
+            --muted-color: #64748b;
+            --link-color: #2563eb;
             --input-bg: #ffffff;
-            --hover-bg: #f3f4f6;
+            --hover-bg: #eef2ff;
         }
         body { background: var(--bg-body) !important; color: var(--text-color) !important; }
         .card { background: #161b22 !important; border: 1px solid #30363d !important; }
@@ -46,7 +46,23 @@
         .form-control { background: #0d1117 !important; border: 1px solid #30363d !important; color: #e6edf3 !important; }
         .form-control::placeholder { color: #6e7681 !important; }
         .stats-number { color: #58a6ff !important; }
-        .theme-toggle { min-width: 110px; }
+        .theme-toggle {
+            width: 38px;
+            height: 38px;
+            padding: 0;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 999px;
+        }
+        body.light-mode .btn-secondary {
+            background: #ffffff !important;
+            border-color: #d8dee9 !important;
+            color: #1f2937 !important;
+        }
+        body.light-mode .btn-secondary:hover {
+            background: #eef2ff !important;
+        }
         body.light-mode .card,
         body.light-mode .navbar,
         body.light-mode .table,
@@ -68,7 +84,7 @@
                     <li class="nav-item"><a class="nav-link" href="/">🏢 Company</a></li>
                     <li class="nav-item"><a class="nav-link" href="/threads">🧵 Threads</a></li>
                     <li class="nav-item ms-lg-2">
-                        <button type="button" class="btn btn-sm btn-secondary theme-toggle" onclick="toggleTheme()">🌙 Dark</button>
+                        <button type="button" class="btn btn-sm btn-secondary theme-toggle" onclick="toggleTheme()" aria-label="Toggle theme" title="Toggle theme">🌙</button>
                     </li>
                 </ul>
             </div>
@@ -223,7 +239,7 @@
         function applyTheme(theme) {
             document.body.classList.toggle('light-mode', theme === 'light');
             const button = document.querySelector('.theme-toggle');
-            if (button) button.textContent = theme === 'light' ? '☀️ Light' : '🌙 Dark';
+            if (button) button.textContent = theme === 'light' ? '☀️' : '🌙';
         }
         function toggleTheme() {
             const nextTheme = document.body.classList.contains('light-mode') ? 'dark' : 'light';
