@@ -59,9 +59,12 @@ RUNNING_CRAWL_URLS: set[str] = set()
 # ============== PAGES ==============
 
 @app.get("/", response_class=HTMLResponse)
-async def home(request: Request, sort: str = "recent_review"):
+async def home(request: Request, q: str = "", sort: str = "recent_review"):
     """Main page - list companies"""
     companies = await get_all_companies(sort_by=sort)
+    if q:
+        keyword = q.lower().strip()
+        companies = [c for c in companies if keyword in c.get("name", "").lower()]
     total_reviews = await get_review_count()
     total_threads = len(await get_all_threads())
     template = jinja_env.get_template("index.html")
@@ -70,6 +73,7 @@ async def home(request: Request, sort: str = "recent_review"):
         companies=companies,
         total_reviews=total_reviews,
         total_threads=total_threads,
+        query=q,
         sort=sort,
     ))
 

@@ -128,7 +128,11 @@
         <div class="card mb-4">
             <div class="card-body">
                 <form action="/" method="get" class="row g-3 align-items-end">
-                    <div class="col-md-10">
+                    <div class="col-md-6">
+                        <label for="q" class="form-label text-muted">Filter company</label>
+                        <input type="text" id="q" name="q" class="form-control" placeholder="Ví dụ: Fsoft, Zalo, CMC..." value="{{ query or '' }}">
+                    </div>
+                    <div class="col-md-4">
                         <label for="sort" class="form-label text-muted">Sort by</label>
                         <select id="sort" name="sort" class="form-select">
                             <option value="az" {% if sort == 'az' %}selected{% endif %}>A-Z</option>
