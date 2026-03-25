@@ -51,13 +51,15 @@
         .navbar-dark .nav-link:hover { color: #58a6ff !important; }
         .btn-primary { background: #238636 !important; border: none !important; }
         .btn-primary:hover { background: #2ea043 !important; }
-        input { 
+        .btn-secondary { background: #21262d !important; border: 1px solid #30363d !important; color: #e6edf3 !important; }
+        .btn-secondary:hover { background: #30363d !important; }
+        input, select { 
             background: #0d1117 !important; 
             border: 1px solid #30363d !important; 
             color: #e6edf3 !important;
         }
         input::placeholder { color: #6e7681 !important; }
-        input:focus {
+        .form-control:focus, .form-select:focus {
             background: #0d1117 !important;
             border-color: #58a6ff !important;
             color: #e6edf3 !important;
@@ -112,14 +114,41 @@
     </nav>
 
     <div class="container mt-4">
-        <h2 class="mb-4">🔎 Search Reviews</h2>
-        
-        <form action="/search" method="get" class="mb-4">
-            <div class="input-group">
-                <input type="text" name="q" class="form-control" placeholder="Tìm kiếm công ty, nội dung..." value="{{ query }}" autofocus>
-                <button type="submit" class="btn btn-primary">Search</button>
+        <div class="card mb-4">
+            <div class="card-body">
+                <form action="/search" method="get" class="row g-3 align-items-end">
+                    <div class="col-md-10">
+                        <label for="search-q" class="form-label text-muted">Search reviews</label>
+                        <input type="text" id="search-q" name="q" class="form-control form-control-lg" placeholder="Ví dụ: Fsoft, Zalo, CMC, lương, backend..." value="{{ query }}" autofocus>
+                    </div>
+                    <div class="col-md-2 d-grid">
+                        <button type="submit" class="btn btn-primary btn-lg">Search</button>
+                    </div>
+                </form>
             </div>
-        </form>
+        </div>
+
+        <div class="card mb-4">
+            <div class="card-body">
+                <form action="/search" method="get" class="row g-3 align-items-end">
+                    <input type="hidden" name="q" value="{{ query }}">
+                    <div class="col-md-6">
+                        <label for="company" class="form-label text-muted">Filter company</label>
+                        <input type="text" id="company" name="company" class="form-control" placeholder="Ví dụ: Fsoft, Zalo, CMC..." value="{{ company_query or '' }}">
+                    </div>
+                    <div class="col-md-4">
+                        <label for="sort" class="form-label text-muted">Sort by</label>
+                        <select id="sort" name="sort" class="form-select">
+                            <option value="recent_review" {% if sort == 'recent_review' %}selected{% endif %}>Recent review</option>
+                            <option value="likes_desc" {% if sort == 'likes_desc' %}selected{% endif %}>Most likes</option>
+                        </select>
+                    </div>
+                    <div class="col-md-2 d-grid">
+                        <button type="submit" class="btn btn-primary">Apply</button>
+                    </div>
+                </form>
+            </div>
+        </div>
 
         {% if query %}
         <div class="text-muted mb-3">

@@ -138,13 +138,32 @@ async def company_detail(request: Request, company_name: str, page: int = 1, thr
 
 
 @app.get("/search", response_class=HTMLResponse)
-async def search_page(request: Request, q: str = ""):
+async def search_page(request: Request, q: str = "", company: str = "", sort: str = "recent_review"):
     """Search reviews"""
     if not q:
         template = jinja_env.get_template("search.html")
-        return HTMLResponse(template.render(request=request, results=[], query="", review_by_post_id={}, reply_children_by_post_id={}, default_visible_replies=3))
+        return HTMLResponse(template.render(
+            request=request,
+            results=[],
+            query="",
+            company_query=company,
+            sort=sort,
+            review_by_post_id={},
+            reply_children_by_post_id={},
+            default_visible_replies=3,
+        ))
     
     results = await search_reviews(q, limit=50)
+    if company:
+        keyword = company.lower().strip()
+        results = [r for r in results if keyword in (r.get("company") or "").lower()]
+
+    if sort == "likes_desc":
+        results.sort(key=lambda item: item.get("likes") or 0, reverse=True)
+    else:
+        sort = "recent_review"
+        results.sort(key=lambda item: item.get("post_date") or item.get("created_at"), reverse=True)
+
     default_visible_replies = 3
 
     review_by_post_id = {
@@ -183,6 +202,8 @@ async def search_page(request: Request, q: str = ""):
         request=request,
         results=results,
         query=q,
+        company_query=company,
+        sort=sort,
         review_by_post_id=review_by_post_id,
         reply_children_by_post_id=reply_children_by_post_id,
         default_visible_replies=default_visible_replies,
