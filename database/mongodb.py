@@ -150,6 +150,16 @@ async def update_crawl_state(forum_id: str, last_post_date: datetime, last_page:
     )
 
 
+async def get_replies_for_posts(post_ids: List[str]) -> List[dict]:
+    """Get replies whose reply_post_id points to any of the given post IDs."""
+    if not post_ids:
+        return []
+    cursor = db.reviews.find(
+        {"reply_post_id": {"$in": post_ids}}
+    ).sort("created_at", 1)
+    return await cursor.to_list(length=None)
+
+
 async def search_reviews(
     keyword: str, 
     limit: int = 50, 

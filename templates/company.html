@@ -59,6 +59,29 @@
             white-space: pre-line;
             font-size: 0.9rem;
         }
+        .reply-children {
+            margin-top: 1rem;
+            padding-left: 1rem;
+            border-left: 2px solid #30363d;
+        }
+        .reply-child {
+            background: #0f141b !important;
+            border: 1px solid #30363d !important;
+            border-radius: 0.5rem;
+            padding: 0.85rem 1rem;
+            margin-bottom: 0.75rem;
+        }
+        .reply-child-header {
+            display: flex;
+            justify-content: space-between;
+            gap: 1rem;
+            margin-bottom: 0.5rem;
+            font-size: 0.9rem;
+        }
+        .reply-child-meta {
+            color: #8b949e !important;
+            font-size: 0.85rem;
+        }
         .navbar { background: #161b22 !important; border-bottom: 1px solid #30363d !important; }
         .navbar-dark .navbar-brand { color: #e6edf3 !important; }
         .navbar-dark .nav-link { color: #e6edf3 !important; }
@@ -140,6 +163,32 @@
                     <span class="read-more-btn" onclick="toggleReview({{ loop.index }})" id="btn-{{ loop.index }}">
                         ▼ Xem thêm
                     </span>
+                    {% endif %}
+
+                    {% set child_replies = reply_children_by_post_id.get(review.voz_post_id) %}
+                    {% if child_replies %}
+                    <div class="reply-children">
+                        {% for child in child_replies %}
+                        <div class="reply-child">
+                            <div class="reply-child-header">
+                                <div>
+                                    <span class="author">{{ child.author }}</span>
+                                    {% if child.author_url %}
+                                    <a href="{{ child.author_url }}" target="_blank" class="ms-2">🔗</a>
+                                    {% endif %}
+                                </div>
+                                <div class="reply-child-meta">
+                                    {% if child.post_date %}
+                                    {{ child.post_date.strftime('%Y-%m-%d') }}
+                                    {% endif %}
+                                    | ❤️ {{ child.likes }}
+                                    | <a href="{{ child.url }}" target="_blank">View on Voz</a>
+                                </div>
+                            </div>
+                            <div class="review-content">{{ child.content }}</div>
+                        </div>
+                        {% endfor %}
+                    </div>
                     {% endif %}
                 </div>
             </div>

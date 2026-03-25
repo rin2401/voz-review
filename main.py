@@ -13,6 +13,7 @@ from database.mongodb import (
     get_all_companies,
     get_reviews_by_company,
     get_review_count,
+    get_replies_for_posts,
     search_reviews,
     insert_review,
     upsert_company,
@@ -74,6 +75,16 @@ async def company_detail(request: Request, company_name: str, page: int = 1):
         for review in reviews
         if review.get("voz_post_id")
     }
+
+    reply_post_ids = [str(review.get("voz_post_id")) for review in reviews if review.get("voz_post_id")]
+    reply_children_by_post_id = {}
+    if reply_post_ids:
+        reply_children = await get_replies_for_posts(reply_post_ids)
+        for child in reply_children:
+            parent_id = child.get("reply_post_id")
+            if not parent_id:
+                continue
+            reply_children_by_post_id.setdefault(str(parent_id), []).append(child)
     
     template = jinja_env.get_template("company.html")
     return HTMLResponse(template.render(
@@ -81,6 +92,7 @@ async def company_detail(request: Request, company_name: str, page: int = 1):
         company=company_name,
         reviews=reviews,
         review_by_post_id=review_by_post_id,
+        reply_children_by_post_id=reply_children_by_post_id,
         page=page,
         total=total,
         pages=(total + limit - 1) // limit
