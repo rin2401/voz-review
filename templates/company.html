@@ -175,19 +175,12 @@
             <a href="/" class="btn btn-secondary">← Back</a>
         </div>
 
-        <ul class="nav nav-pills mb-3">
+        <ul class="nav nav-pills mb-4 flex-wrap gap-2">
             <li class="nav-item">
-                <a class="nav-link {% if active_view == 'all' %}active{% endif %}" href="/company/{{ company }}{% if active_thread_id %}?thread_id={{ active_thread_id }}{% endif %}">All</a>
+                <a class="nav-link {% if active_view == 'all' and not active_thread_id %}active{% endif %}" href="/company/{{ company }}">All</a>
             </li>
-            <li class="nav-item ms-2">
-                <a class="nav-link {% if active_view == 'salary' %}active{% endif %}" href="/company/{{ company }}?view=salary{% if active_thread_id %}&thread_id={{ active_thread_id }}{% endif %}">Salary</a>
-            </li>
-        </ul>
-
-        {% if available_thread_ids %}
-        <ul class="nav nav-pills mb-4">
             <li class="nav-item">
-                <a class="nav-link {% if not active_thread_id %}active{% endif %}" href="/company/{{ company }}?view={{ active_view }}">All threads</a>
+                <a class="nav-link {% if active_view == 'salary' and not active_thread_id %}active{% endif %}" href="/company/{{ company }}?view=salary">Salary</a>
             </li>
             {% for tid in available_thread_ids %}
             <li class="nav-item">
@@ -195,7 +188,6 @@
             </li>
             {% endfor %}
         </ul>
-        {% endif %}
 
         <div class="reviews-list">
             {% for review in reviews %}
