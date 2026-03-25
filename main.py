@@ -79,7 +79,7 @@ async def home(request: Request, q: str = "", sort: str = "recent_review"):
 
 
 @app.get("/company/{company_name}", response_class=HTMLResponse)
-async def company_detail(request: Request, company_name: str, page: int = 1, thread_id: str = ""):
+async def company_detail(request: Request, company_name: str, page: int = 1, thread_id: str = "", view: str = "all"):
     """Company detail page - list reviews"""
     limit = 20
     skip = (page - 1) * limit
@@ -87,9 +87,11 @@ async def company_detail(request: Request, company_name: str, page: int = 1, thr
 
     available_thread_ids = await get_company_thread_ids(company_name)
     active_thread_id = thread_id if thread_id in available_thread_ids else ""
+    active_view = "salary" if view == "salary" else "all"
+    salary_only = active_view == "salary"
 
-    reviews = await get_reviews_by_company(company_name, limit=limit, skip=skip, thread_id=active_thread_id or None)
-    total = await get_review_count(company=company_name, thread_id=active_thread_id or None)
+    reviews = await get_reviews_by_company(company_name, limit=limit, skip=skip, thread_id=active_thread_id or None, salary_only=salary_only)
+    total = await get_review_count(company=company_name, thread_id=active_thread_id or None, salary_only=salary_only)
 
     review_by_post_id = {
         str(review.get("voz_post_id")): review
@@ -132,6 +134,7 @@ async def company_detail(request: Request, company_name: str, page: int = 1, thr
         default_visible_replies=default_visible_replies,
         available_thread_ids=available_thread_ids,
         active_thread_id=active_thread_id,
+        active_view=active_view,
         page=page,
         total=total,
         pages=(total + limit - 1) // limit

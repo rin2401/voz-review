@@ -81,6 +81,7 @@ async def get_reviews_by_company(
     skip: int = 0,
     status: str = None,
     thread_id: str = None,
+    salary_only: bool = False,
 ) -> List[dict]:
     """Get reviews for a specific company"""
     # Escape regex special characters in company name
@@ -90,12 +91,14 @@ async def get_reviews_by_company(
         query["status"] = status
     if thread_id:
         query["voz_thread_id"] = thread_id
+    if salary_only:
+        query["content"] = {"$regex": r"(^|\n)\s*(Tên công ty:|Công ty\s)", "$options": "i"}
     
     cursor = db.reviews.find(query).sort("post_date", -1).skip(skip).limit(limit)
     return await cursor.to_list(length=limit)
 
 
-async def get_review_count(company: str = None, status: str = None, thread_id: str = None) -> int:
+async def get_review_count(company: str = None, status: str = None, thread_id: str = None, salary_only: bool = False) -> int:
     """Count reviews, optionally filtered by company or status"""
     query = {}
     if company:
@@ -105,6 +108,8 @@ async def get_review_count(company: str = None, status: str = None, thread_id: s
         query["status"] = status
     if thread_id:
         query["voz_thread_id"] = thread_id
+    if salary_only:
+        query["content"] = {"$regex": r"(^|\n)\s*(Tên công ty:|Công ty\s)", "$options": "i"}
     return await db.reviews.count_documents(query)
 
 
