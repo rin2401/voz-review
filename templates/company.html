@@ -361,17 +361,17 @@
 
         <ul class="nav nav-pills mb-4 flex-wrap gap-2">
             <li class="nav-item">
-                <a class="nav-link {% if active_view == 'all' and not active_thread_id %}active{% endif %}" href="/company/{{ company }}">All</a>
+                <a class="nav-link {% if active_view == 'all' and not active_thread_id %}active{% endif %}" href="/company/{{ company_slug }}">All</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link {% if active_view == 'salary' and not active_thread_id %}active{% endif %}" href="/company/{{ company }}?view=salary">Salary</a>
+                <a class="nav-link {% if active_view == 'salary' and not active_thread_id %}active{% endif %}" href="/company/{{ company_slug }}?view=salary">Salary</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link {% if active_view == 'interview' and not active_thread_id %}active{% endif %}" href="/company/{{ company }}?view=interview">Interview</a>
+                <a class="nav-link {% if active_view == 'interview' and not active_thread_id %}active{% endif %}" href="/company/{{ company_slug }}?view=interview">Interview</a>
             </li>
             {% for tid in available_thread_ids %}
             <li class="nav-item">
-                <a class="nav-link {% if active_thread_id == tid %}active{% endif %}" href="/company/{{ company }}?thread_id={{ tid }}&view=all">{{ tid }}</a>
+                <a class="nav-link {% if active_thread_id == tid %}active{% endif %}" href="/company/{{ company_slug }}?thread_id={{ tid }}&view=all">{{ tid }}</a>
             </li>
             {% endfor %}
         </ul>
@@ -447,11 +447,11 @@
         <nav>
             <ul class="pagination justify-content-center flex-wrap gap-1">
                 <li class="page-item {% if page <= 1 %}disabled{% endif %}">
-                    <a class="page-link" href="/company/{{ company }}?page={{ page-1 if page > 1 else 1 }}&view={{ active_view }}{% if active_thread_id %}&thread_id={{ active_thread_id }}{% endif %}">‹ Prev</a>
+                    <a class="page-link" href="/company/{{ company_slug }}?page={{ page-1 if page > 1 else 1 }}&view={{ active_view }}{% if active_thread_id %}&thread_id={{ active_thread_id }}{% endif %}">‹ Prev</a>
                 </li>
 
                 {% if start_page > 1 %}
-                <li class="page-item"><a class="page-link" href="/company/{{ company }}?page=1&view={{ active_view }}{% if active_thread_id %}&thread_id={{ active_thread_id }}{% endif %}">1</a></li>
+                <li class="page-item"><a class="page-link" href="/company/{{ company_slug }}?page=1&view={{ active_view }}{% if active_thread_id %}&thread_id={{ active_thread_id }}{% endif %}">1</a></li>
                 {% if start_page > 2 %}
                 <li class="page-item disabled"><span class="page-link">...</span></li>
                 {% endif %}
@@ -459,7 +459,7 @@
 
                 {% for p in range(start_page, end_page + 1) %}
                 <li class="page-item {% if p == page %}active{% endif %}">
-                    <a class="page-link" href="/company/{{ company }}?page={{ p }}&view={{ active_view }}{% if active_thread_id %}&thread_id={{ active_thread_id }}{% endif %}">{{ p }}</a>
+                    <a class="page-link" href="/company/{{ company_slug }}?page={{ p }}&view={{ active_view }}{% if active_thread_id %}&thread_id={{ active_thread_id }}{% endif %}">{{ p }}</a>
                 </li>
                 {% endfor %}
 
@@ -467,11 +467,11 @@
                 {% if end_page < pages - 1 %}
                 <li class="page-item disabled"><span class="page-link">...</span></li>
                 {% endif %}
-                <li class="page-item"><a class="page-link" href="/company/{{ company }}?page={{ pages }}&view={{ active_view }}{% if active_thread_id %}&thread_id={{ active_thread_id }}{% endif %}">{{ pages }}</a></li>
+                <li class="page-item"><a class="page-link" href="/company/{{ company_slug }}?page={{ pages }}&view={{ active_view }}{% if active_thread_id %}&thread_id={{ active_thread_id }}{% endif %}">{{ pages }}</a></li>
                 {% endif %}
 
                 <li class="page-item {% if page >= pages %}disabled{% endif %}">
-                    <a class="page-link" href="/company/{{ company }}?page={{ page+1 if page < pages else pages }}&view={{ active_view }}{% if active_thread_id %}&thread_id={{ active_thread_id }}{% endif %}">Next ›</a>
+                    <a class="page-link" href="/company/{{ company_slug }}?page={{ page+1 if page < pages else pages }}&view={{ active_view }}{% if active_thread_id %}&thread_id={{ active_thread_id }}{% endif %}">Next ›</a>
                 </li>
             </ul>
         </nav>

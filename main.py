@@ -56,6 +56,28 @@ jinja_env = Environment(loader=FileSystemLoader("templates"))
 RUNNING_CRAWL_URLS: set[str] = set()
 
 
+def company_to_slug(name: str) -> str:
+    return (name or "").replace(" ", "-")
+
+
+async def resolve_company_name(slug_or_name: str) -> str:
+    companies = await get_all_companies(sort_by="az")
+    names = [company.get("name", "") for company in companies]
+
+    if slug_or_name in names:
+        return slug_or_name
+
+    normalized = (slug_or_name or "").replace("-", " ")
+    if normalized in names:
+        return normalized
+
+    lower_map = {name.lower(): name for name in names}
+    return lower_map.get(normalized.lower(), slug_or_name)
+
+
+jinja_env.globals["company_to_slug"] = company_to_slug
+
+
 # ============== PAGES ==============
 
 @app.get("/", response_class=HTMLResponse)
@@ -80,6 +102,9 @@ async def company_detail(request: Request, company_name: str, page: int = 1, thr
     limit = 20
     skip = (page - 1) * limit
     default_visible_replies = 3
+
+    company_name = await resolve_company_name(company_name)
+    company_slug = company_to_slug(company_name)
 
     available_thread_ids = await get_company_thread_ids(company_name)
     active_thread_id = thread_id if thread_id in available_thread_ids else ""
@@ -137,6 +162,7 @@ async def company_detail(request: Request, company_name: str, page: int = 1, thr
     return HTMLResponse(template.render(
         request=request,
         company=company_name,
+        company_slug=company_slug,
         reviews=reviews,
         review_by_post_id=review_by_post_id,
         reply_children_by_post_id=reply_children_by_post_id,
