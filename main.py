@@ -233,38 +233,39 @@ async def api_crawl_thread(url: str, max_pages: int = 0):
 
 
 async def crawl_thread(url: str, max_pages: int):
-    """Crawl a specific thread - if max_pages=0, crawl all pages"""
+    """Crawl a specific thread - resume from threads.last_page when available."""
     crawler = VozCrawler()
     thread_id = crawler._extract_thread_id(url) or None
     try:
         async with crawler:
-            # First, get the first page to determine total pages
             first_page_url = url if url.endswith('/') else url + '/'
             first_html = await crawler.get_page_html(first_page_url)
-            
-            # Detect total pages from pagination
+
             import re
             page_numbers = re.findall(r'/page-(\d+)', first_html)
             total_pages = max([int(p) for p in page_numbers]) if page_numbers else 1
-            
-            if max_pages == 0:
-                max_pages = total_pages
-            
-            print(f"📊 Thread: {total_pages} pages detected, will crawl {max_pages} pages")
-            
-            # Crawl first page
-            await process_thread_page(crawler, first_page_url, first_html)
-            await update_thread_state(thread_id=thread_id, url=url, last_page=1)
-            
-            # Crawl remaining pages
-            for page in range(2, max_pages + 1):
-                page_url = f"{first_page_url}page-{page}/"
-                print(f"📄 Crawling page {page}/{max_pages}")
-                html = await crawler.get_page_html(page_url)
+
+            thread_state = await get_thread_state(thread_id=thread_id, url=url)
+            start_page = 1
+            if thread_state and thread_state.get('last_page'):
+                start_page = max(1, int(thread_state['last_page']))
+
+            end_page = total_pages if max_pages == 0 else min(total_pages, start_page + max_pages - 1)
+            print(f"📊 Thread: {total_pages} pages detected, resume from page {start_page}, crawl until {end_page}")
+
+            for page in range(start_page, end_page + 1):
+                if page == 1:
+                    page_url = first_page_url
+                    html = first_html
+                else:
+                    page_url = f"{first_page_url}page-{page}/"
+                    print(f"📄 Crawling page {page}/{end_page}")
+                    html = await crawler.get_page_html(page_url)
+
                 await process_thread_page(crawler, page_url, html)
                 await update_thread_state(thread_id=thread_id, url=url, last_page=page)
                 await asyncio.sleep(2)
-            
+
         await set_thread_crawl_status(url, "idle")
         print(f"✅ Thread crawl complete: {url}")
     except Exception as e:
