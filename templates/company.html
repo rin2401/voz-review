@@ -62,6 +62,9 @@
         .reply-tree {
             margin-top: 1rem;
         }
+        .reply-tree-hidden {
+            display: none;
+        }
         .reply-group {
             margin-top: 0.8rem;
             padding-left: 1rem;
@@ -215,12 +218,12 @@
                     {% set child_replies = reply_children_by_post_id.get(review.voz_post_id) %}
                     {% if child_replies %}
                     <div class="reply-tree">
-                        {% if child_replies|length > default_visible_replies %}
-                        <button class="show-more-replies" type="button" onclick="showMoreReplies('root-{{ loop.index }}', this)">
+                        <button class="show-more-replies" type="button" onclick="toggleReplyTree('root-{{ loop.index }}', this)">
                             Xem reply ({{ child_replies|length }})
                         </button>
-                        {% endif %}
-                        {{ render_reply_nodes(child_replies, reply_children_by_post_id, default_visible_replies, 1, 'root-' ~ loop.index) }}
+                        <div id="reply-tree-root-{{ loop.index }}" class="reply-tree-hidden">
+                            {{ render_reply_nodes(child_replies, reply_children_by_post_id, default_visible_replies, 1, 'root-' ~ loop.index) }}
+                        </div>
                     </div>
                     {% endif %}
                 </div>
@@ -268,6 +271,13 @@
                 content.classList.add('truncated');
                 btn.textContent = '▼ Xem thêm';
             }
+        }
+
+        function toggleReplyTree(groupKey, button) {
+            const tree = document.getElementById('reply-tree-' + groupKey);
+            if (!tree) return;
+            tree.classList.remove('reply-tree-hidden');
+            if (button) button.remove();
         }
 
         function showMoreReplies(groupKey, button) {
