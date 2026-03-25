@@ -16,7 +16,7 @@ async def main():
     client = AsyncIOMotorClient(config.MONGO_URI)
     db = client[config.MONGO_DB]
 
-    collections = ["reviews", "companies", "crawl_state"]
+    collections = ["reviews", "companies", "threads"]
 
     for name in collections:
         result = await db[name].delete_many({})

@@ -57,10 +57,6 @@ async def create_indexes():
     companies = db.companies
     await companies.create_index("name", unique=True)
     
-    # Crawl state (for tracking last crawl)
-    crawl_state = db.crawl_state
-    await crawl_state.create_index("forum_id", unique=True)
-
     # Threads collection
     threads = db.threads
     await threads.create_index("url", unique=True)
@@ -210,30 +206,11 @@ async def upsert_thread(url: str, title: str = None, thread_id: str = None, kind
 
 
 async def seed_threads(thread_urls: List[str]):
-    """Seed DB thread configs from legacy code constants if missing, then migrate old crawl_state into threads."""
+    """Seed DB thread configs from legacy code constants if missing."""
     for url in thread_urls:
         thread_id_match = re.search(r'/t(?:/[^/]*?)?\.(\d+)(?:/|$)', url)
         thread_id = thread_id_match.group(1) if thread_id_match else None
         await upsert_thread(url=url, thread_id=thread_id)
-
-    threads = await db.threads.find({}).to_list(length=None)
-    for thread in threads:
-        thread_id = thread.get("thread_id")
-        legacy_state = None
-        if thread_id:
-            legacy_state = await db.crawl_state.find_one({"forum_id": thread_id})
-        if not legacy_state:
-            legacy_state = await db.crawl_state.find_one({"forum_id": thread.get("url")})
-        if not legacy_state:
-            continue
-        await db.threads.update_one(
-            {"_id": thread["_id"]},
-            {"$set": {
-                "last_page": legacy_state.get("last_page"),
-                "last_crawl": legacy_state.get("last_crawl"),
-                "last_post_date": legacy_state.get("last_post_date"),
-            }}
-        )
 
 
 async def search_reviews(

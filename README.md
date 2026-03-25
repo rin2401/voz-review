@@ -57,7 +57,7 @@ python scripts/reset_crawl_data.py
 Script này sẽ xóa toàn bộ dữ liệu trong các collection:
 - `reviews`
 - `companies`
-- `crawl_state`
+- `threads`
 
 ## Migrate tên công ty
 
