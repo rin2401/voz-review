@@ -45,3 +45,16 @@ uvicorn main:app --reload --host 0.0.0.0 --port 8000
 ## Notes
 
 Một số file runtime local như `.venv/`, `*.log`, `*.sock` đã được ignore để repo sạch hơn và tránh đẩy rác môi trường lên GitHub.
+
+## Reset dữ liệu crawl
+
+Nếu muốn crawl lại sạch từ đầu:
+
+```bash
+python scripts/reset_crawl_data.py
+```
+
+Script này sẽ xóa toàn bộ dữ liệu trong các collection:
+- `reviews`
+- `companies`
+- `crawl_state`
