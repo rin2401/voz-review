@@ -313,7 +313,7 @@
                     </div>
                     <div class="reply-node-meta">
                         {% if child.post_date %}
-                        {{ child.post_date.strftime('%Y-%m-%d') }}
+                        {{ format_dt_vn(child.post_date) }}
                         {% endif %}
                         | ❤️ {{ child.likes }}
                         | <a href="{{ child.url }}" target="_blank">View on Voz</a>
@@ -388,7 +388,7 @@
                     </div>
                     <div class="text-muted">
                         {% if review.post_date %}
-                        {{ review.post_date.strftime('%Y-%m-%d') }}
+                        {{ format_dt_vn(review.post_date) }}
                         {% endif %}
                         | ❤️ {{ review.likes }}
                         | <a href="{{ review.url }}" target="_blank">View on Voz</a>
