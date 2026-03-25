@@ -89,7 +89,8 @@ async def get_review_count(company: str = None, status: str = None) -> int:
     """Count reviews, optionally filtered by company or status"""
     query = {}
     if company:
-        query["company"] = {"$regex": f"^{company}$", "$options": "i"}
+        escaped_company = re.escape(company)
+        query["company"] = {"$regex": f"^{escaped_company}$", "$options": "i"}
     if status:
         query["status"] = status
     return await db.reviews.count_documents(query)
