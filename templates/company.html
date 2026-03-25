@@ -59,28 +59,43 @@
             white-space: pre-line;
             font-size: 0.9rem;
         }
-        .reply-children {
+        .reply-tree {
             margin-top: 1rem;
+        }
+        .reply-group {
+            margin-top: 0.8rem;
             padding-left: 1rem;
             border-left: 2px solid #30363d;
         }
-        .reply-child {
+        .reply-node {
             background: #0f141b !important;
             border: 1px solid #30363d !important;
             border-radius: 0.5rem;
             padding: 0.85rem 1rem;
             margin-bottom: 0.75rem;
         }
-        .reply-child-header {
+        .reply-node.reply-hidden {
+            display: none;
+        }
+        .reply-node-header {
             display: flex;
             justify-content: space-between;
             gap: 1rem;
             margin-bottom: 0.5rem;
             font-size: 0.9rem;
+            flex-wrap: wrap;
         }
-        .reply-child-meta {
+        .reply-node-meta {
             color: #8b949e !important;
             font-size: 0.85rem;
+        }
+        .show-more-replies {
+            background: transparent;
+            color: #58a6ff !important;
+            border: none;
+            padding: 0;
+            margin: 0.25rem 0 0.75rem;
+            cursor: pointer;
         }
         .navbar { background: #161b22 !important; border-bottom: 1px solid #30363d !important; }
         .navbar-dark .navbar-brand { color: #e6edf3 !important; }
@@ -96,6 +111,40 @@
     </style>
 </head>
 <body>
+    {% macro render_reply_nodes(children, reply_children_by_post_id, default_visible_replies, depth=1, path='root') %}
+        {% if children %}
+        <div class="reply-group" data-depth="{{ depth }}">
+            {% for child in children %}
+            {% set child_path = path ~ '-' ~ loop.index %}
+            <div class="reply-node {% if loop.index > default_visible_replies %}reply-hidden extra-reply extra-reply-{{ path }}{% endif %}">
+                <div class="reply-node-header">
+                    <div>
+                        <span class="author">{{ child.author }}</span>
+                        {% if child.author_url %}
+                        <a href="{{ child.author_url }}" target="_blank" class="ms-2">🔗</a>
+                        {% endif %}
+                    </div>
+                    <div class="reply-node-meta">
+                        {% if child.post_date %}
+                        {{ child.post_date.strftime('%Y-%m-%d') }}
+                        {% endif %}
+                        | ❤️ {{ child.likes }}
+                        | <a href="{{ child.url }}" target="_blank">View on Voz</a>
+                    </div>
+                </div>
+                <div class="review-content">{{ child.content }}</div>
+                {{ render_reply_nodes(reply_children_by_post_id.get(child.voz_post_id), reply_children_by_post_id, default_visible_replies, depth + 1, child_path) }}
+            </div>
+            {% endfor %}
+            {% if children|length > default_visible_replies %}
+            <button class="show-more-replies" type="button" onclick="showMoreReplies('{{ path }}', this)">
+                Xem thêm {{ children|length - default_visible_replies }} reply
+            </button>
+            {% endif %}
+        </div>
+        {% endif %}
+    {% endmacro %}
+
     <nav class="navbar navbar-expand-lg navbar-dark" style="background: #161b22; border-bottom: 1px solid #30363d;">
         <div class="container">
             <a class="navbar-brand" href="/">🔍 Voz Review Crawler</a>
@@ -112,7 +161,6 @@
     </nav>
 
     <div class="container mt-4">
-        <!-- Header -->
         <div class="d-flex justify-content-between align-items-center mb-4">
             <div>
                 <h2>🏢 {{ company }}</h2>
@@ -121,7 +169,6 @@
             <a href="/" class="btn btn-secondary">← Back</a>
         </div>
 
-        <!-- Reviews -->
         <div class="reviews-list">
             {% for review in reviews %}
             <div class="card mb-3">
@@ -167,27 +214,8 @@
 
                     {% set child_replies = reply_children_by_post_id.get(review.voz_post_id) %}
                     {% if child_replies %}
-                    <div class="reply-children">
-                        {% for child in child_replies %}
-                        <div class="reply-child">
-                            <div class="reply-child-header">
-                                <div>
-                                    <span class="author">{{ child.author }}</span>
-                                    {% if child.author_url %}
-                                    <a href="{{ child.author_url }}" target="_blank" class="ms-2">🔗</a>
-                                    {% endif %}
-                                </div>
-                                <div class="reply-child-meta">
-                                    {% if child.post_date %}
-                                    {{ child.post_date.strftime('%Y-%m-%d') }}
-                                    {% endif %}
-                                    | ❤️ {{ child.likes }}
-                                    | <a href="{{ child.url }}" target="_blank">View on Voz</a>
-                                </div>
-                            </div>
-                            <div class="review-content">{{ child.content }}</div>
-                        </div>
-                        {% endfor %}
+                    <div class="reply-tree">
+                        {{ render_reply_nodes(child_replies, reply_children_by_post_id, default_visible_replies, 1, 'root-' ~ loop.index) }}
                     </div>
                     {% endif %}
                 </div>
@@ -201,7 +229,6 @@
             {% endfor %}
         </div>
 
-        <!-- Pagination -->
         {% if pages > 1 %}
         <nav>
             <ul class="pagination justify-content-center">
@@ -236,6 +263,13 @@
                 content.classList.add('truncated');
                 btn.textContent = '▼ Xem thêm';
             }
+        }
+
+        function showMoreReplies(groupKey, button) {
+            document.querySelectorAll('.extra-reply-' + CSS.escape(groupKey)).forEach((node) => {
+                node.classList.remove('reply-hidden');
+            });
+            if (button) button.remove();
         }
     </script>
 </body>

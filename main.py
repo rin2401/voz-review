@@ -66,7 +66,8 @@ async def company_detail(request: Request, company_name: str, page: int = 1):
     """Company detail page - list reviews"""
     limit = 20
     skip = (page - 1) * limit
-    
+    default_visible_replies = 3
+
     reviews = await get_reviews_by_company(company_name, limit=limit, skip=skip)
     total = await get_review_count(company=company_name)
 
@@ -76,16 +77,31 @@ async def company_detail(request: Request, company_name: str, page: int = 1):
         if review.get("voz_post_id")
     }
 
-    reply_post_ids = [str(review.get("voz_post_id")) for review in reviews if review.get("voz_post_id")]
+    root_post_ids = [str(review.get("voz_post_id")) for review in reviews if review.get("voz_post_id")]
+    all_reply_ids_to_fetch = set(root_post_ids)
     reply_children_by_post_id = {}
-    if reply_post_ids:
-        reply_children = await get_replies_for_posts(reply_post_ids)
+    fetched_post_ids = set()
+
+    for _ in range(4):
+        pending_parent_ids = list(all_reply_ids_to_fetch - fetched_post_ids)
+        if not pending_parent_ids:
+            break
+
+        reply_children = await get_replies_for_posts(pending_parent_ids)
+        fetched_post_ids.update(pending_parent_ids)
+
         for child in reply_children:
             parent_id = child.get("reply_post_id")
+            child_post_id = child.get("voz_post_id")
             if not parent_id:
                 continue
             reply_children_by_post_id.setdefault(str(parent_id), []).append(child)
-    
+            if child_post_id:
+                all_reply_ids_to_fetch.add(str(child_post_id))
+
+    for children in reply_children_by_post_id.values():
+        children.sort(key=lambda item: item.get("post_date") or item.get("created_at"))
+
     template = jinja_env.get_template("company.html")
     return HTMLResponse(template.render(
         request=request,
@@ -93,6 +109,7 @@ async def company_detail(request: Request, company_name: str, page: int = 1):
         reviews=reviews,
         review_by_post_id=review_by_post_id,
         reply_children_by_post_id=reply_children_by_post_id,
+        default_visible_replies=default_visible_replies,
         page=page,
         total=total,
         pages=(total + limit - 1) // limit
