@@ -142,11 +142,51 @@ async def search_page(request: Request, q: str = ""):
     """Search reviews"""
     if not q:
         template = jinja_env.get_template("search.html")
-        return HTMLResponse(template.render(request=request, results=[], query=""))
+        return HTMLResponse(template.render(request=request, results=[], query="", review_by_post_id={}, reply_children_by_post_id={}, default_visible_replies=3))
     
     results = await search_reviews(q, limit=50)
+    default_visible_replies = 3
+
+    review_by_post_id = {
+        str(review.get("voz_post_id")): review
+        for review in results
+        if review.get("voz_post_id")
+    }
+
+    root_post_ids = [str(review.get("voz_post_id")) for review in results if review.get("voz_post_id")]
+    all_reply_ids_to_fetch = set(root_post_ids)
+    reply_children_by_post_id = {}
+    fetched_post_ids = set()
+
+    for _ in range(4):
+        pending_parent_ids = list(all_reply_ids_to_fetch - fetched_post_ids)
+        if not pending_parent_ids:
+            break
+
+        reply_children = await get_replies_for_posts(pending_parent_ids)
+        fetched_post_ids.update(pending_parent_ids)
+
+        for child in reply_children:
+            parent_id = child.get("reply_post_id")
+            child_post_id = child.get("voz_post_id")
+            if not parent_id:
+                continue
+            reply_children_by_post_id.setdefault(str(parent_id), []).append(child)
+            if child_post_id:
+                all_reply_ids_to_fetch.add(str(child_post_id))
+
+    for children in reply_children_by_post_id.values():
+        children.sort(key=lambda item: item.get("post_date") or item.get("created_at"))
+
     template = jinja_env.get_template("search.html")
-    return HTMLResponse(template.render(request=request, results=results, query=q))
+    return HTMLResponse(template.render(
+        request=request,
+        results=results,
+        query=q,
+        review_by_post_id=review_by_post_id,
+        reply_children_by_post_id=reply_children_by_post_id,
+        default_visible_replies=default_visible_replies,
+    ))
 
 
 async def refresh_thread_job_statuses():

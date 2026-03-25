@@ -26,6 +26,25 @@
         a { color: #58a6ff !important; text-decoration: none; }
         a:hover { text-decoration: underline; }
         .company-name { color: #f0883e !important; font-weight: 600; }
+        .review-content {
+            font-size: 0.95rem;
+            line-height: 1.6;
+            color: #e6edf3 !important;
+            white-space: pre-line;
+            word-break: break-word;
+        }
+        .review-content.truncated { max-height: 300px; overflow: hidden; }
+        .read-more-btn { color: #58a6ff !important; cursor: pointer; display: block; margin-top: 0.5rem; }
+        .author { color: #f0883e !important; }
+        .reply-tree { margin-top: 1rem; }
+        .reply-tree-hidden { display: none; }
+        .reply-toggle-active { margin-bottom: 0.5rem; }
+        .reply-group { margin-top: 0.8rem; padding-left: 1rem; border-left: 2px solid #30363d; }
+        .reply-node { background: #0f141b !important; border: 1px solid #30363d !important; border-radius: 0.5rem; padding: 0.85rem 1rem; margin-bottom: 0.75rem; }
+        .reply-node.reply-hidden { display: none; }
+        .reply-node-header { display: flex; justify-content: space-between; gap: 1rem; margin-bottom: 0.5rem; font-size: 0.9rem; flex-wrap: wrap; }
+        .reply-node-meta { color: #8b949e !important; font-size: 0.85rem; }
+        .show-more-replies { background: transparent; color: #58a6ff !important; border: none; padding: 0; margin: 0.25rem 0 0.75rem; cursor: pointer; }
         .navbar { background: #161b22 !important; border-bottom: 1px solid #30363d !important; }
         .navbar-dark .navbar-brand { color: #e6edf3 !important; }
         .navbar-dark .nav-link { color: #e6edf3 !important; }
@@ -49,6 +68,33 @@
     </style>
 </head>
 <body>
+    {% macro render_reply_nodes(children, reply_children_by_post_id, default_visible_replies, depth=1, path='root') %}
+        {% if children %}
+        <div class="reply-group" data-depth="{{ depth }}">
+            {% for child in children %}
+            {% set child_path = path ~ '-' ~ loop.index %}
+            <div class="reply-node {% if loop.index > default_visible_replies %}reply-hidden extra-reply extra-reply-{{ path }}{% endif %}">
+                <div class="reply-node-header">
+                    <div><span class="author">{{ child.author }}</span></div>
+                    <div class="reply-node-meta">
+                        {% if child.post_date %}{{ child.post_date.strftime('%Y-%m-%d') }}{% endif %}
+                        | ❤️ {{ child.likes }}
+                        | <a href="{{ child.url }}" target="_blank">View on Voz</a>
+                    </div>
+                </div>
+                <div class="review-content">{{ child.content }}</div>
+                {{ render_reply_nodes(reply_children_by_post_id.get(child.voz_post_id), reply_children_by_post_id, default_visible_replies, depth + 1, child_path) }}
+            </div>
+            {% endfor %}
+            {% if children|length > default_visible_replies and depth > 1 %}
+            <button class="show-more-replies" type="button" onclick="showMoreReplies('{{ path }}', this)">
+                Xem thêm {{ children|length - default_visible_replies }} reply
+            </button>
+            {% endif %}
+        </div>
+        {% endif %}
+    {% endmacro %}
+
     <nav class="navbar navbar-expand-lg navbar-dark" style="background: #161b22; border-bottom: 1px solid #30363d;">
         <div class="container">
             <a class="navbar-brand" href="/">🔍 VOZ Review</a>
@@ -88,19 +134,32 @@
         <div class="results-list">
             {% for result in results %}
             <div class="card mb-3">
-                <div class="card-header">
-                    <a href="/company/{{ result.company }}" class="company-name">{{ result.company }}</a>
-                    <span class="text-muted ms-2">by {{ result.author }}</span>
-                </div>
-                <div class="card-body">
-                    <p class="mb-2">{{ result.content[:300] }}{% if result.content|length > 300 %}...{% endif %}</p>
-                    <small class="text-muted">
-                        {% if result.post_date %}
-                        {{ result.post_date.strftime('%Y-%m-%d') }}
-                        {% endif %}
+                <div class="card-header d-flex justify-content-between">
+                    <div>
+                        <a href="/company/{{ result.company }}" class="company-name">{{ result.company }}</a>
+                        <span class="text-muted ms-2">by {{ result.author }}</span>
+                    </div>
+                    <div class="text-muted">
+                        {% if result.post_date %}{{ result.post_date.strftime('%Y-%m-%d') }}{% endif %}
                         | ❤️ {{ result.likes }}
                         | <a href="{{ result.url }}" target="_blank">View on Voz</a>
-                    </small>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="review-content {% if result.content|length > 500 %}truncated{% endif %}" id="content-{{ loop.index }}">{{ result.content }}</div>
+                    {% if result.content|length > 500 %}
+                    <span class="read-more-btn" onclick="toggleReview({{ loop.index }})" id="btn-{{ loop.index }}">▼ Xem thêm</span>
+                    {% endif %}
+
+                    {% set child_replies = reply_children_by_post_id.get(result.voz_post_id) %}
+                    {% if child_replies %}
+                    <div class="reply-tree">
+                        <button class="show-more-replies" type="button" onclick="toggleReplyTree('root-{{ loop.index }}', this)" data-count="{{ child_replies|length }}">Xem reply ({{ child_replies|length }})</button>
+                        <div id="reply-tree-root-{{ loop.index }}" class="reply-tree-hidden">
+                            {{ render_reply_nodes(child_replies, reply_children_by_post_id, default_visible_replies, 1, 'root-' ~ loop.index) }}
+                        </div>
+                    </div>
+                    {% endif %}
                 </div>
             </div>
             {% endfor %}
@@ -108,5 +167,27 @@
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        function toggleReview(index) {
+            const content = document.getElementById(`content-${index}`);
+            const btn = document.getElementById(`btn-${index}`);
+            content.classList.toggle('truncated');
+            btn.textContent = content.classList.contains('truncated') ? '▼ Xem thêm' : '▲ Thu gọn';
+        }
+        function toggleReplyTree(groupKey, button) {
+            const tree = document.getElementById('reply-tree-' + groupKey);
+            if (!tree || !button) return;
+            const isHidden = tree.classList.contains('reply-tree-hidden');
+            tree.classList.toggle('reply-tree-hidden');
+            button.textContent = isHidden ? `Ẩn reply (${button.dataset.count})` : `Xem reply (${button.dataset.count})`;
+            button.classList.toggle('reply-toggle-active', isHidden);
+        }
+        function showMoreReplies(groupKey, button) {
+            document.querySelectorAll('.extra-reply-' + CSS.escape(groupKey)).forEach((node) => {
+                node.classList.remove('reply-hidden');
+            });
+            if (button) button.remove();
+        }
+    </script>
 </body>
 </html>
