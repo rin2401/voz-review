@@ -44,6 +44,21 @@
         }
         .badge-date { background: #30363d !important; }
         .author { color: #f0883e !important; }
+        .reply-context {
+            border-left: 3px solid #30363d;
+            padding-left: 0.75rem;
+            margin-bottom: 0.9rem;
+        }
+        .reply-label {
+            color: #58a6ff !important;
+            font-size: 0.85rem;
+            margin-bottom: 0.35rem;
+        }
+        .reply-snippet {
+            color: #8b949e !important;
+            white-space: pre-line;
+            font-size: 0.9rem;
+        }
         .navbar { background: #161b22 !important; border-bottom: 1px solid #30363d !important; }
         .navbar-dark .navbar-brand { color: #e6edf3 !important; }
         .navbar-dark .nav-link { color: #e6edf3 !important; }
@@ -103,6 +118,21 @@
                     </div>
                 </div>
                 <div class="card-body">
+                    {% if review.reply_post_id and review_by_post_id.get(review.reply_post_id) %}
+                    {% set parent_review = review_by_post_id.get(review.reply_post_id) %}
+                    <div class="reply-context">
+                        <div class="reply-label">
+                            ↳ Reply to {{ parent_review.author }}
+                        </div>
+                        <div class="reply-snippet">{{ parent_review.content[:220] }}{% if parent_review.content|length > 220 %}...{% endif %}</div>
+                    </div>
+                    {% elif review.reply_post_id %}
+                    <div class="reply-context">
+                        <div class="reply-label">
+                            ↳ Reply to post #{{ review.reply_post_id }}
+                        </div>
+                    </div>
+                    {% endif %}
                     <div class="review-content {% if review.content|length > 500 %}truncated{% endif %}" id="content-{{ loop.index }}">
                         {{ review.content }}
                     </div>

@@ -68,12 +68,19 @@ async def company_detail(request: Request, company_name: str, page: int = 1):
     
     reviews = await get_reviews_by_company(company_name, limit=limit, skip=skip)
     total = await get_review_count(company=company_name)
+
+    review_by_post_id = {
+        str(review.get("voz_post_id")): review
+        for review in reviews
+        if review.get("voz_post_id")
+    }
     
     template = jinja_env.get_template("company.html")
     return HTMLResponse(template.render(
         request=request,
         company=company_name,
         reviews=reviews,
+        review_by_post_id=review_by_post_id,
         page=page,
         total=total,
         pages=(total + limit - 1) // limit
