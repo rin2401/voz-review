@@ -139,10 +139,22 @@
             background: var(--input-bg) !important;
             color: var(--text-color) !important;
         }
+        body.light-mode .table,
+        body.light-mode .table-dark {
+            --bs-table-bg: var(--bg-card);
+            --bs-table-color: var(--text-color);
+            --bs-table-striped-bg: var(--bg-card);
+            --bs-table-hover-bg: var(--table-hover-bg);
+            --bs-table-hover-color: var(--text-color);
+            background: var(--bg-card) !important;
+            color: var(--text-color) !important;
+        }
         body.light-mode .table-hover > tbody > tr:hover,
         body.light-mode .table-hover > tbody > tr:hover > * {
+            --bs-table-accent-bg: var(--table-hover-bg) !important;
             background: var(--table-hover-bg) !important;
             color: var(--text-color) !important;
+            box-shadow: inset 0 0 0 9999px var(--table-hover-bg);
         }
         body.light-mode .page-link:hover {
             background: var(--hover-bg) !important;
