@@ -173,9 +173,16 @@ async def get_replies_for_posts(post_ids: List[str]) -> List[dict]:
 
 
 async def get_all_threads() -> List[dict]:
-    """Get all configured crawl threads from DB."""
-    cursor = db.threads.find({}).sort("created_at", -1)
-    return await cursor.to_list(length=None)
+    """Get all configured crawl threads from DB, enriched with crawl state."""
+    threads = await db.threads.find({}).sort("created_at", -1).to_list(length=None)
+    for thread in threads:
+        thread_id = thread.get("thread_id")
+        forum_id = thread_id or thread.get("url")
+        if forum_id:
+            state = await db.crawl_state.find_one({"forum_id": forum_id})
+            if state:
+                thread["crawl_state"] = state
+    return threads
 
 
 async def upsert_thread(url: str, title: str = None, thread_id: str = None, kind: str = "thread"):

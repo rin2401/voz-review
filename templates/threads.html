@@ -68,8 +68,11 @@
                         <tr>
                             <th>Title</th>
                             <th>Thread ID</th>
+                            <th>Crawled Page</th>
+                            <th>Last Crawl</th>
                             <th>Type</th>
                             <th>URL</th>
+                            <th>Actions</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -77,12 +80,21 @@
                         <tr>
                             <td>{{ thread.title or thread.url }}</td>
                             <td><span class="badge">{{ thread.thread_id or '-' }}</span></td>
+                            <td>{{ thread.crawl_state.last_page if thread.crawl_state else '-' }}</td>
+                            <td>
+                                {% if thread.crawl_state and thread.crawl_state.last_crawl %}
+                                {{ thread.crawl_state.last_crawl.strftime('%Y-%m-%d %H:%M') }}
+                                {% else %}
+                                -
+                                {% endif %}
+                            </td>
                             <td>{{ thread.kind or 'thread' }}</td>
                             <td><a href="{{ thread.url }}" target="_blank">Open</a></td>
+                            <td><button class="btn btn-sm btn-primary" onclick="crawlThread('{{ thread.url }}', this)">Crawl</button></td>
                         </tr>
                         {% else %}
                         <tr>
-                            <td colspan="4" class="text-center text-muted py-4">Chưa có thread nào trong DB.</td>
+                            <td colspan="7" class="text-center text-muted py-4">Chưa có thread nào trong DB.</td>
                         </tr>
                         {% endfor %}
                     </tbody>
@@ -108,6 +120,24 @@
                 window.location.reload();
             } catch (e) {
                 alert('Lỗi add thread: ' + e.message);
+            }
+        }
+
+        async function crawlThread(url, button) {
+            if (!url) return;
+            const oldText = button.textContent;
+            button.disabled = true;
+            button.textContent = '⏳ Crawling...';
+            try {
+                const res = await fetch('/api/crawl/thread?max_pages=0&url=' + encodeURIComponent(url), {
+                    method: 'POST'
+                });
+                if (!res.ok) throw new Error(await res.text());
+                button.textContent = '✅ Started';
+            } catch (e) {
+                alert('Lỗi crawl thread: ' + e.message);
+                button.disabled = false;
+                button.textContent = oldText;
             }
         }
     </script>
