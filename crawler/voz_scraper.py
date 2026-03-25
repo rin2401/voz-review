@@ -295,49 +295,62 @@ class VozCrawler:
             if 'said:' not in content.lower():
                 return "Unknown"
         
-        # Look for "Tên công ty:" at the START of a line
-        for line in lines:
-            line = line.strip()
-            if line.lower().startswith('tên công ty') or line.lower().startswith('tên cty'):
-                # Extract after the colon
+        def _next_non_empty_line(start_index: int) -> str:
+            for candidate in lines[start_index + 1:]:
+                candidate = candidate.strip()
+                if candidate:
+                    return candidate
+            return ""
+
+        def _normalize_extracted_company(company: str) -> str:
+            company = self._clean_company_name(company)
+            words = [w for w in company.split() if w]
+            if not company or not company[0].isupper():
+                return ""
+            if len(words) > 4:
+                return ""
+            if len(company) < 2 or len(company) > 60:
+                return ""
+            return company
+
+        # Look for "Tên công ty:" / "Tên cty:" at the START of a line
+        for index, raw_line in enumerate(lines):
+            line = raw_line.strip()
+            lower_line = line.lower()
+            if lower_line.startswith('tên công ty') or lower_line.startswith('tên cty'):
+                # Extract after the colon; if value is on the next line, use that
                 if ':' in line:
                     company = line.split(':', 1)[1].strip()
                 else:
-                    company = line.split('tên công ty', 1)[1].strip()
-                
-                # Clean up - remove trailing junk
-                company = company.rstrip('.,;:')
-                
+                    if lower_line.startswith('tên cty'):
+                        company = re.split(r'tên cty', line, maxsplit=1, flags=re.IGNORECASE)[1].strip()
+                    else:
+                        company = re.split(r'tên công ty', line, maxsplit=1, flags=re.IGNORECASE)[1].strip()
+
+                if not company:
+                    company = _next_non_empty_line(index)
+
                 # Skip if it's clearly not a company name
                 if len(company) < 2:
                     return "Unknown"
                 if any(x in company.lower() for x in ['xin', 'hỏi', 'review', 'cho', 'em ', 'mình ']):
                     return "Unknown"
-                
-                company = self._clean_company_name(company)
 
-                words = [w for w in company.split() if w]
-                if not company or not company[0].isupper():
-                    continue
-                if len(words) > 4:
-                    continue
-                
-                if len(company) >= 2 and len(company) <= 60:
+                company = _normalize_extracted_company(company)
+                if company:
                     return company
-        
-        # Also try: starts with "Công ty" as a standalone line
-        for line in lines:
-            line = line.strip()
+
+        # Also try: starts with "Công ty" as a standalone line or label
+        for index, raw_line in enumerate(lines):
+            line = raw_line.strip()
             lower_line = line.lower()
-            if lower_line.startswith('công ty ') and len(line) < 80:
-                company = line[len('công ty '):].strip()
-                company = self._clean_company_name(company)
-                words = [w for w in company.split() if w]
-                if not company or not company[0].isupper():
-                    continue
-                if len(words) > 4:
-                    continue
-                if len(company) >= 2:
+            if lower_line.startswith('công ty') and len(line) < 80:
+                remainder = line[len('công ty'):].strip()
+                if remainder.startswith(':'):
+                    remainder = remainder[1:].strip()
+                company = remainder or _next_non_empty_line(index)
+                company = _normalize_extracted_company(company)
+                if company:
                     return company
 
         # Fallback: longest matching alias/canonical name inside content for Unknown posts
