@@ -79,7 +79,8 @@ async def get_reviews_by_company(
     company: str, 
     limit: int = 50, 
     skip: int = 0,
-    status: str = None
+    status: str = None,
+    thread_id: str = None,
 ) -> List[dict]:
     """Get reviews for a specific company"""
     # Escape regex special characters in company name
@@ -87,12 +88,14 @@ async def get_reviews_by_company(
     query = {"company": {"$regex": f"^{escaped_company}$", "$options": "i"}}
     if status:
         query["status"] = status
+    if thread_id:
+        query["voz_thread_id"] = thread_id
     
     cursor = db.reviews.find(query).sort("post_date", -1).skip(skip).limit(limit)
     return await cursor.to_list(length=limit)
 
 
-async def get_review_count(company: str = None, status: str = None) -> int:
+async def get_review_count(company: str = None, status: str = None, thread_id: str = None) -> int:
     """Count reviews, optionally filtered by company or status"""
     query = {}
     if company:
@@ -100,6 +103,8 @@ async def get_review_count(company: str = None, status: str = None) -> int:
         query["company"] = {"$regex": f"^{escaped_company}$", "$options": "i"}
     if status:
         query["status"] = status
+    if thread_id:
+        query["voz_thread_id"] = thread_id
     return await db.reviews.count_documents(query)
 
 
@@ -221,6 +226,16 @@ async def seed_threads(thread_urls: List[str]):
         thread_id_match = re.search(r'/t(?:/[^/]*?)?\.(\d+)(?:/|$)', url)
         thread_id = thread_id_match.group(1) if thread_id_match else None
         await upsert_thread(url=url, thread_id=thread_id)
+
+
+async def get_company_thread_ids(company: str) -> List[str]:
+    """Get distinct VOZ thread IDs for a company, sorted descending."""
+    escaped_company = re.escape(company)
+    ids = await db.reviews.distinct(
+        "voz_thread_id",
+        {"company": {"$regex": f"^{escaped_company}$", "$options": "i"}, "voz_thread_id": {"$exists": True, "$nin": [None, ""]}},
+    )
+    return sorted([str(x) for x in ids if x], reverse=True)
 
 
 async def search_reviews(

@@ -15,6 +15,7 @@ from database.mongodb import (
     get_reviews_by_company,
     get_review_count,
     get_replies_for_posts,
+    get_company_thread_ids,
     search_reviews,
     insert_review,
     upsert_company,
@@ -76,14 +77,17 @@ async def home(request: Request, q: str = "", sort: str = "recent_review"):
 
 
 @app.get("/company/{company_name}", response_class=HTMLResponse)
-async def company_detail(request: Request, company_name: str, page: int = 1):
+async def company_detail(request: Request, company_name: str, page: int = 1, thread_id: str = ""):
     """Company detail page - list reviews"""
     limit = 20
     skip = (page - 1) * limit
     default_visible_replies = 3
 
-    reviews = await get_reviews_by_company(company_name, limit=limit, skip=skip)
-    total = await get_review_count(company=company_name)
+    available_thread_ids = await get_company_thread_ids(company_name)
+    active_thread_id = thread_id if thread_id in available_thread_ids else ""
+
+    reviews = await get_reviews_by_company(company_name, limit=limit, skip=skip, thread_id=active_thread_id or None)
+    total = await get_review_count(company=company_name, thread_id=active_thread_id or None)
 
     review_by_post_id = {
         str(review.get("voz_post_id")): review
@@ -124,6 +128,8 @@ async def company_detail(request: Request, company_name: str, page: int = 1):
         review_by_post_id=review_by_post_id,
         reply_children_by_post_id=reply_children_by_post_id,
         default_visible_replies=default_visible_replies,
+        available_thread_ids=available_thread_ids,
+        active_thread_id=active_thread_id,
         page=page,
         total=total,
         pages=(total + limit - 1) // limit
