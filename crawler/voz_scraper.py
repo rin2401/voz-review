@@ -19,8 +19,8 @@ import config
 from database.mongodb import (
     insert_review,
     upsert_company,
-    get_crawl_state,
-    update_crawl_state,
+    get_thread_state,
+    update_thread_state,
     increment_company_review_count
 )
 
@@ -321,10 +321,10 @@ class VozCrawler:
         """
         print(f"🔍 Crawling forum: {forum_url}")
         
-        # Get crawl state
-        forum_id = self._extract_thread_id(forum_url) or forum_url
-        state = await get_crawl_state(forum_id)
-        
+        # Get crawl progress from threads table
+        thread_id = self._extract_thread_id(forum_url) or None
+        state = await get_thread_state(thread_id=thread_id, url=forum_url)
+
         # Determine starting page
         start_page = 1
         if state and state.get("last_page"):
@@ -365,10 +365,10 @@ class VozCrawler:
                         print(f"Error inserting review: {e}")
                         continue
                 
-                # Update crawl state
+                # Update thread progress directly in threads table
                 if posts:
                     last_post_date = posts[-1].get("post_date")
-                    await update_crawl_state(forum_id, last_post_date, page)
+                    await update_thread_state(thread_id=thread_id, url=forum_url, last_post_date=last_post_date, last_page=page)
                 
                 print(f"  📄 Page {page}: {len(posts)} reviews")
                 page += 1

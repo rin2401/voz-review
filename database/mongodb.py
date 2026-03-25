@@ -142,23 +142,37 @@ async def insert_review(review_data: dict) -> tuple[str | None, bool]:
         return None, False
 
 
-async def get_crawl_state(forum_id: str) -> Optional[dict]:
-    """Get last crawl timestamp for a forum"""
-    return await db.crawl_state.find_one({"forum_id": forum_id})
+async def get_thread_state(thread_id: str = None, url: str = None) -> Optional[dict]:
+    """Get crawl progress directly from threads collection."""
+    query = {}
+    if thread_id:
+        query["thread_id"] = thread_id
+    elif url:
+        query["url"] = url
+    else:
+        return None
+    return await db.threads.find_one(query)
 
 
-async def update_crawl_state(forum_id: str, last_post_date: datetime, last_page: int):
-    """Update crawl state after successful crawl"""
-    await db.crawl_state.update_one(
-        {"forum_id": forum_id},
+async def update_thread_state(thread_id: str = None, url: str = None, last_post_date: datetime = None, last_page: int = None):
+    """Update crawl progress directly in threads collection."""
+    query = {}
+    if thread_id:
+        query["thread_id"] = thread_id
+    elif url:
+        query["url"] = url
+    else:
+        return
+
+    await db.threads.update_one(
+        query,
         {
             "$set": {
                 "last_crawl": datetime.utcnow(),
                 "last_post_date": last_post_date,
-                "last_page": last_page
+                "last_page": last_page,
             }
         },
-        upsert=True
     )
 
 
@@ -173,16 +187,8 @@ async def get_replies_for_posts(post_ids: List[str]) -> List[dict]:
 
 
 async def get_all_threads() -> List[dict]:
-    """Get all configured crawl threads from DB, enriched with crawl state."""
-    threads = await db.threads.find({}).sort("created_at", -1).to_list(length=None)
-    for thread in threads:
-        thread_id = thread.get("thread_id")
-        forum_id = thread_id or thread.get("url")
-        if forum_id:
-            state = await db.crawl_state.find_one({"forum_id": forum_id})
-            if state:
-                thread["crawl_state"] = state
-    return threads
+    """Get all configured crawl threads from DB."""
+    return await db.threads.find({}).sort("created_at", -1).to_list(length=None)
 
 
 async def upsert_thread(url: str, title: str = None, thread_id: str = None, kind: str = "thread"):
@@ -204,11 +210,30 @@ async def upsert_thread(url: str, title: str = None, thread_id: str = None, kind
 
 
 async def seed_threads(thread_urls: List[str]):
-    """Seed DB thread configs from legacy code constants if missing."""
+    """Seed DB thread configs from legacy code constants if missing, then migrate old crawl_state into threads."""
     for url in thread_urls:
         thread_id_match = re.search(r'/t(?:/[^/]*?)?\.(\d+)(?:/|$)', url)
         thread_id = thread_id_match.group(1) if thread_id_match else None
         await upsert_thread(url=url, thread_id=thread_id)
+
+    threads = await db.threads.find({}).to_list(length=None)
+    for thread in threads:
+        thread_id = thread.get("thread_id")
+        legacy_state = None
+        if thread_id:
+            legacy_state = await db.crawl_state.find_one({"forum_id": thread_id})
+        if not legacy_state:
+            legacy_state = await db.crawl_state.find_one({"forum_id": thread.get("url")})
+        if not legacy_state:
+            continue
+        await db.threads.update_one(
+            {"_id": thread["_id"]},
+            {"$set": {
+                "last_page": legacy_state.get("last_page"),
+                "last_crawl": legacy_state.get("last_crawl"),
+                "last_post_date": legacy_state.get("last_post_date"),
+            }}
+        )
 
 
 async def search_reviews(

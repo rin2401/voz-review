@@ -76,10 +76,10 @@
                         {% for thread in threads %}
                         <tr>
                             <td><a href="{{ thread.url }}" target="_blank"><span class="badge">{{ thread.thread_id or '-' }}</span></a></td>
-                            <td>{{ thread.crawl_state.last_page if thread.crawl_state else '-' }}</td>
+                            <td>{{ thread.last_page or '-' }}</td>
                             <td>
-                                {% if thread.crawl_state and thread.crawl_state.last_crawl %}
-                                {{ thread.crawl_state.last_crawl.strftime('%Y-%m-%d %H:%M') }}
+                                {% if thread.last_crawl %}
+                                {{ thread.last_crawl.strftime('%Y-%m-%d %H:%M') }}
                                 {% else %}
                                 -
                                 {% endif %}
