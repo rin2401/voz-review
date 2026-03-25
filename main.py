@@ -21,6 +21,9 @@ from database.mongodb import (
     increment_company_review_count,
     seed_threads,
     upsert_thread,
+    get_thread_state,
+    set_thread_crawl_status,
+    update_thread_state,
 )
 from crawler.voz_scraper import VozCrawler, THREAD_URLS
 import config
@@ -205,14 +208,20 @@ async def api_crawl_all(max_pages: int = 0):
 @app.post("/api/crawl/thread")
 async def api_crawl_thread(url: str, max_pages: int = 0):
     """Crawl a specific thread by URL. max_pages=0 means crawl all pages"""
+    thread = await get_thread_state(url=url)
+    if thread and thread.get("crawl_status") == "running":
+        return {"status": "already_running", "url": url}
+    await set_thread_crawl_status(url, "running")
     asyncio.create_task(crawl_thread(url, max_pages))
     return {"status": "started", "url": url, "max_pages": "all" if max_pages == 0 else max_pages}
 
 
 async def crawl_thread(url: str, max_pages: int):
     """Crawl a specific thread - if max_pages=0, crawl all pages"""
+    crawler = VozCrawler()
+    thread_id = crawler._extract_thread_id(url) or None
     try:
-        async with VozCrawler() as crawler:
+        async with crawler:
             # First, get the first page to determine total pages
             first_page_url = url if url.endswith('/') else url + '/'
             first_html = await crawler.get_page_html(first_page_url)
@@ -229,6 +238,7 @@ async def crawl_thread(url: str, max_pages: int):
             
             # Crawl first page
             await process_thread_page(crawler, first_page_url, first_html)
+            await update_thread_state(thread_id=thread_id, url=url, last_page=1)
             
             # Crawl remaining pages
             for page in range(2, max_pages + 1):
@@ -236,10 +246,13 @@ async def crawl_thread(url: str, max_pages: int):
                 print(f"📄 Crawling page {page}/{max_pages}")
                 html = await crawler.get_page_html(page_url)
                 await process_thread_page(crawler, page_url, html)
+                await update_thread_state(thread_id=thread_id, url=url, last_page=page)
                 await asyncio.sleep(2)
             
+        await set_thread_crawl_status(url, "idle")
         print(f"✅ Thread crawl complete: {url}")
     except Exception as e:
+        await set_thread_crawl_status(url, "error", error=str(e))
         print(f"❌ Thread crawl failed: {e}")
 
 
@@ -280,8 +293,9 @@ async def crawl_all_forums(max_pages: int):
     threads = await get_all_threads()
     for thread in threads:
         url = thread.get("url")
-        if not url:
+        if not url or thread.get("crawl_status") == "running":
             continue
+        await set_thread_crawl_status(url, "running")
         await run_crawler(url, max_pages)
         await asyncio.sleep(5)  # Be nice between threads
 

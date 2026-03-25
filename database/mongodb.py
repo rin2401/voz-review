@@ -172,6 +172,16 @@ async def update_thread_state(thread_id: str = None, url: str = None, last_post_
     )
 
 
+async def set_thread_crawl_status(url: str, status: str, error: str = None):
+    """Set crawl job status on thread row."""
+    payload = {"crawl_status": status, "updated_at": datetime.utcnow()}
+    if status == "running":
+        payload["crawl_error"] = None
+    elif error:
+        payload["crawl_error"] = error
+    await db.threads.update_one({"url": url}, {"$set": payload})
+
+
 async def get_replies_for_posts(post_ids: List[str]) -> List[dict]:
     """Get replies whose reply_post_id points to any of the given post IDs."""
     if not post_ids:

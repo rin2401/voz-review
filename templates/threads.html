@@ -69,6 +69,7 @@
                             <th>ID</th>
                             <th>Page</th>
                             <th>Last</th>
+                            <th>Status</th>
                             <th>Actions</th>
                         </tr>
                     </thead>
@@ -84,11 +85,16 @@
                                 -
                                 {% endif %}
                             </td>
-                            <td><button class="btn btn-sm btn-primary" onclick="crawlThread('{{ thread.url }}', this)">Crawl</button></td>
+                            <td>{{ thread.crawl_status or 'idle' }}</td>
+                            <td>
+                                <button class="btn btn-sm btn-primary" onclick="crawlThread('{{ thread.url }}', this)" {% if thread.crawl_status == 'running' %}disabled{% endif %}>
+                                    {% if thread.crawl_status == 'running' %}⏳ Crawling...{% else %}Crawl{% endif %}
+                                </button>
+                            </td>
                         </tr>
                         {% else %}
                         <tr>
-                            <td colspan="4" class="text-center text-muted py-4">Chưa có thread nào trong DB.</td>
+                            <td colspan="5" class="text-center text-muted py-4">Chưa có thread nào trong DB.</td>
                         </tr>
                         {% endfor %}
                     </tbody>
