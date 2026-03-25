@@ -483,7 +483,8 @@
         function toggleReview(index) {
             const content = document.getElementById('content-' + index);
             const btn = document.getElementById('btn-' + index);
-            
+            if (!content || !btn) return;
+
             if (content.classList.contains('truncated')) {
                 content.classList.remove('truncated');
                 btn.textContent = '▲ Thu gọn';
@@ -491,6 +492,20 @@
                 content.classList.add('truncated');
                 btn.textContent = '▼ Xem thêm';
             }
+        }
+
+        function initReadMoreButtons() {
+            document.querySelectorAll('.review-content.truncated[id^="content-"]').forEach((content) => {
+                const index = content.id.replace('content-', '');
+                const btn = document.getElementById('btn-' + index);
+                if (!btn) return;
+
+                const hasOverflow = content.scrollHeight > content.clientHeight + 1;
+                if (!hasOverflow) {
+                    content.classList.remove('truncated');
+                    btn.remove();
+                }
+            });
         }
 
         function toggleReplyTree(groupKey, button) {
@@ -522,6 +537,7 @@
             applyTheme(nextTheme);
         }
         applyTheme(localStorage.getItem(THEME_KEY) || 'dark');
+        initReadMoreButtons();
     </script>
 </body>
 </html>

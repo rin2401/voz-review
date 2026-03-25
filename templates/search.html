@@ -343,8 +343,22 @@
         function toggleReview(index) {
             const content = document.getElementById(`content-${index}`);
             const btn = document.getElementById(`btn-${index}`);
+            if (!content || !btn) return;
             content.classList.toggle('truncated');
             btn.textContent = content.classList.contains('truncated') ? '▼ Xem thêm' : '▲ Thu gọn';
+        }
+        function initReadMoreButtons() {
+            document.querySelectorAll('.review-content.truncated[id^="content-"]').forEach((content) => {
+                const index = content.id.replace('content-', '');
+                const btn = document.getElementById(`btn-${index}`);
+                if (!btn) return;
+
+                const hasOverflow = content.scrollHeight > content.clientHeight + 1;
+                if (!hasOverflow) {
+                    content.classList.remove('truncated');
+                    btn.remove();
+                }
+            });
         }
         function toggleReplyTree(groupKey, button) {
             const tree = document.getElementById('reply-tree-' + groupKey);
@@ -372,6 +386,7 @@
             applyTheme(nextTheme);
         }
         applyTheme(localStorage.getItem(THEME_KEY) || 'dark');
+        initReadMoreButtons();
     </script>
 </body>
 </html>
