@@ -17,6 +17,7 @@ class Review(BaseModel):
     url: str
     likes: int = 0
     awards: int = 0
+    monthly_salary_million: Optional[float] = None
     status: str = "pending"
     created_at: Optional[datetime] = None
 

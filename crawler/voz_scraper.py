@@ -3,9 +3,11 @@ Voz Forum Crawler
 Crawls review threads from voz.vn
 """
 import asyncio
+import json
 import re
 import httpx
 from datetime import datetime
+from pathlib import Path
 from typing import Optional, List, Tuple
 from bs4 import BeautifulSoup
 from playwright.async_api import async_playwright
@@ -26,6 +28,7 @@ from database.mongodb import (
 class VozCrawler:
     def __init__(self):
         self.base_url = config.VOZ_BASE_URL
+        self.alias_map = self._load_company_alias_map()
         self.session = httpx.AsyncClient(
             timeout=config.VOZ_TIMEOUT,
             follow_redirects=True,
@@ -165,6 +168,8 @@ class VozCrawler:
                 
                 # Extract company name from content
                 company = self._extract_company(content)
+                company = self._apply_company_alias(company)
+                monthly_salary_million = self._extract_monthly_salary_million(content)
                 
                 # Build full URL with page and post anchor
                 if post_id:
@@ -184,6 +189,7 @@ class VozCrawler:
                     "url": voz_url,
                     "likes": likes,
                     "awards": 0,
+                    "monthly_salary_million": monthly_salary_million,
                 })
             except Exception as e:
                 print(f"Error parsing post: {e}")
@@ -195,6 +201,18 @@ class VozCrawler:
         """Extract thread ID from URL"""
         match = re.search(r'/t\.(\d+)', url)
         return match.group(1) if match else ""
+
+    def _load_company_alias_map(self) -> dict:
+        alias_path = Path(__file__).resolve().parent.parent / 'data' / 'company_aliases.json'
+        if not alias_path.exists():
+            return {}
+        try:
+            return json.loads(alias_path.read_text(encoding='utf-8'))
+        except Exception:
+            return {}
+
+    def _apply_company_alias(self, company: str) -> str:
+        return self.alias_map.get(company, company)
     
     def _clean_company_name(self, company: str) -> str:
         """Normalize extracted company names by removing trailing notes."""
@@ -213,6 +231,44 @@ class VozCrawler:
         company = company.rstrip('.,;:')
         company = re.sub(r'^[^\w\s&*]+|[^\w\s&*]+$', '', company)
         return company.strip()
+
+    def _extract_monthly_salary_million(self, content: str) -> Optional[float]:
+        """Extract monthly salary only, normalized to million VND when possible."""
+        for raw_line in content.split('\n'):
+            line = raw_line.strip()
+            lower_line = line.lower()
+            if not lower_line.startswith('lương tháng') and not lower_line.startswith('luong thang'):
+                continue
+
+            if ':' in line:
+                salary_text = line.split(':', 1)[1].strip()
+            else:
+                salary_text = line
+
+            lower_salary = salary_text.lower()
+            if any(token in lower_salary for token in ['năm', '/năm', 'year', '/year', 'package']):
+                return None
+
+            m = re.search(r'(\d+(?:[.,]\d+)?)\s*(k|tr|triệu|m|mil|million|usd|sgd|vnd)?', lower_salary)
+            if not m:
+                return None
+
+            value = float(m.group(1).replace(',', '.'))
+            unit = (m.group(2) or '').lower()
+
+            if unit in {'tr', 'triệu', 'm'}:
+                return value
+            if unit == 'k':
+                return value * 25  # rough fallback for common USD/SGD shorthand, sortable only
+            if unit in {'mil', 'million'}:
+                return value * 25
+            if unit == 'vnd':
+                return value / 1_000_000
+            if value >= 1000:
+                return value / 1_000_000
+            return value
+
+        return None
 
     def _extract_company(self, content: str) -> str:
         """
