@@ -249,7 +249,7 @@
                         <tr>
                             <th>Name</th>
                             <th>Reviews</th>
-                            <th>Actions</th>
+                            <th>Last</th>
                         </tr>
                     </thead>
                     <tbody id="companyTable">
@@ -257,7 +257,13 @@
                         <tr>
                             <td><a href="/company/{{ company.name }}" class="company-name">{{ company.name }}</a></td>
                             <td><span class="badge badge-count">{{ company.review_count }}</span></td>
-                            <td><a href="/company/{{ company.name }}" class="btn btn-sm btn-secondary">View</a></td>
+                            <td>
+                                {% if company.latest_post_date %}
+                                {{ company.latest_post_date.strftime('%Y-%m-%d') }}
+                                {% else %}
+                                -
+                                {% endif %}
+                            </td>
                         </tr>
                         {% else %}
                         <tr>
