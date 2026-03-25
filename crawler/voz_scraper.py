@@ -198,8 +198,8 @@ class VozCrawler:
         return posts
     
     def _extract_thread_id(self, url: str) -> str:
-        """Extract thread ID from URL"""
-        match = re.search(r'/t\.(\d+)', url)
+        """Extract thread ID from thread URLs like /t/slug.677450/page-514 or /t.677450."""
+        match = re.search(r'/t(?:/[^/]*?)?\.(\d+)(?:/|$)', url)
         return match.group(1) if match else ""
 
     def _load_company_alias_map(self) -> dict:
