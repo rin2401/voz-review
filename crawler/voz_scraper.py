@@ -212,7 +212,7 @@ class VozCrawler:
         except Exception:
             return {}
 
-    def _build_company_candidates(self) -> list[tuple[str, str]]:
+    def _build_company_candidates(self) -> list[tuple[str, str, re.Pattern]]:
         candidates = []
         seen = set()
         for alias, canonical in self.alias_map.items():
@@ -224,7 +224,8 @@ class VozCrawler:
                 if key in seen:
                     continue
                 seen.add(key)
-                candidates.append((name, canonical))
+                pattern = re.compile(rf'(?<!\w){re.escape(name)}(?!\w)', re.IGNORECASE)
+                candidates.append((name, canonical, pattern))
         candidates.sort(key=lambda item: len(item[0]), reverse=True)
         return candidates
 
@@ -340,9 +341,8 @@ class VozCrawler:
                     return company
 
         # Fallback: longest matching alias/canonical name inside content for Unknown posts
-        normalized_content = content.lower()
-        for candidate, canonical in self.company_candidates:
-            if candidate.lower() in normalized_content:
+        for candidate, canonical, pattern in self.company_candidates:
+            if pattern.search(content):
                 return canonical
         
         return "Unknown"
