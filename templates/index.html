@@ -6,34 +6,56 @@
     <title>VOZ Review</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
+        :root {
+            --bg-body: #0d1117;
+            --bg-card: #161b22;
+            --bg-card-header: #21262d;
+            --border-color: #30363d;
+            --text-color: #e6edf3;
+            --muted-color: #8b949e;
+            --link-color: #58a6ff;
+            --input-bg: #0d1117;
+            --hover-bg: #21262d;
+        }
+        body.light-mode {
+            --bg-body: #f6f8fa;
+            --bg-card: #ffffff;
+            --bg-card-header: #f6f8fa;
+            --border-color: #d0d7de;
+            --text-color: #24292f;
+            --muted-color: #57606a;
+            --link-color: #0969da;
+            --input-bg: #ffffff;
+            --hover-bg: #f3f4f6;
+        }
         body { 
-            background: #0d1117 !important; 
-            color: #e6edf3 !important;
+            background: var(--bg-body) !important; 
+            color: var(--text-color) !important;
         }
         .card { 
-            background: #161b22 !important; 
-            border: 1px solid #30363d !important;
+            background: var(--bg-card) !important; 
+            border: 1px solid var(--border-color) !important;
         }
         .card-header { 
-            background: #21262d !important; 
-            border-bottom: 1px solid #30363d !important;
-            color: #e6edf3 !important;
+            background: var(--bg-card-header) !important; 
+            border-bottom: 1px solid var(--border-color) !important;
+            color: var(--text-color) !important;
         }
         .card-body {
-            color: #e6edf3 !important;
+            color: var(--text-color) !important;
         }
         .table {
-            color: #e6edf3 !important;
+            color: var(--text-color) !important;
         }
         .table-dark {
-            --bs-table-bg: #161b22;
-            --bs-table-color: #e6edf3;
+            --bs-table-bg: var(--bg-card);
+            --bs-table-color: var(--text-color);
         }
         .table-hover > tbody > tr:hover {
-            background-color: #21262d !important;
+            background-color: var(--hover-bg) !important;
         }
-        .text-muted { color: #8b949e !important; }
-        a { color: #58a6ff !important; text-decoration: none; }
+        .text-muted { color: var(--muted-color) !important; }
+        a { color: var(--link-color) !important; text-decoration: none; }
         a:hover { text-decoration: underline; }
         .company-name { color: #f0883e !important; font-weight: 600; }
         .review-content { font-size: 0.95rem; line-height: 1.6; color: #e6edf3 !important; }
@@ -43,26 +65,29 @@
         .btn-secondary { background: #21262d !important; border: 1px solid #30363d !important; color: #e6edf3 !important; }
         .btn-secondary:hover { background: #30363d !important; }
         input, select { 
-            background: #0d1117 !important; 
-            border: 1px solid #30363d !important; 
-            color: #e6edf3 !important;
+            background: var(--input-bg) !important; 
+            border: 1px solid var(--border-color) !important; 
+            color: var(--text-color) !important;
         }
         input::placeholder { color: #6e7681 !important; }
-        .navbar { background: #161b22 !important; border-bottom: 1px solid #30363d !important; }
-        .navbar-dark .navbar-brand { color: #e6edf3 !important; }
-        .navbar-dark .nav-link { color: #e6edf3 !important; }
-        .navbar-dark .nav-link:hover { color: #58a6ff !important; }
-        .pagination { --bs-pagination-bg: #161b22; --bs-pagination-color: #e6edf3; --bs-pagination-border-color: #30363d; }
-        .page-link { background: #161b22 !important; color: #e6edf3 !important; border-color: #30363d !important; }
+        .navbar { background: var(--bg-card) !important; border-bottom: 1px solid var(--border-color) !important; }
+        .navbar-dark .navbar-brand { color: var(--text-color) !important; }
+        .navbar-dark .nav-link { color: var(--text-color) !important; }
+        .navbar-dark .nav-link:hover { color: var(--link-color) !important; }
+        .pagination { --bs-pagination-bg: var(--bg-card); --bs-pagination-color: var(--text-color); --bs-pagination-border-color: var(--border-color); }
+        .page-link { background: var(--bg-card) !important; color: var(--text-color) !important; border-color: var(--border-color) !important; }
         .page-link:hover { background: #21262d !important; }
         .page-item.active .page-link { background: #238636 !important; border-color: #238636 !important; }
         h2, h3, h4, h5 { color: #e6edf3 !important; }
         small { color: #8b949e !important; }
         .form-control:focus { 
-            background: #0d1117 !important;
-            border-color: #58a6ff !important;
-            color: #e6edf3 !important;
+            background: var(--input-bg) !important;
+            border-color: var(--link-color) !important;
+            color: var(--text-color) !important;
             box-shadow: 0 0 0 0.25rem rgba(88, 166, 255, 0.25);
+        }
+        .theme-toggle {
+            min-width: 110px;
         }
     </style>
 </head>
@@ -74,9 +99,12 @@
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav ms-auto">
+                <ul class="navbar-nav ms-auto align-items-lg-center gap-lg-2">
                     <li class="nav-item"><a class="nav-link" href="/">🏢 Company</a></li>
                     <li class="nav-item"><a class="nav-link" href="/threads">🧵 Threads</a></li>
+                    <li class="nav-item ms-lg-2">
+                        <button type="button" class="btn btn-sm btn-secondary theme-toggle" onclick="toggleTheme()">🌙 Dark</button>
+                    </li>
                 </ul>
             </div>
         </div>
@@ -156,5 +184,19 @@
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        const THEME_KEY = 'voz-review-theme';
+        function applyTheme(theme) {
+            document.body.classList.toggle('light-mode', theme === 'light');
+            const button = document.querySelector('.theme-toggle');
+            if (button) button.textContent = theme === 'light' ? '☀️ Light' : '🌙 Dark';
+        }
+        function toggleTheme() {
+            const nextTheme = document.body.classList.contains('light-mode') ? 'dark' : 'light';
+            localStorage.setItem(THEME_KEY, nextTheme);
+            applyTheme(nextTheme);
+        }
+        applyTheme(localStorage.getItem(THEME_KEY) || 'dark');
+    </script>
 </body>
 </html>
