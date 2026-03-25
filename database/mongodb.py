@@ -38,6 +38,13 @@ async def create_indexes():
     await reviews.create_index("company")
     await reviews.create_index("created_at")
     await reviews.create_index("voz_thread_id")
+
+    # Replace old non-unique voz_post_id index with unique partial index
+    existing_indexes = await reviews.index_information()
+    voz_post_index = existing_indexes.get("voz_post_id_1")
+    if voz_post_index and not voz_post_index.get("unique"):
+        await reviews.drop_index("voz_post_id_1")
+
     await reviews.create_index(
         "voz_post_id",
         unique=True,
