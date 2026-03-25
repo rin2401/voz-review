@@ -67,17 +67,16 @@ async def main():
 
     try:
         cursor = db.reviews.find(
-            {"company": {"$exists": True, "$nin": [None, "", "Unknown"]}},
+            {"content": {"$exists": True, "$nin": [None, ""]}},
             {"_id": 1, "company": 1, "content": 1, "monthly_salary_million": 1},
         )
         async for doc in cursor:
             scanned += 1
             updates = {}
 
-            old_name = doc.get("company")
-            new_name = crawler._clean_company_name(old_name)
-            if new_name and new_name != old_name:
-                updates["company"] = new_name
+            reparsed_company = crawler._extract_company(doc.get("content") or "")
+            if reparsed_company != (doc.get("company") or "Unknown"):
+                updates["company"] = reparsed_company
                 normalized_updates += 1
 
             salary = crawler._extract_monthly_salary_million(doc.get("content") or "")
