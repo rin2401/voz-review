@@ -46,15 +46,11 @@
         <div class="card mb-4">
             <div class="card-body">
                 <form id="addThreadForm" class="row g-3 align-items-end" onsubmit="addThread(event)">
-                    <div class="col-md-8">
+                    <div class="col-md-10">
                         <label for="threadUrl" class="form-label text-muted">Thread URL</label>
                         <input type="url" id="threadUrl" class="form-control" placeholder="https://voz.vn/t/..." required>
                     </div>
-                    <div class="col-md-3">
-                        <label for="threadTitle" class="form-label text-muted">Title (optional)</label>
-                        <input type="text" id="threadTitle" class="form-control" placeholder="Custom title">
-                    </div>
-                    <div class="col-md-1 d-grid">
+                    <div class="col-md-2 d-grid">
                         <button type="submit" class="btn btn-primary">+ Add</button>
                     </div>
                 </form>
@@ -100,14 +96,13 @@
         async function addThread(event) {
             event.preventDefault();
             const url = document.getElementById('threadUrl').value.trim();
-            const title = document.getElementById('threadTitle').value.trim();
             if (!url) return;
 
             try {
                 const res = await fetch('/api/threads', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ url, title }),
+                    body: JSON.stringify({ url }),
                 });
                 if (!res.ok) throw new Error(await res.text());
                 window.location.reload();

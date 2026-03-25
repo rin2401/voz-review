@@ -299,11 +299,10 @@ async def api_create_thread(payload: dict):
     """Add or update a thread URL in DB."""
     crawler = VozCrawler()
     normalized_url = (payload.get("url") or "").strip()
-    title = (payload.get("title") or "").strip()
     if not normalized_url:
         raise HTTPException(400, "URL is required")
     thread_id = crawler._extract_thread_id(normalized_url)
-    await upsert_thread(url=normalized_url, title=title.strip() or None, thread_id=thread_id)
+    await upsert_thread(url=normalized_url, thread_id=thread_id)
     return {"status": "created", "url": normalized_url, "thread_id": thread_id}
 
 
