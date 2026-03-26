@@ -191,6 +191,31 @@
     </nav>
 
     <div class="container mt-4">
+        {% if threads_auth_required %}
+        <div class="row justify-content-center">
+            <div class="col-12 col-md-8 col-lg-5">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0">🔒 Threads Authentication</h5>
+                    </div>
+                    <div class="card-body">
+                        <form action="/threads/login" method="post" class="row g-3">
+                            <div class="col-12">
+                                <label for="threads-password" class="form-label text-muted">Password</label>
+                                <input type="password" id="threads-password" name="password" class="form-control" required autofocus>
+                            </div>
+                            {% if auth_error %}
+                            <div class="col-12 text-danger small">{{ auth_error }}</div>
+                            {% endif %}
+                            <div class="col-12 d-grid">
+                                <button type="submit" class="btn btn-primary">Unlock Threads</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% else %}
         <div class="row g-3 mb-4">
             <div class="col-12 col-md-6 col-lg-4">
                 <div class="card text-center h-100">
@@ -280,6 +305,7 @@
                 </table>
             </div>
         </div>
+        {% endif %}
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>

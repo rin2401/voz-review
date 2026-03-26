@@ -1,6 +1,6 @@
 """FastAPI main application"""
 from fastapi import FastAPI, Request, HTTPException
-from fastapi.responses import HTMLResponse, JSONResponse
+from fastapi.responses import HTMLResponse, JSONResponse, RedirectResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 from jinja2 import Environment, FileSystemLoader
@@ -57,6 +57,8 @@ jinja_env = Environment(loader=FileSystemLoader("templates"))
 
 RUNNING_CRAWL_URLS: set[str] = set()
 VN_TZ = ZoneInfo("Asia/Ho_Chi_Minh")
+THREADS_PASSWORD = "rin2401"
+THREADS_AUTH_COOKIE = "voz_review_threads_auth"
 
 
 def format_dt_vn(dt, fmt: str = "%Y-%m-%d %H:%M") -> str:
@@ -81,6 +83,15 @@ def format_salary_million(value) -> str:
 
 def company_to_slug(name: str) -> str:
     return (name or "").replace(" ", "-")
+
+
+def is_threads_authed(request: Request) -> bool:
+    return request.cookies.get(THREADS_AUTH_COOKIE) == THREADS_PASSWORD
+
+
+def require_threads_auth(request: Request):
+    if not is_threads_authed(request):
+        raise HTTPException(status_code=401, detail="Threads authentication required")
 
 
 async def resolve_company_name(slug_or_name: str) -> str:
@@ -307,18 +318,52 @@ async def refresh_thread_job_statuses():
 @app.get("/threads", response_class=HTMLResponse)
 async def threads_page(request: Request):
     """List configured crawl threads"""
+    template = jinja_env.get_template("threads.html")
+    if not is_threads_authed(request):
+        return HTMLResponse(template.render(
+            request=request,
+            threads_auth_required=True,
+            auth_error="",
+            threads=[],
+            total_reviews=0,
+            total_companies=0,
+            total_threads=0,
+        ))
+
     await refresh_thread_job_statuses()
     threads = await get_all_threads()
     total_reviews = await get_review_count()
     total_companies = len(await get_all_companies())
-    template = jinja_env.get_template("threads.html")
     return HTMLResponse(template.render(
         request=request,
+        threads_auth_required=False,
+        auth_error="",
         threads=threads,
         total_reviews=total_reviews,
         total_companies=total_companies,
         total_threads=len(threads),
     ))
+
+
+@app.post("/threads/login", response_class=HTMLResponse)
+async def threads_login(request: Request):
+    form = await request.form()
+    password = (form.get("password") or "").strip()
+    if password != THREADS_PASSWORD:
+        template = jinja_env.get_template("threads.html")
+        return HTMLResponse(template.render(
+            request=request,
+            threads_auth_required=True,
+            auth_error="Sai mật khẩu.",
+            threads=[],
+            total_reviews=0,
+            total_companies=0,
+            total_threads=0,
+        ), status_code=401)
+
+    response = RedirectResponse(url="/threads", status_code=303)
+    response.set_cookie(THREADS_AUTH_COOKIE, THREADS_PASSWORD, httponly=True, samesite="lax")
+    return response
 
 
 # ============== API ==============
@@ -371,16 +416,18 @@ async def api_stats():
 # ============== CRAWLER ENDPOINTS ==============
 
 @app.post("/api/crawl/all")
-async def api_crawl_all(max_pages: int = 0):
+async def api_crawl_all(request: Request, max_pages: int = 0):
     """Crawl all configured threads from DB"""
+    require_threads_auth(request)
     asyncio.create_task(crawl_all_forums(max_pages))
     threads = await get_all_threads()
     return {"status": "started", "threads": len(threads)}
 
 
 @app.post("/api/crawl/thread")
-async def api_crawl_thread(url: str, max_pages: int = 0):
+async def api_crawl_thread(request: Request, url: str, max_pages: int = 0):
     """Crawl a specific thread by URL. max_pages=0 means crawl all pages"""
+    require_threads_auth(request)
     thread = await get_thread_state(url=url)
     if thread and thread.get("crawl_status") == "running":
         if url in RUNNING_CRAWL_URLS:
@@ -490,15 +537,17 @@ async def crawl_all_forums(max_pages: int):
 # ============== INFO ==============
 
 @app.get("/api/threads")
-async def api_threads():
+async def api_threads(request: Request):
     """Get configured thread URLs from DB"""
+    require_threads_auth(request)
     await refresh_thread_job_statuses()
     return await get_all_threads()
 
 
 @app.post("/api/threads")
-async def api_create_thread(payload: dict):
+async def api_create_thread(request: Request, payload: dict):
     """Add or update a thread URL in DB."""
+    require_threads_auth(request)
     crawler = VozCrawler()
     normalized_url = (payload.get("url") or "").strip()
     if not normalized_url:
