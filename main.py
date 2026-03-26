@@ -7,6 +7,7 @@ from jinja2 import Environment, FileSystemLoader
 from contextlib import asynccontextmanager
 from typing import Optional, List
 from zoneinfo import ZoneInfo
+from urllib.parse import parse_qs
 import asyncio
 
 from database.mongodb import (
@@ -347,8 +348,9 @@ async def threads_page(request: Request):
 
 @app.post("/threads/login", response_class=HTMLResponse)
 async def threads_login(request: Request):
-    form = await request.form()
-    password = (form.get("password") or "").strip()
+    raw_body = (await request.body()).decode("utf-8")
+    form = parse_qs(raw_body)
+    password = (form.get("password", [""])[0] or "").strip()
     if password != THREADS_PASSWORD:
         template = jinja_env.get_template("threads.html")
         return HTMLResponse(template.render(
