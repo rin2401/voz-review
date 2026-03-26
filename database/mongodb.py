@@ -114,35 +114,49 @@ async def get_reviews_by_company(
     return await cursor.to_list(length=limit)
 
 
-async def get_offers_by_company(
-    company: str,
-    limit: int = 50,
-    skip: int = 0,
-    thread_id: str = None,
-) -> List[dict]:
-    """Get extracted offers for a specific company."""
-    escaped_company = re.escape(company)
-    query = {"company": {"$regex": f"^{escaped_company}$", "$options": "i"}}
-    if thread_id:
-        query["voz_thread_id"] = thread_id
-
-    cursor = (
-        db.offers.find(query)
-        .sort([("offer_year", -1), ("updated_at", -1), ("created_at", -1)])
-        .skip(skip)
-        .limit(limit)
-    )
-    return await cursor.to_list(length=limit)
-
-
-async def get_offer_count(company: str = None, thread_id: str = None) -> int:
-    """Count offers, optionally filtered by company or thread."""
+def build_offer_query(company: str = None, thread_id: str = None, position_keyword: str = "") -> dict:
     query = {}
     if company:
         escaped_company = re.escape(company)
         query["company"] = {"$regex": f"^{escaped_company}$", "$options": "i"}
     if thread_id:
         query["voz_thread_id"] = thread_id
+    if position_keyword:
+        query["position"] = {"$regex": re.escape(position_keyword.strip()), "$options": "i"}
+    return query
+
+
+async def get_offers_by_company(
+    company: str,
+    limit: int = 50,
+    skip: int = 0,
+    thread_id: str = None,
+    position_keyword: str = "",
+    sort_by: str = "recent",
+) -> List[dict]:
+    """Get extracted offers for a specific company."""
+    query = build_offer_query(company=company, thread_id=thread_id, position_keyword=position_keyword)
+    sort_map = {
+        "recent": [("updated_at", -1), ("created_at", -1)],
+        "year_desc": [("offer_year", -1), ("updated_at", -1), ("created_at", -1)],
+        "year_asc": [("offer_year", 1), ("updated_at", -1), ("created_at", -1)],
+        "salary_desc": [("monthly_salary_million", -1), ("updated_at", -1), ("created_at", -1)],
+        "salary_asc": [("monthly_salary_million", 1), ("updated_at", -1), ("created_at", -1)],
+        "position_az": [("position", 1), ("updated_at", -1)],
+    }
+
+    cursor = (
+        db.offers.find(query)
+        .sort(sort_map.get(sort_by, sort_map["recent"]))
+        .skip(skip)
+        .limit(limit)
+    )
+    return await cursor.to_list(length=limit)
+
+
+async def get_offer_count(company: str = None, thread_id: str = None, position_keyword: str = "") -> int:
+    """Count offers, optionally filtered by company, thread, or position."""
+    query = build_offer_query(company=company, thread_id=thread_id, position_keyword=position_keyword)
     return await db.offers.count_documents(query)
 
 

@@ -136,7 +136,15 @@ async def home(request: Request, q: str = "", sort: str = "recent_review"):
 
 
 @app.get("/company/{company_name}", response_class=HTMLResponse)
-async def company_detail(request: Request, company_name: str, page: int = 1, thread_id: str = "", view: str = "all"):
+async def company_detail(
+    request: Request,
+    company_name: str,
+    page: int = 1,
+    thread_id: str = "",
+    view: str = "all",
+    position: str = "",
+    sort: str = "recent",
+):
     """Company detail page - list reviews"""
     limit = 20
     skip = (page - 1) * limit
@@ -157,16 +165,22 @@ async def company_detail(request: Request, company_name: str, page: int = 1, thr
     review_by_post_id = {}
     reply_children_by_post_id = {}
 
+    active_offer_sort = sort if sort in {"recent", "year_desc", "year_asc", "salary_desc", "salary_asc", "position_az"} else "recent"
+    offer_position_query = position.strip()
+
     if offer_only:
         offers = await get_offers_by_company(
             company_name,
             limit=limit,
             skip=skip,
             thread_id=active_thread_id or None,
+            position_keyword=offer_position_query,
+            sort_by=active_offer_sort,
         )
         total = await get_offer_count(
             company=company_name,
             thread_id=active_thread_id or None,
+            position_keyword=offer_position_query,
         )
     else:
         reviews = await get_reviews_by_company(
@@ -237,6 +251,8 @@ async def company_detail(request: Request, company_name: str, page: int = 1, thr
         available_thread_ids=available_thread_ids,
         active_thread_id=active_thread_id,
         active_view=active_view,
+        offer_position_query=offer_position_query,
+        active_offer_sort=active_offer_sort,
         page=page,
         total=total,
         pages=(total + limit - 1) // limit

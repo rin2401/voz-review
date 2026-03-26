@@ -216,6 +216,15 @@
             --bs-table-accent-bg: rgba(255, 255, 255, 0.04);
             color: var(--text-color) !important;
         }
+        .offer-toolbar .form-control,
+        .offer-toolbar .form-select {
+            background: var(--input-bg) !important;
+            color: var(--text-color) !important;
+            border: 1px solid var(--border-color) !important;
+        }
+        .offer-toolbar .form-control::placeholder {
+            color: var(--muted-color) !important;
+        }
         .page-link:hover {
             background: #21262d !important;
             color: #e6edf3 !important;
@@ -411,7 +420,6 @@
 
         <div class="reviews-list">
             {% if active_view == 'offer' %}
-                {% if offers %}
                 <div class="card mb-3">
                     <div class="card-header d-flex justify-content-between align-items-center flex-wrap gap-2">
                         <div>
@@ -421,6 +429,37 @@
                             {% if active_thread_id %}Thread {{ active_thread_id }} • {% endif %}{{ total }} offer{% if total != 1 %}s{% endif %}
                         </div>
                     </div>
+                    <div class="card-body border-bottom">
+                        <form method="get" class="row g-2 align-items-center offer-toolbar">
+                            <input type="hidden" name="view" value="offer">
+                            {% if active_thread_id %}
+                            <input type="hidden" name="thread_id" value="{{ active_thread_id }}">
+                            {% endif %}
+                            <div class="col-12 col-lg-6">
+                                <input
+                                    type="text"
+                                    class="form-control"
+                                    name="position"
+                                    value="{{ offer_position_query }}"
+                                    placeholder="Search position..."
+                                >
+                            </div>
+                            <div class="col-12 col-sm-6 col-lg-4">
+                                <select class="form-select" name="sort">
+                                    <option value="recent" {% if active_offer_sort == 'recent' %}selected{% endif %}>Sort by: Recent</option>
+                                    <option value="year_desc" {% if active_offer_sort == 'year_desc' %}selected{% endif %}>Year ↓</option>
+                                    <option value="year_asc" {% if active_offer_sort == 'year_asc' %}selected{% endif %}>Year ↑</option>
+                                    <option value="salary_desc" {% if active_offer_sort == 'salary_desc' %}selected{% endif %}>Salary ↓</option>
+                                    <option value="salary_asc" {% if active_offer_sort == 'salary_asc' %}selected{% endif %}>Salary ↑</option>
+                                    <option value="position_az" {% if active_offer_sort == 'position_az' %}selected{% endif %}>Position A-Z</option>
+                                </select>
+                            </div>
+                            <div class="col-12 col-sm-6 col-lg-2 d-grid d-sm-flex justify-content-sm-end gap-2">
+                                <button type="submit" class="btn btn-secondary w-100">Apply</button>
+                            </div>
+                        </form>
+                    </div>
+                    {% if offers %}
                     <div class="card-body p-0">
                         <div class="table-responsive">
                             <table class="table table-hover align-middle mb-0">
@@ -463,13 +502,12 @@
                         </div>
                     </div>
                 </div>
-                {% else %}
-                <div class="card">
+                    {% else %}
                     <div class="card-body text-center text-muted py-5">
-                        Chưa có offer cho công ty này.
+                        Không có offer nào khớp filter hiện tại.
                     </div>
+                    {% endif %}
                 </div>
-                {% endif %}
             {% else %}
                 {% for review in reviews %}
                 <div class="card mb-3">
@@ -542,11 +580,11 @@
         <nav>
             <ul class="pagination justify-content-center flex-wrap gap-1">
                 <li class="page-item {% if page <= 1 %}disabled{% endif %}">
-                    <a class="page-link" href="/company/{{ company_slug }}?page={{ page-1 if page > 1 else 1 }}&view={{ active_view }}{% if active_thread_id %}&thread_id={{ active_thread_id }}{% endif %}">‹ Prev</a>
+                    <a class="page-link" href="/company/{{ company_slug }}?page={{ page-1 if page > 1 else 1 }}&view={{ active_view }}{% if active_thread_id %}&thread_id={{ active_thread_id }}{% endif %}{% if active_view == 'offer' and offer_position_query %}&position={{ offer_position_query|urlencode }}{% endif %}{% if active_view == 'offer' %}&sort={{ active_offer_sort }}{% endif %}">‹ Prev</a>
                 </li>
 
                 {% if start_page > 1 %}
-                <li class="page-item"><a class="page-link" href="/company/{{ company_slug }}?page=1&view={{ active_view }}{% if active_thread_id %}&thread_id={{ active_thread_id }}{% endif %}">1</a></li>
+                <li class="page-item"><a class="page-link" href="/company/{{ company_slug }}?page=1&view={{ active_view }}{% if active_thread_id %}&thread_id={{ active_thread_id }}{% endif %}{% if active_view == 'offer' and offer_position_query %}&position={{ offer_position_query|urlencode }}{% endif %}{% if active_view == 'offer' %}&sort={{ active_offer_sort }}{% endif %}">1</a></li>
                 {% if start_page > 2 %}
                 <li class="page-item disabled"><span class="page-link">...</span></li>
                 {% endif %}
@@ -554,7 +592,7 @@
 
                 {% for p in range(start_page, end_page + 1) %}
                 <li class="page-item {% if p == page %}active{% endif %}">
-                    <a class="page-link" href="/company/{{ company_slug }}?page={{ p }}&view={{ active_view }}{% if active_thread_id %}&thread_id={{ active_thread_id }}{% endif %}">{{ p }}</a>
+                    <a class="page-link" href="/company/{{ company_slug }}?page={{ p }}&view={{ active_view }}{% if active_thread_id %}&thread_id={{ active_thread_id }}{% endif %}{% if active_view == 'offer' and offer_position_query %}&position={{ offer_position_query|urlencode }}{% endif %}{% if active_view == 'offer' %}&sort={{ active_offer_sort }}{% endif %}">{{ p }}</a>
                 </li>
                 {% endfor %}
 
@@ -562,11 +600,11 @@
                 {% if end_page < pages - 1 %}
                 <li class="page-item disabled"><span class="page-link">...</span></li>
                 {% endif %}
-                <li class="page-item"><a class="page-link" href="/company/{{ company_slug }}?page={{ pages }}&view={{ active_view }}{% if active_thread_id %}&thread_id={{ active_thread_id }}{% endif %}">{{ pages }}</a></li>
+                <li class="page-item"><a class="page-link" href="/company/{{ company_slug }}?page={{ pages }}&view={{ active_view }}{% if active_thread_id %}&thread_id={{ active_thread_id }}{% endif %}{% if active_view == 'offer' and offer_position_query %}&position={{ offer_position_query|urlencode }}{% endif %}{% if active_view == 'offer' %}&sort={{ active_offer_sort }}{% endif %}">{{ pages }}</a></li>
                 {% endif %}
 
                 <li class="page-item {% if page >= pages %}disabled{% endif %}">
-                    <a class="page-link" href="/company/{{ company_slug }}?page={{ page+1 if page < pages else pages }}&view={{ active_view }}{% if active_thread_id %}&thread_id={{ active_thread_id }}{% endif %}">Next ›</a>
+                    <a class="page-link" href="/company/{{ company_slug }}?page={{ page+1 if page < pages else pages }}&view={{ active_view }}{% if active_thread_id %}&thread_id={{ active_thread_id }}{% endif %}{% if active_view == 'offer' and offer_position_query %}&position={{ offer_position_query|urlencode }}{% endif %}{% if active_view == 'offer' %}&sort={{ active_offer_sort }}{% endif %}">Next ›</a>
                 </li>
             </ul>
         </nav>
