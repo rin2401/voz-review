@@ -262,7 +262,7 @@
                 <form action="/search" method="get" class="row g-3 align-items-end">
                     <div class="col-md-10">
                         <label for="search-q" class="form-label text-muted">Search reviews</label>
-                        <input type="text" id="search-q" name="q" class="form-control form-control-lg" placeholder="Ví dụ: Fsoft, Zalo, CMC, lương, backend..." value="{{ query }}" autofocus>
+                        <input type="text" id="search-q" name="q" class="form-control form-control-lg" placeholder="Ví dụ: Fsoft, Zalo, CMC, lương, backend..." value="{{ query }}" autofocus required pattern=".*\S.*" title="Query không được để trống">
                     </div>
                     <div class="col-md-2 d-grid">
                         <button type="submit" class="btn btn-primary btn-lg">Search</button>
