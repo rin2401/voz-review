@@ -288,7 +288,7 @@ class VozCrawler:
                 return None
 
             value = float(m.group(1).replace(',', '.'))
-            if value > 500:
+            if value > 200:
                 return None
             return value
 
