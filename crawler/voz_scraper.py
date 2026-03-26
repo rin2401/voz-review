@@ -252,7 +252,16 @@ class VozCrawler:
 
     def _extract_monthly_salary_million(self, content: str) -> Optional[float]:
         """Extract monthly salary from lines like 50m/50 triệu or plain values like 86 gross / 86 net."""
-        for raw_line in content.split('\n'):
+        lines = content.split('\n')
+
+        def _next_non_empty_line(start_index: int) -> str:
+            for candidate in lines[start_index + 1:]:
+                candidate = candidate.strip()
+                if candidate:
+                    return candidate
+            return ""
+
+        for index, raw_line in enumerate(lines):
             line = raw_line.strip()
             lower_line = line.lower()
             if not lower_line.startswith('lương tháng') and not lower_line.startswith('luong thang'):
@@ -263,6 +272,9 @@ class VozCrawler:
             else:
                 salary_text = re.split(r'luong thang|lương tháng', line, maxsplit=1, flags=re.IGNORECASE)[-1].strip(' :-')
 
+            if not re.search(r'\d', salary_text):
+                salary_text = _next_non_empty_line(index)
+
             lower_salary = salary_text.lower()
             if any(token in lower_salary for token in ['năm', '/năm', 'year', '/year', 'package', 'usd', 'sgd', '$', 'vnd', 'k']):
                 return None
@@ -270,6 +282,8 @@ class VozCrawler:
             m = re.search(r'(\d+(?:[.,]\d+)?)\s*(m|tr|triệu)\b', lower_salary)
             if not m:
                 m = re.search(r'(\d+(?:[.,]\d+)?)\s*(gross|net)\b', lower_salary)
+            if not m:
+                m = re.search(r'(\d+(?:[.,]\d+)?)\s*/\s*tháng\b', lower_salary)
             if not m:
                 return None
 
