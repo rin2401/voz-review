@@ -375,6 +375,10 @@
             if (button) button.remove();
         }
         const THEME_KEY = 'voz-review-theme';
+        const systemDarkQuery = window.matchMedia('(prefers-color-scheme: dark)');
+        function getPreferredTheme() {
+            return localStorage.getItem(THEME_KEY) || (systemDarkQuery.matches ? 'dark' : 'light');
+        }
         function applyTheme(theme) {
             document.body.classList.toggle('light-mode', theme === 'light');
             const button = document.querySelector('.theme-toggle');
@@ -385,7 +389,12 @@
             localStorage.setItem(THEME_KEY, nextTheme);
             applyTheme(nextTheme);
         }
-        applyTheme(localStorage.getItem(THEME_KEY) || 'dark');
+        systemDarkQuery.addEventListener('change', () => {
+            if (!localStorage.getItem(THEME_KEY)) {
+                applyTheme(getPreferredTheme());
+            }
+        });
+        applyTheme(getPreferredTheme());
         initReadMoreButtons();
     </script>
 </body>
