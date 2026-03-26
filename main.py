@@ -67,6 +67,18 @@ def format_dt_vn(dt, fmt: str = "%Y-%m-%d %H:%M") -> str:
     return dt.astimezone(VN_TZ).strftime(fmt)
 
 
+def format_salary_million(value) -> str:
+    if value is None:
+        return "-"
+    try:
+        numeric = float(value)
+    except (TypeError, ValueError):
+        return str(value)
+    if numeric.is_integer():
+        return f"{int(numeric)}M"
+    return f"{numeric:g}M"
+
+
 def company_to_slug(name: str) -> str:
     return (name or "").replace(" ", "-")
 
@@ -88,6 +100,7 @@ async def resolve_company_name(slug_or_name: str) -> str:
 
 jinja_env.globals["company_to_slug"] = company_to_slug
 jinja_env.globals["format_dt_vn"] = format_dt_vn
+jinja_env.globals["format_salary_million"] = format_salary_million
 
 
 # ============== PAGES ==============

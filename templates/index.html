@@ -291,8 +291,8 @@
                             <td><a href="/company/{{ company_to_slug(company.name) }}" class="company-name">{{ company.name }}</a></td>
                             <td><span class="badge badge-count">{{ company.review_count }}</span></td>
                             <td>
-                                {% if company.max_monthly_salary_million %}
-                                {{ company.max_monthly_salary_million }}M
+                                {% if company.max_monthly_salary_million is not none %}
+                                {{ format_salary_million(company.max_monthly_salary_million) }}
                                 {% else %}
                                 -
                                 {% endif %}
