@@ -489,8 +489,8 @@
                                         </td>
                                         <td class="offer-bonus">{{ offer.bonus or '-' }}</td>
                                         <td>
-                                            {% if offer.voz_post_id and offer.voz_thread_id %}
-                                            <a href="https://voz.vn/t/x.{{ offer.voz_thread_id }}#post-{{ offer.voz_post_id }}" target="_blank">View on Voz</a>
+                                            {% if offer.url %}
+                                            <a href="{{ offer.url }}" target="_blank">View on Voz</a>
                                             {% else %}
                                             -
                                             {% endif %}

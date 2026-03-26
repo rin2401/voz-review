@@ -151,7 +151,24 @@ async def get_offers_by_company(
         .skip(skip)
         .limit(limit)
     )
-    return await cursor.to_list(length=limit)
+    offers = await cursor.to_list(length=limit)
+
+    post_ids = [str(offer.get("voz_post_id")) for offer in offers if offer.get("voz_post_id")]
+    review_docs = []
+    if post_ids:
+        review_docs = await db.reviews.find(
+            {"voz_post_id": {"$in": post_ids}},
+            {"_id": 0, "voz_post_id": 1, "url": 1, "post_date": 1},
+        ).to_list(length=None)
+    review_map = {str(doc.get("voz_post_id")): doc for doc in review_docs if doc.get("voz_post_id")}
+
+    for offer in offers:
+        linked_review = review_map.get(str(offer.get("voz_post_id")))
+        if linked_review:
+            offer["url"] = linked_review.get("url") or ""
+            offer["post_date"] = linked_review.get("post_date")
+
+    return offers
 
 
 async def get_offer_count(company: str = None, thread_id: str = None, position_keyword: str = "") -> int:
