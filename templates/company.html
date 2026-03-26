@@ -216,14 +216,47 @@
             --bs-table-accent-bg: rgba(255, 255, 255, 0.04);
             color: var(--text-color) !important;
         }
+        .offer-toolbar {
+            --offer-toolbar-bg: #1a1f29;
+            --offer-toolbar-input-bg: #0d1117;
+        }
+        .offer-toolbar-shell {
+            background: var(--offer-toolbar-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 0.75rem;
+            padding: 0.9rem;
+        }
+        .offer-toolbar-label {
+            display: block;
+            font-size: 0.95rem;
+            color: var(--muted-color);
+            margin-bottom: 0.45rem;
+            font-weight: 500;
+        }
         .offer-toolbar .form-control,
         .offer-toolbar .form-select {
-            background: var(--input-bg) !important;
+            background: var(--offer-toolbar-input-bg) !important;
             color: var(--text-color) !important;
             border: 1px solid var(--border-color) !important;
+            min-height: 48px;
+            border-radius: 0.6rem;
+            box-shadow: none !important;
         }
         .offer-toolbar .form-control::placeholder {
             color: var(--muted-color) !important;
+        }
+        .offer-toolbar .btn-apply {
+            min-height: 48px;
+            border-radius: 0.6rem;
+            background: #2ea043 !important;
+            border: 1px solid #2ea043 !important;
+            color: #ffffff !important;
+            font-weight: 600;
+        }
+        .offer-toolbar .btn-apply:hover {
+            background: #278a3a !important;
+            border-color: #278a3a !important;
+            color: #ffffff !important;
         }
         .page-link:hover {
             background: #21262d !important;
@@ -329,6 +362,14 @@
         body.light-mode a {
             color: var(--link-color) !important;
         }
+        body.light-mode .offer-toolbar {
+            --offer-toolbar-bg: #f8fafc;
+            --offer-toolbar-input-bg: #ffffff;
+        }
+        body.light-mode .offer-toolbar-shell {
+            border-color: var(--border-soft) !important;
+            background: #f8fafc !important;
+        }
     </style>
 </head>
 <body>
@@ -430,32 +471,39 @@
                         </div>
                     </div>
                     <div class="card-body border-bottom">
-                        <form method="get" class="row g-2 align-items-center offer-toolbar">
+                        <form method="get" class="offer-toolbar">
                             <input type="hidden" name="view" value="offer">
                             {% if active_thread_id %}
                             <input type="hidden" name="thread_id" value="{{ active_thread_id }}">
                             {% endif %}
-                            <div class="col-12 col-lg-6">
-                                <input
-                                    type="text"
-                                    class="form-control"
-                                    name="position"
-                                    value="{{ offer_position_query }}"
-                                    placeholder="Search position..."
-                                >
-                            </div>
-                            <div class="col-12 col-sm-6 col-lg-4">
-                                <select class="form-select" name="sort">
-                                    <option value="recent" {% if active_offer_sort == 'recent' %}selected{% endif %}>Sort by: Recent</option>
-                                    <option value="year_desc" {% if active_offer_sort == 'year_desc' %}selected{% endif %}>Year ↓</option>
-                                    <option value="year_asc" {% if active_offer_sort == 'year_asc' %}selected{% endif %}>Year ↑</option>
-                                    <option value="salary_desc" {% if active_offer_sort == 'salary_desc' %}selected{% endif %}>Salary ↓</option>
-                                    <option value="salary_asc" {% if active_offer_sort == 'salary_asc' %}selected{% endif %}>Salary ↑</option>
-                                    <option value="position_az" {% if active_offer_sort == 'position_az' %}selected{% endif %}>Position A-Z</option>
-                                </select>
-                            </div>
-                            <div class="col-12 col-sm-6 col-lg-2 d-grid d-sm-flex justify-content-sm-end gap-2">
-                                <button type="submit" class="btn btn-secondary w-100">Apply</button>
+                            <div class="offer-toolbar-shell">
+                                <div class="row g-3 align-items-end">
+                                    <div class="col-12 col-lg-6">
+                                        <label class="offer-toolbar-label" for="offer-position-search">Filter position</label>
+                                        <input
+                                            id="offer-position-search"
+                                            type="text"
+                                            class="form-control"
+                                            name="position"
+                                            value="{{ offer_position_query }}"
+                                            placeholder="Ví dụ: Backend, Frontend, Data..."
+                                        >
+                                    </div>
+                                    <div class="col-12 col-sm-6 col-lg-4">
+                                        <label class="offer-toolbar-label" for="offer-sort">Sort by</label>
+                                        <select class="form-select" id="offer-sort" name="sort">
+                                            <option value="recent" {% if active_offer_sort == 'recent' %}selected{% endif %}>Recent review</option>
+                                            <option value="year_desc" {% if active_offer_sort == 'year_desc' %}selected{% endif %}>Year ↓</option>
+                                            <option value="year_asc" {% if active_offer_sort == 'year_asc' %}selected{% endif %}>Year ↑</option>
+                                            <option value="salary_desc" {% if active_offer_sort == 'salary_desc' %}selected{% endif %}>Salary ↓</option>
+                                            <option value="salary_asc" {% if active_offer_sort == 'salary_asc' %}selected{% endif %}>Salary ↑</option>
+                                            <option value="position_az" {% if active_offer_sort == 'position_az' %}selected{% endif %}>Position A-Z</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-12 col-sm-6 col-lg-2 d-grid">
+                                        <button type="submit" class="btn btn-apply w-100">Apply</button>
+                                    </div>
+                                </div>
                             </div>
                         </form>
                     </div>
