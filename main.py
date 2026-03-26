@@ -17,6 +17,7 @@ from database.mongodb import (
     get_reviews_by_company,
     get_offers_by_company,
     get_review_count,
+    get_company_review_count,
     get_offer_count,
     get_replies_for_posts,
     get_posts_by_ids,
@@ -363,6 +364,7 @@ async def threads_page(request: Request):
             auth_error="",
             threads=[],
             total_reviews=0,
+            total_company_reviews=0,
             total_companies=0,
             total_threads=0,
         ))
@@ -370,6 +372,7 @@ async def threads_page(request: Request):
     await refresh_thread_job_statuses()
     threads = await get_all_threads()
     total_reviews = await get_review_count()
+    total_company_reviews = await get_company_review_count()
     total_companies = len(await get_all_companies())
     return HTMLResponse(template.render(
         request=request,
@@ -377,6 +380,7 @@ async def threads_page(request: Request):
         auth_error="",
         threads=threads,
         total_reviews=total_reviews,
+        total_company_reviews=total_company_reviews,
         total_companies=total_companies,
         total_threads=len(threads),
     ))
@@ -395,6 +399,7 @@ async def threads_login(request: Request):
             auth_error="Sai mật khẩu.",
             threads=[],
             total_reviews=0,
+            total_company_reviews=0,
             total_companies=0,
             total_threads=0,
         ), status_code=401)

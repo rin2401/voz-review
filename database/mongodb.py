@@ -194,6 +194,13 @@ async def get_review_count(company: str = None, status: str = None, thread_id: s
     return await db.reviews.count_documents(query)
 
 
+async def get_company_review_count() -> int:
+    """Count reviews that have a known company name."""
+    return await db.reviews.count_documents(
+        {"company": {"$exists": True, "$nin": [None, "", "Unknown"]}}
+    )
+
+
 async def upsert_company(name: str) -> dict:
     """Create or update company, return updated doc"""
     now = datetime.utcnow()
