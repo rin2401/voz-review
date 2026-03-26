@@ -247,7 +247,7 @@ class VozCrawler:
             note_keywords = [
                 'remote', 'onsite', 'hybrid', 'singapore', 'sing', 'hà nội', 'hn', 'hcm', 'sài gòn',
                 'timezone', 'time zone', 'uk', 'us', 'jp', 'nhật', 'mỹ', 'làm', 'dự án', 'project',
-                'outsource', 'product', 'startup', 'review', 'xin review', 'cho em hỏi', 'offer',
+                'outsource', 'product', 'startup', 'review', 'xin review', 'cho em hỏi', 'offer', 'rejected',
             ]
             if right_side and (right_side[:1].islower() or any(token in right_lower for token in note_keywords)):
                 company = dash_parts[0].strip()
