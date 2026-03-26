@@ -114,21 +114,6 @@
             justify-content: center;
             border-radius: 999px;
         }
-        .sort-link {
-            color: var(--text-color) !important;
-            display: inline-flex;
-            align-items: center;
-            gap: 0.35rem;
-            font-weight: 600;
-        }
-        .sort-link:hover {
-            color: var(--link-color) !important;
-            text-decoration: none;
-        }
-        .sort-indicator {
-            font-size: 0.8rem;
-            color: var(--muted-color) !important;
-        }
         body.light-mode .btn-secondary {
             background: #f8fafd !important;
             border-color: #cfd8e3 !important;
@@ -264,10 +249,18 @@
         <div class="card mb-4">
             <div class="card-body">
                 <form action="/" method="get" class="row g-3 align-items-end">
-                    <input type="hidden" name="sort" value="{{ sort }}">
-                    <div class="col-md-10">
+                    <div class="col-md-6">
                         <label for="q" class="form-label text-muted">Filter company</label>
                         <input type="text" id="q" name="q" class="form-control" placeholder="Ví dụ: Fsoft, Zalo, CMC..." value="{{ query or '' }}">
+                    </div>
+                    <div class="col-md-4">
+                        <label for="sort" class="form-label text-muted">Sort by</label>
+                        <select id="sort" name="sort" class="form-select">
+                            <option value="az" {% if sort == 'az' %}selected{% endif %}>A-Z</option>
+                            <option value="most_review" {% if sort == 'most_review' %}selected{% endif %}>Most review</option>
+                            <option value="recent_review" {% if sort == 'recent_review' %}selected{% endif %}>Recent review</option>
+                            <option value="salary_desc" {% if sort == 'salary_desc' %}selected{% endif %}>Salary high to low</option>
+                        </select>
                     </div>
                     <div class="col-md-2 d-grid">
                         <button type="submit" class="btn btn-primary">Apply</button>
@@ -286,26 +279,10 @@
                 <table class="table table-dark table-hover mb-0">
                     <thead>
                         <tr>
-                            <th>
-                                <a class="sort-link" href="/?sort=az{% if query %}&q={{ query | urlencode }}{% endif %}">
-                                    Name {% if sort == 'az' %}<span class="sort-indicator">↑</span>{% endif %}
-                                </a>
-                            </th>
-                            <th>
-                                <a class="sort-link" href="/?sort=most_review{% if query %}&q={{ query | urlencode }}{% endif %}">
-                                    Reviews {% if sort == 'most_review' %}<span class="sort-indicator">↓</span>{% endif %}
-                                </a>
-                            </th>
-                            <th>
-                                <a class="sort-link" href="/?sort=salary_desc{% if query %}&q={{ query | urlencode }}{% endif %}">
-                                    Monthly Salary {% if sort == 'salary_desc' %}<span class="sort-indicator">↓</span>{% endif %}
-                                </a>
-                            </th>
-                            <th>
-                                <a class="sort-link" href="/?sort=recent_review{% if query %}&q={{ query | urlencode }}{% endif %}">
-                                    Last {% if sort == 'recent_review' %}<span class="sort-indicator">↓</span>{% endif %}
-                                </a>
-                            </th>
+                            <th>Name</th>
+                            <th>Reviews</th>
+                            <th>Monthly Salary</th>
+                            <th>Last</th>
                         </tr>
                     </thead>
                     <tbody id="companyTable">
