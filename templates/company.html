@@ -225,6 +225,7 @@
             border: 1px solid var(--border-color);
             border-radius: 0.75rem;
             padding: 0.9rem;
+            margin-bottom: 1rem;
         }
         .offer-toolbar-label {
             display: block;
@@ -368,7 +369,8 @@
         }
         body.light-mode .offer-toolbar-shell {
             border-color: var(--border-soft) !important;
-            background: #f8fafc !important;
+            background: #ffffff !important;
+            box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04);
         }
     </style>
 </head>
@@ -461,45 +463,41 @@
 
         <div class="reviews-list">
             {% if active_view == 'offer' %}
-                <div class="card mb-3">
-                    <div class="card-body">
-                        <form method="get" class="offer-toolbar">
-                            <input type="hidden" name="view" value="offer">
-                            {% if active_thread_id %}
-                            <input type="hidden" name="thread_id" value="{{ active_thread_id }}">
-                            {% endif %}
-                            <div class="offer-toolbar-shell">
-                                <div class="row g-3 align-items-end">
-                                    <div class="col-12 col-lg-6">
-                                        <label class="offer-toolbar-label" for="offer-position-search">Filter position</label>
-                                        <input
-                                            id="offer-position-search"
-                                            type="text"
-                                            class="form-control"
-                                            name="position"
-                                            value="{{ offer_position_query }}"
-                                            placeholder="Ví dụ: Backend, Frontend, Data..."
-                                        >
-                                    </div>
-                                    <div class="col-12 col-sm-6 col-lg-4">
-                                        <label class="offer-toolbar-label" for="offer-sort">Sort by</label>
-                                        <select class="form-select" id="offer-sort" name="sort">
-                                            <option value="recent" {% if active_offer_sort == 'recent' %}selected{% endif %}>Recent review</option>
-                                            <option value="year_desc" {% if active_offer_sort == 'year_desc' %}selected{% endif %}>Year ↓</option>
-                                            <option value="year_asc" {% if active_offer_sort == 'year_asc' %}selected{% endif %}>Year ↑</option>
-                                            <option value="salary_desc" {% if active_offer_sort == 'salary_desc' %}selected{% endif %}>Salary ↓</option>
-                                            <option value="salary_asc" {% if active_offer_sort == 'salary_asc' %}selected{% endif %}>Salary ↑</option>
-                                            <option value="position_az" {% if active_offer_sort == 'position_az' %}selected{% endif %}>Position A-Z</option>
-                                        </select>
-                                    </div>
-                                    <div class="col-12 col-sm-6 col-lg-2 d-grid">
-                                        <button type="submit" class="btn btn-apply w-100">Apply</button>
-                                    </div>
-                                </div>
+                <form method="get" class="offer-toolbar mb-3">
+                    <input type="hidden" name="view" value="offer">
+                    {% if active_thread_id %}
+                    <input type="hidden" name="thread_id" value="{{ active_thread_id }}">
+                    {% endif %}
+                    <div class="offer-toolbar-shell">
+                        <div class="row g-3 align-items-end">
+                            <div class="col-12 col-lg-6">
+                                <label class="offer-toolbar-label" for="offer-position-search">Filter position</label>
+                                <input
+                                    id="offer-position-search"
+                                    type="text"
+                                    class="form-control"
+                                    name="position"
+                                    value="{{ offer_position_query }}"
+                                    placeholder="Ví dụ: Backend, Frontend, Data..."
+                                >
                             </div>
-                        </form>
+                            <div class="col-12 col-sm-6 col-lg-4">
+                                <label class="offer-toolbar-label" for="offer-sort">Sort by</label>
+                                <select class="form-select" id="offer-sort" name="sort">
+                                    <option value="recent" {% if active_offer_sort == 'recent' %}selected{% endif %}>Recent review</option>
+                                    <option value="year_desc" {% if active_offer_sort == 'year_desc' %}selected{% endif %}>Year ↓</option>
+                                    <option value="year_asc" {% if active_offer_sort == 'year_asc' %}selected{% endif %}>Year ↑</option>
+                                    <option value="salary_desc" {% if active_offer_sort == 'salary_desc' %}selected{% endif %}>Salary ↓</option>
+                                    <option value="salary_asc" {% if active_offer_sort == 'salary_asc' %}selected{% endif %}>Salary ↑</option>
+                                    <option value="position_az" {% if active_offer_sort == 'position_az' %}selected{% endif %}>Position A-Z</option>
+                                </select>
+                            </div>
+                            <div class="col-12 col-sm-6 col-lg-2 d-grid">
+                                <button type="submit" class="btn btn-apply w-100">Apply</button>
+                            </div>
+                        </div>
                     </div>
-                </div>
+                </form>
 
                 <div class="card mb-3">
                     <div class="card-header d-flex justify-content-between align-items-center flex-wrap gap-2">
