@@ -15,7 +15,9 @@ from database.mongodb import (
     get_all_companies,
     get_all_threads,
     get_reviews_by_company,
+    get_offers_by_company,
     get_review_count,
+    get_offer_count,
     get_replies_for_posts,
     get_posts_by_ids,
     get_company_thread_ids,
@@ -145,65 +147,82 @@ async def company_detail(request: Request, company_name: str, page: int = 1, thr
 
     available_thread_ids = await get_company_thread_ids(company_name)
     active_thread_id = thread_id if thread_id in available_thread_ids else ""
-    active_view = view if view in {"all", "salary", "interview"} else "all"
+    active_view = view if view in {"all", "salary", "interview", "offer"} else "all"
     salary_only = active_view == "salary"
     interview_only = active_view == "interview"
+    offer_only = active_view == "offer"
 
-    reviews = await get_reviews_by_company(
-        company_name,
-        limit=limit,
-        skip=skip,
-        thread_id=active_thread_id or None,
-        salary_only=salary_only,
-        interview_only=interview_only,
-    )
-    total = await get_review_count(
-        company=company_name,
-        thread_id=active_thread_id or None,
-        salary_only=salary_only,
-        interview_only=interview_only,
-    )
-
-    review_by_post_id = {
-        str(review.get("voz_post_id")): review
-        for review in reviews
-        if review.get("voz_post_id")
-    }
-
-    missing_parent_ids = sorted({
-        str(review.get("reply_post_id"))
-        for review in reviews
-        if review.get("reply_post_id") and str(review.get("reply_post_id")) not in review_by_post_id
-    })
-    for parent_review in await get_posts_by_ids(missing_parent_ids):
-        post_id = parent_review.get("voz_post_id")
-        if post_id:
-            review_by_post_id[str(post_id)] = parent_review
-
-    root_post_ids = [str(review.get("voz_post_id")) for review in reviews if review.get("voz_post_id")]
-    all_reply_ids_to_fetch = set(root_post_ids)
+    reviews = []
+    offers = []
+    review_by_post_id = {}
     reply_children_by_post_id = {}
-    fetched_post_ids = set()
 
-    for _ in range(4):
-        pending_parent_ids = list(all_reply_ids_to_fetch - fetched_post_ids)
-        if not pending_parent_ids:
-            break
+    if offer_only:
+        offers = await get_offers_by_company(
+            company_name,
+            limit=limit,
+            skip=skip,
+            thread_id=active_thread_id or None,
+        )
+        total = await get_offer_count(
+            company=company_name,
+            thread_id=active_thread_id or None,
+        )
+    else:
+        reviews = await get_reviews_by_company(
+            company_name,
+            limit=limit,
+            skip=skip,
+            thread_id=active_thread_id or None,
+            salary_only=salary_only,
+            interview_only=interview_only,
+        )
+        total = await get_review_count(
+            company=company_name,
+            thread_id=active_thread_id or None,
+            salary_only=salary_only,
+            interview_only=interview_only,
+        )
 
-        reply_children = await get_replies_for_posts(pending_parent_ids)
-        fetched_post_ids.update(pending_parent_ids)
+        review_by_post_id = {
+            str(review.get("voz_post_id")): review
+            for review in reviews
+            if review.get("voz_post_id")
+        }
 
-        for child in reply_children:
-            parent_id = child.get("reply_post_id")
-            child_post_id = child.get("voz_post_id")
-            if not parent_id:
-                continue
-            reply_children_by_post_id.setdefault(str(parent_id), []).append(child)
-            if child_post_id:
-                all_reply_ids_to_fetch.add(str(child_post_id))
+        missing_parent_ids = sorted({
+            str(review.get("reply_post_id"))
+            for review in reviews
+            if review.get("reply_post_id") and str(review.get("reply_post_id")) not in review_by_post_id
+        })
+        for parent_review in await get_posts_by_ids(missing_parent_ids):
+            post_id = parent_review.get("voz_post_id")
+            if post_id:
+                review_by_post_id[str(post_id)] = parent_review
 
-    for children in reply_children_by_post_id.values():
-        children.sort(key=lambda item: item.get("post_date") or item.get("created_at"))
+        root_post_ids = [str(review.get("voz_post_id")) for review in reviews if review.get("voz_post_id")]
+        all_reply_ids_to_fetch = set(root_post_ids)
+        fetched_post_ids = set()
+
+        for _ in range(4):
+            pending_parent_ids = list(all_reply_ids_to_fetch - fetched_post_ids)
+            if not pending_parent_ids:
+                break
+
+            reply_children = await get_replies_for_posts(pending_parent_ids)
+            fetched_post_ids.update(pending_parent_ids)
+
+            for child in reply_children:
+                parent_id = child.get("reply_post_id")
+                child_post_id = child.get("voz_post_id")
+                if not parent_id:
+                    continue
+                reply_children_by_post_id.setdefault(str(parent_id), []).append(child)
+                if child_post_id:
+                    all_reply_ids_to_fetch.add(str(child_post_id))
+
+        for children in reply_children_by_post_id.values():
+            children.sort(key=lambda item: item.get("post_date") or item.get("created_at"))
 
     template = jinja_env.get_template("company.html")
     return HTMLResponse(template.render(
@@ -211,6 +230,7 @@ async def company_detail(request: Request, company_name: str, page: int = 1, thr
         company=company_name,
         company_slug=company_slug,
         reviews=reviews,
+        offers=offers,
         review_by_post_id=review_by_post_id,
         reply_children_by_post_id=reply_children_by_post_id,
         default_visible_replies=default_visible_replies,

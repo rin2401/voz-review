@@ -114,6 +114,38 @@ async def get_reviews_by_company(
     return await cursor.to_list(length=limit)
 
 
+async def get_offers_by_company(
+    company: str,
+    limit: int = 50,
+    skip: int = 0,
+    thread_id: str = None,
+) -> List[dict]:
+    """Get extracted offers for a specific company."""
+    escaped_company = re.escape(company)
+    query = {"company": {"$regex": f"^{escaped_company}$", "$options": "i"}}
+    if thread_id:
+        query["voz_thread_id"] = thread_id
+
+    cursor = (
+        db.offers.find(query)
+        .sort([("offer_year", -1), ("updated_at", -1), ("created_at", -1)])
+        .skip(skip)
+        .limit(limit)
+    )
+    return await cursor.to_list(length=limit)
+
+
+async def get_offer_count(company: str = None, thread_id: str = None) -> int:
+    """Count offers, optionally filtered by company or thread."""
+    query = {}
+    if company:
+        escaped_company = re.escape(company)
+        query["company"] = {"$regex": f"^{escaped_company}$", "$options": "i"}
+    if thread_id:
+        query["voz_thread_id"] = thread_id
+    return await db.offers.count_documents(query)
+
+
 async def get_review_count(company: str = None, status: str = None, thread_id: str = None, salary_only: bool = False, interview_only: bool = False) -> int:
     """Count reviews, optionally filtered by company or status"""
     query = {}

@@ -186,6 +186,32 @@
             min-width: 42px;
             text-align: center;
         }
+        .table {
+            --bs-table-bg: transparent;
+            --bs-table-color: var(--text-color);
+            --bs-table-border-color: var(--border-color);
+            margin-bottom: 0;
+        }
+        .table thead th {
+            color: var(--muted-color);
+            font-size: 0.82rem;
+            text-transform: uppercase;
+            letter-spacing: 0.03em;
+            border-bottom-width: 1px;
+        }
+        .table td,
+        .table th {
+            vertical-align: middle;
+            white-space: nowrap;
+        }
+        .table td.offer-bonus,
+        .table td.offer-position {
+            white-space: normal;
+            min-width: 180px;
+        }
+        .table-responsive {
+            border-radius: 0.5rem;
+        }
         .page-link:hover {
             background: #21262d !important;
             color: #e6edf3 !important;
@@ -354,91 +380,158 @@
         <div class="d-flex justify-content-between align-items-center mb-4">
             <div>
                 <h2>🏢 {{ company }}</h2>
-                <span class="badge badge-date">{{ total }} reviews</span>
+                <span class="badge badge-date">{{ total }} {% if active_view == 'offer' %}offers{% else %}reviews{% endif %}</span>
             </div>
             <a href="/" class="btn btn-secondary">← Back</a>
         </div>
 
         <ul class="nav nav-pills mb-4 flex-wrap gap-2">
             <li class="nav-item">
-                <a class="nav-link {% if active_view == 'all' and not active_thread_id %}active{% endif %}" href="/company/{{ company_slug }}">All</a>
+                <a class="nav-link {% if active_view == 'all' %}active{% endif %}" href="/company/{{ company_slug }}">All</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link {% if active_view == 'salary' and not active_thread_id %}active{% endif %}" href="/company/{{ company_slug }}?view=salary">Salary</a>
+                <a class="nav-link {% if active_view == 'salary' %}active{% endif %}" href="/company/{{ company_slug }}?view=salary">Salary</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link {% if active_view == 'interview' and not active_thread_id %}active{% endif %}" href="/company/{{ company_slug }}?view=interview">Interview</a>
+                <a class="nav-link {% if active_view == 'interview' %}active{% endif %}" href="/company/{{ company_slug }}?view=interview">Interview</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link {% if active_view == 'offer' %}active{% endif %}" href="/company/{{ company_slug }}?view=offer">Offer</a>
             </li>
             {% for tid in available_thread_ids %}
             <li class="nav-item">
-                <a class="nav-link {% if active_thread_id == tid %}active{% endif %}" href="/company/{{ company_slug }}?thread_id={{ tid }}&view=all">{{ tid }}</a>
+                <a class="nav-link {% if active_thread_id == tid %}active{% endif %}" href="/company/{{ company_slug }}?thread_id={{ tid }}&view={{ active_view }}">{{ tid }}</a>
             </li>
             {% endfor %}
         </ul>
 
         <div class="reviews-list">
-            {% for review in reviews %}
-            <div class="card mb-3">
-                <div class="card-header d-flex justify-content-between">
-                    <div>
-                        <span class="author">{{ review.author }}</span>
-                        {% if review.author_url %}
-                        <a href="{{ review.author_url }}" target="_blank" class="ms-2">🔗</a>
-                        {% endif %}
+            {% if active_view == 'offer' %}
+                {% if offers %}
+                <div class="card mb-3">
+                    <div class="card-header d-flex justify-content-between align-items-center flex-wrap gap-2">
+                        <div>
+                            <strong>Offer board</strong>
+                        </div>
+                        <div class="text-muted small">
+                            {% if active_thread_id %}Thread {{ active_thread_id }} • {% endif %}{{ total }} offer{% if total != 1 %}s{% endif %}
+                        </div>
                     </div>
-                    <div class="text-muted">
-                        {% if review.post_date %}
-                        {{ format_dt_vn(review.post_date) }}
-                        {% endif %}
-                        | ❤️ {{ review.likes }}
-                        | <a href="{{ review.url }}" target="_blank">View on Voz</a>
+                    <div class="card-body p-0">
+                        <div class="table-responsive">
+                            <table class="table table-hover align-middle mb-0">
+                                <thead>
+                                    <tr>
+                                        <th>Position</th>
+                                        <th>Salary</th>
+                                        <th>YoE</th>
+                                        <th>Year</th>
+                                        <th>Bonus</th>
+                                        <th>Thread</th>
+                                        <th>Source</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for offer in offers %}
+                                    <tr>
+                                        <td class="offer-position">
+                                            <div class="fw-semibold">{{ offer.position or '-' }}</div>
+                                        </td>
+                                        <td>
+                                            <div>{{ offer.salary or format_salary_million(offer.monthly_salary_million) }}</div>
+                                            {% if offer.salary and offer.monthly_salary_million is not none %}
+                                            <div class="text-muted small">≈ {{ format_salary_million(offer.monthly_salary_million) }}/month</div>
+                                            {% endif %}
+                                        </td>
+                                        <td>{{ offer.years_of_experience if offer.years_of_experience is not none else '-' }}</td>
+                                        <td>{{ offer.offer_year or '-' }}</td>
+                                        <td class="offer-bonus">{{ offer.bonus or '-' }}</td>
+                                        <td>{{ offer.voz_thread_id or '-' }}</td>
+                                        <td>
+                                            {% if offer.voz_post_id and offer.voz_thread_id %}
+                                            <a href="https://voz.vn/t/x.{{ offer.voz_thread_id }}#post-{{ offer.voz_post_id }}" target="_blank">View on Voz</a>
+                                            {% else %}
+                                            -
+                                            {% endif %}
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
                 </div>
-                <div class="card-body">
-                    {% if review.reply_post_id and review_by_post_id.get(review.reply_post_id) %}
-                    {% set parent_review = review_by_post_id.get(review.reply_post_id) %}
-                    <div class="reply-context">
-                        <div class="reply-label">
-                            ↳ Reply to {{ parent_review.author }}
-                        </div>
-                        <div class="reply-snippet">{{ parent_review.content[:220] }}{% if parent_review.content|length > 220 %}...{% endif %}</div>
+                {% else %}
+                <div class="card">
+                    <div class="card-body text-center text-muted py-5">
+                        Chưa có offer cho công ty này.
                     </div>
-                    {% elif review.reply_post_id %}
-                    <div class="reply-context">
-                        <div class="reply-label">
-                            ↳ Reply to post #{{ review.reply_post_id }}
-                        </div>
-                    </div>
-                    {% endif %}
-                    <div class="review-content {% if review.content|length > 500 %}truncated{% endif %}" id="content-{{ loop.index }}">
-                        {{ review.content }}
-                    </div>
-                    {% if review.content|length > 500 %}
-                    <span class="read-more-btn" onclick="toggleReview({{ loop.index }})" id="btn-{{ loop.index }}">
-                        ▼ Xem thêm
-                    </span>
-                    {% endif %}
-
-                    {% set child_replies = reply_children_by_post_id.get(review.voz_post_id) %}
-                    {% if child_replies %}
-                    <div class="reply-tree">
-                        <button class="show-more-replies" type="button" onclick="toggleReplyTree('root-{{ loop.index }}', this)" data-count="{{ child_replies|length }}">
-                            Xem reply ({{ child_replies|length }})
-                        </button>
-                        <div id="reply-tree-root-{{ loop.index }}" class="reply-tree-hidden">
-                            {{ render_reply_nodes(child_replies, reply_children_by_post_id, default_visible_replies, 1, 'root-' ~ loop.index) }}
-                        </div>
-                    </div>
-                    {% endif %}
                 </div>
-            </div>
+                {% endif %}
             {% else %}
-            <div class="card">
-                <div class="card-body text-center text-muted py-5">
-                    Chưa có review cho công ty này.
+                {% for review in reviews %}
+                <div class="card mb-3">
+                    <div class="card-header d-flex justify-content-between">
+                        <div>
+                            <span class="author">{{ review.author }}</span>
+                            {% if review.author_url %}
+                            <a href="{{ review.author_url }}" target="_blank" class="ms-2">🔗</a>
+                            {% endif %}
+                        </div>
+                        <div class="text-muted">
+                            {% if review.post_date %}
+                            {{ format_dt_vn(review.post_date) }}
+                            {% endif %}
+                            | ❤️ {{ review.likes }}
+                            | <a href="{{ review.url }}" target="_blank">View on Voz</a>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        {% if review.reply_post_id and review_by_post_id.get(review.reply_post_id) %}
+                        {% set parent_review = review_by_post_id.get(review.reply_post_id) %}
+                        <div class="reply-context">
+                            <div class="reply-label">
+                                ↳ Reply to {{ parent_review.author }}
+                            </div>
+                            <div class="reply-snippet">{{ parent_review.content[:220] }}{% if parent_review.content|length > 220 %}...{% endif %}</div>
+                        </div>
+                        {% elif review.reply_post_id %}
+                        <div class="reply-context">
+                            <div class="reply-label">
+                                ↳ Reply to post #{{ review.reply_post_id }}
+                            </div>
+                        </div>
+                        {% endif %}
+                        <div class="review-content {% if review.content|length > 500 %}truncated{% endif %}" id="content-{{ loop.index }}">
+                            {{ review.content }}
+                        </div>
+                        {% if review.content|length > 500 %}
+                        <span class="read-more-btn" onclick="toggleReview({{ loop.index }})" id="btn-{{ loop.index }}">
+                            ▼ Xem thêm
+                        </span>
+                        {% endif %}
+
+                        {% set child_replies = reply_children_by_post_id.get(review.voz_post_id) %}
+                        {% if child_replies %}
+                        <div class="reply-tree">
+                            <button class="show-more-replies" type="button" onclick="toggleReplyTree('root-{{ loop.index }}', this)" data-count="{{ child_replies|length }}">
+                                Xem reply ({{ child_replies|length }})
+                            </button>
+                            <div id="reply-tree-root-{{ loop.index }}" class="reply-tree-hidden">
+                                {{ render_reply_nodes(child_replies, reply_children_by_post_id, default_visible_replies, 1, 'root-' ~ loop.index) }}
+                            </div>
+                        </div>
+                        {% endif %}
+                    </div>
                 </div>
-            </div>
-            {% endfor %}
+                {% else %}
+                <div class="card">
+                    <div class="card-body text-center text-muted py-5">
+                        Chưa có review cho công ty này.
+                    </div>
+                </div>
+                {% endfor %}
+            {% endif %}
         </div>
 
         {% if pages > 1 %}
