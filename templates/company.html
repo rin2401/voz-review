@@ -469,7 +469,7 @@
             </li>
             {% for tid in available_thread_ids %}
             <li class="nav-item">
-                <a class="nav-link {% if active_thread_id == tid %}active{% endif %}" href="/company/{{ company_slug }}?thread_id={{ tid }}&view={{ active_view }}">{{ tid }}</a>
+                <a class="nav-link {% if active_thread_id == tid %}active{% endif %}" href="/company/{{ company_slug }}?thread_id={{ tid }}{% if active_view != 'all' %}&view={{ active_view }}{% endif %}{% if active_view == 'offer' and offer_position_query %}&position={{ offer_position_query|urlencode }}{% endif %}{% if active_view == 'offer' %}&sort={{ active_offer_sort }}{% endif %}">{{ tid }}</a>
             </li>
             {% endfor %}
         </ul>
