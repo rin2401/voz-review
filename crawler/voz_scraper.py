@@ -379,6 +379,10 @@ class VozCrawler:
                 ],
             )
         )
+        salary = self._extract_labeled_value(
+            content,
+            [r'^\s*(?:lương tháng/năm(?:\s*\(.*?\))?|luong thang/nam(?:\s*\(.*?\))?)\s*:\s*(.*)$'],
+        )
         monthly_salary_million = self._extract_monthly_salary_million(content)
 
         offer_signals = sum(
@@ -393,6 +397,7 @@ class VozCrawler:
             "voz_thread_id": voz_thread_id or "",
             "voz_post_id": voz_post_id,
             "company": company,
+            "salary": salary,
             "monthly_salary_million": monthly_salary_million,
             "position": position,
             "offer_year": offer_year,
