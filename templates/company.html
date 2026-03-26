@@ -205,9 +205,12 @@
             white-space: nowrap;
         }
         .table td.offer-bonus,
-        .table td.offer-position {
+        .table td.offer-position,
+        .table td.offer-salary {
             white-space: normal;
             min-width: 180px;
+            word-break: break-word;
+            overflow-wrap: anywhere;
         }
         .table-responsive {
             border-radius: 0.5rem;
@@ -540,7 +543,7 @@
                                         </td>
                                         <td>{{ offer.years_of_experience if offer.years_of_experience is not none else '-' }}</td>
                                         <td>{{ offer.offer_year or '-' }}</td>
-                                        <td>
+                                        <td class="offer-salary">
                                             <div>{{ offer.salary or format_salary_million(offer.monthly_salary_million) }}</div>
                                             {% if offer.salary and offer.monthly_salary_million is not none %}
                                             <div class="text-muted small">≈ {{ format_salary_million(offer.monthly_salary_million) }}/month</div>
