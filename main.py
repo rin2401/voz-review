@@ -143,7 +143,7 @@ async def company_detail(
     thread_id: str = "",
     view: str = "all",
     position: str = "",
-    sort: str = "recent",
+    sort: str = "year_desc",
 ):
     """Company detail page - list reviews"""
     limit = 20
@@ -165,7 +165,7 @@ async def company_detail(
     review_by_post_id = {}
     reply_children_by_post_id = {}
 
-    active_offer_sort = sort if sort in {"recent", "year_desc", "year_asc", "salary_desc", "salary_asc", "position_az"} else "recent"
+    active_offer_sort = sort if sort in {"recent", "year_desc", "year_asc", "salary_desc", "salary_asc", "position_az"} else "year_desc"
     offer_position_query = position.strip()
 
     if offer_only:
