@@ -239,8 +239,18 @@ class VozCrawler:
         # Drop trailing notes in parentheses, e.g. "OANDA Coinpass (làm remote, giờ UK"
         company = re.split(r'\s*\(', company, maxsplit=1)[0].strip()
 
-        # Drop obvious trailing note separators like dash/en dash/em dash
-        company = re.split(r'\s+[\-–—]\s+', company, maxsplit=1)[0].strip()
+        # Drop trailing note after dash only when the right side looks like a note, not part of company name
+        dash_parts = re.split(r'\s+[\-–—]\s+', company, maxsplit=1)
+        if len(dash_parts) == 2:
+            right_side = dash_parts[1].strip()
+            right_lower = right_side.lower()
+            note_keywords = [
+                'remote', 'onsite', 'hybrid', 'singapore', 'sing', 'hà nội', 'hn', 'hcm', 'sài gòn',
+                'timezone', 'time zone', 'uk', 'us', 'jp', 'nhật', 'mỹ', 'làm', 'dự án', 'project',
+                'outsource', 'product', 'startup', 'review', 'xin review', 'cho em hỏi', 'offer',
+            ]
+            if right_side and (right_side[:1].islower() or any(token in right_lower for token in note_keywords)):
+                company = dash_parts[0].strip()
 
         # Drop trailing note after comma, e.g. "A***s, Singapore"
         company = re.split(r'\s*,\s*', company, maxsplit=1)[0].strip()
@@ -320,10 +330,10 @@ class VozCrawler:
 
         def _normalize_extracted_company(company: str) -> str:
             company = self._clean_company_name(company)
-            words = [w for w in company.split() if w]
+            words = [w for w in company.split() if w and w not in {'-', '–', '—'}]
             if not company or not company[0].isupper():
                 return ""
-            if len(words) > 4:
+            if len(words) > 6:
                 return ""
             if len(company) < 2 or len(company) > 60:
                 return ""
