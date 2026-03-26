@@ -362,7 +362,7 @@ class VozCrawler:
             return int(value) if value.is_integer() else value
         return cleaned or None
 
-    def _extract_offer(self, content: str, company: str, voz_thread_id: str, voz_post_id: Optional[str], source_review_id: Optional[str] = None) -> Optional[dict]:
+    def _extract_offer(self, content: str, company: str, voz_thread_id: str, voz_post_id: Optional[str]) -> Optional[dict]:
         """Extract a structured offer payload from review content when the post matches the offer template."""
         if not company or company == "Unknown" or not voz_post_id:
             return None
@@ -404,8 +404,6 @@ class VozCrawler:
             "bonus": bonus,
             "years_of_experience": years_of_experience,
         }
-        if source_review_id:
-            offer_doc["source_review_id"] = source_review_id
         return offer_doc
 
     def _extract_company(self, content: str) -> str:
@@ -530,7 +528,7 @@ class VozCrawler:
                             await upsert_company(post_data["company"])
 
                         # Insert review if not duplicated by voz_post_id
-                        review_id, inserted = await insert_review(post_data)
+                        _, inserted = await insert_review(post_data)
                         if inserted:
                             total_reviews += 1
 
@@ -543,7 +541,6 @@ class VozCrawler:
                             post_data.get("company") or "Unknown",
                             post_data.get("voz_thread_id") or "",
                             post_data.get("voz_post_id"),
-                            source_review_id=review_id,
                         )
                         if offer_data:
                             await upsert_offer(offer_data)

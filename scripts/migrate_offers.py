@@ -46,7 +46,6 @@ async def main():
                 company,
                 doc.get("voz_thread_id") or "",
                 doc.get("voz_post_id"),
-                source_review_id=str(doc.get("_id")),
             )
 
             if offer_doc:
