@@ -251,7 +251,7 @@ class VozCrawler:
         return company.strip()
 
     def _extract_monthly_salary_million(self, content: str) -> Optional[float]:
-        """Extract monthly salary only for Vietnamese-style million units like 50m/50M/50 triệu."""
+        """Extract monthly salary from lines like 50m/50 triệu or plain values like 86 gross / 86 net."""
         for raw_line in content.split('\n'):
             line = raw_line.strip()
             lower_line = line.lower()
@@ -261,13 +261,15 @@ class VozCrawler:
             if ':' in line:
                 salary_text = line.split(':', 1)[1].strip()
             else:
-                salary_text = line
+                salary_text = re.split(r'luong thang|lương tháng', line, maxsplit=1, flags=re.IGNORECASE)[-1].strip(' :-')
 
             lower_salary = salary_text.lower()
             if any(token in lower_salary for token in ['năm', '/năm', 'year', '/year', 'package', 'usd', 'sgd', '$', 'vnd', 'k']):
                 return None
 
             m = re.search(r'(\d+(?:[.,]\d+)?)\s*(m|tr|triệu)\b', lower_salary)
+            if not m:
+                m = re.search(r'(\d+(?:[.,]\d+)?)\s*(gross|net)\b', lower_salary)
             if not m:
                 return None
 
