@@ -369,7 +369,13 @@ class VozCrawler:
 
         position = self._extract_labeled_value(content, [r'^\s*(?:vị trí|vi tri)\s*:\s*(.*)$'])
         offer_year = self._parse_offer_year(self._extract_labeled_value(content, [r'^\s*(?:thời điểm(?:\s*\(.*?\))?|thoi diem(?:\s*\(.*?\))?)\s*:\s*(.*)$']))
-        bonus = self._extract_labeled_value(content, [r'^\s*bonus\s*:\s*(.*)$'])
+        bonus = self._extract_labeled_value(
+            content,
+            [
+                r'^\s*bonus\s*:\s*\(.*?\)\s*:\s*(.*)$',
+                r'^\s*bonus(?:\s*\(.*?\))?\s*:\s*(.*)$',
+            ],
+        )
         years_of_experience = self._parse_years_of_experience(
             self._extract_labeled_value(
                 content,
