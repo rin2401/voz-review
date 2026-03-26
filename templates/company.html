@@ -423,9 +423,9 @@
                                 <thead>
                                     <tr>
                                         <th>Position</th>
-                                        <th>Salary</th>
                                         <th>YoE</th>
                                         <th>Year</th>
+                                        <th>Salary</th>
                                         <th>Bonus</th>
                                         <th>Source</th>
                                     </tr>
@@ -436,14 +436,14 @@
                                         <td class="offer-position">
                                             <div class="fw-semibold">{{ offer.position or '-' }}</div>
                                         </td>
+                                        <td>{{ offer.years_of_experience if offer.years_of_experience is not none else '-' }}</td>
+                                        <td>{{ offer.offer_year or '-' }}</td>
                                         <td>
                                             <div>{{ offer.salary or format_salary_million(offer.monthly_salary_million) }}</div>
                                             {% if offer.salary and offer.monthly_salary_million is not none %}
                                             <div class="text-muted small">≈ {{ format_salary_million(offer.monthly_salary_million) }}/month</div>
                                             {% endif %}
                                         </td>
-                                        <td>{{ offer.years_of_experience if offer.years_of_experience is not none else '-' }}</td>
-                                        <td>{{ offer.offer_year or '-' }}</td>
                                         <td class="offer-bonus">{{ offer.bonus or '-' }}</td>
                                         <td>
                                             {% if offer.voz_post_id and offer.voz_thread_id %}
