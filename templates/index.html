@@ -114,20 +114,34 @@
             justify-content: center;
             border-radius: 999px;
         }
-        .sort-link {
-            color: var(--text-color) !important;
+        .sort-header {
             display: inline-flex;
             align-items: center;
-            gap: 0.35rem;
+            gap: 0.4rem;
             font-weight: 600;
         }
-        .sort-link:hover {
+        .sort-button {
+            color: var(--muted-color) !important;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 1.4rem;
+            height: 1.4rem;
+            border-radius: 999px;
+            border: 1px solid transparent;
+            text-decoration: none;
+            transition: all 0.15s ease;
+        }
+        .sort-button:hover {
             color: var(--link-color) !important;
+            border-color: var(--border-color);
+            background: var(--hover-bg);
             text-decoration: none;
         }
-        .sort-indicator {
-            font-size: 0.8rem;
-            color: var(--muted-color) !important;
+        .sort-button.active {
+            color: var(--link-color) !important;
+            border-color: var(--border-color);
+            background: var(--hover-bg);
         }
         body.light-mode .btn-secondary {
             background: #f8fafd !important;
@@ -287,24 +301,28 @@
                     <thead>
                         <tr>
                             <th>
-                                <a class="sort-link" href="/?sort=az{% if query %}&q={{ query | urlencode }}{% endif %}">
-                                    Name {% if sort == 'az' %}<span class="sort-indicator">↑</span>{% endif %}
-                                </a>
+                                <span class="sort-header">
+                                    <span>Name</span>
+                                    <a class="sort-button {% if sort == 'az' %}active{% endif %}" href="/?sort=az{% if query %}&q={{ query | urlencode }}{% endif %}" title="Sort by name">↑</a>
+                                </span>
                             </th>
                             <th>
-                                <a class="sort-link" href="/?sort=most_review{% if query %}&q={{ query | urlencode }}{% endif %}">
-                                    Reviews {% if sort == 'most_review' %}<span class="sort-indicator">↓</span>{% endif %}
-                                </a>
+                                <span class="sort-header">
+                                    <span>Reviews</span>
+                                    <a class="sort-button {% if sort == 'most_review' %}active{% endif %}" href="/?sort=most_review{% if query %}&q={{ query | urlencode }}{% endif %}" title="Sort by reviews">↓</a>
+                                </span>
                             </th>
                             <th>
-                                <a class="sort-link" href="/?sort=salary_desc{% if query %}&q={{ query | urlencode }}{% endif %}">
-                                    Monthly Salary {% if sort == 'salary_desc' %}<span class="sort-indicator">↓</span>{% endif %}
-                                </a>
+                                <span class="sort-header">
+                                    <span>Monthly Salary</span>
+                                    <a class="sort-button {% if sort == 'salary_desc' %}active{% endif %}" href="/?sort=salary_desc{% if query %}&q={{ query | urlencode }}{% endif %}" title="Sort by monthly salary">↓</a>
+                                </span>
                             </th>
                             <th>
-                                <a class="sort-link" href="/?sort=recent_review{% if query %}&q={{ query | urlencode }}{% endif %}">
-                                    Last {% if sort == 'recent_review' %}<span class="sort-indicator">↓</span>{% endif %}
-                                </a>
+                                <span class="sort-header">
+                                    <span>Last</span>
+                                    <a class="sort-button {% if sort == 'recent_review' %}active{% endif %}" href="/?sort=recent_review{% if query %}&q={{ query | urlencode }}{% endif %}" title="Sort by recent review">↓</a>
+                                </span>
                             </th>
                         </tr>
                     </thead>
