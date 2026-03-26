@@ -1,6 +1,7 @@
 """MongoDB database connection and operations"""
 from motor.motor_asyncio import AsyncIOMotorClient
 from pymongo import ASCENDING, TEXT
+from pymongo import ReturnDocument
 from pymongo.errors import DuplicateKeyError
 from datetime import datetime
 from typing import Optional, List
@@ -61,6 +62,18 @@ async def create_indexes():
     threads = db.threads
     await threads.create_index("url", unique=True)
     await threads.create_index("thread_id", unique=True, sparse=True)
+
+    # Offers collection
+    offers = db.offers
+    await offers.create_index(
+        "voz_post_id",
+        unique=True,
+        partialFilterExpression={"voz_post_id": {"$exists": True, "$type": "string"}}
+    )
+    await offers.create_index("company")
+    await offers.create_index("voz_thread_id")
+    await offers.create_index("offer_year")
+    await offers.create_index("updated_at")
 
 
 async def get_all_companies(sort_by: str = "recent_review") -> List[dict]:
@@ -151,6 +164,36 @@ async def insert_review(review_data: dict) -> tuple[str | None, bool]:
         return str(result.inserted_id), True
     except DuplicateKeyError:
         return None, False
+
+
+async def upsert_offer(offer_data: dict) -> tuple[str | None, bool]:
+    """Create or update an extracted offer, keyed by voz_post_id when available."""
+    voz_post_id = offer_data.get("voz_post_id")
+    if not voz_post_id:
+        return None, False
+
+    now = datetime.utcnow()
+    payload = {k: v for k, v in offer_data.items() if k != "created_at"}
+    payload["updated_at"] = now
+
+    result = await db.offers.find_one_and_update(
+        {"voz_post_id": voz_post_id},
+        {
+            "$set": payload,
+            "$setOnInsert": {"created_at": now},
+        },
+        upsert=True,
+        return_document=ReturnDocument.BEFORE,
+    )
+    return voz_post_id, result is None
+
+
+async def delete_offer_by_post_id(voz_post_id: str) -> int:
+    """Delete a stale extracted offer by VOZ post id."""
+    if not voz_post_id:
+        return 0
+    result = await db.offers.delete_one({"voz_post_id": voz_post_id})
+    return result.deleted_count
 
 
 async def get_thread_state(thread_id: str = None, url: str = None) -> Optional[dict]:

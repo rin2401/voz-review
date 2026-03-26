@@ -18,6 +18,7 @@ from urllib.parse import urljoin
 import config
 from database.mongodb import (
     insert_review,
+    upsert_offer,
     upsert_company,
     get_thread_state,
     update_thread_state,
@@ -304,6 +305,104 @@ class VozCrawler:
 
         return None
 
+    def _extract_labeled_value(self, content: str, label_patterns: List[str]) -> Optional[str]:
+        """Extract the value of a structured label, allowing the value on the next non-empty line."""
+        lines = content.split('\n')
+        stop_prefixes = [
+            'tên công ty', 'tên cty', 'công ty', 'lương tháng', 'luong thang', 'vị trí', 'vi tri',
+            'thời điểm', 'thoi diem', 'bonus', 'số năm kinh nghiệm', 'so nam kinh nghiem',
+        ]
+
+        def _next_non_empty_line(start_index: int) -> str:
+            for candidate in lines[start_index + 1:]:
+                candidate = candidate.strip()
+                if not candidate:
+                    continue
+                lower_candidate = candidate.lower()
+                if any(lower_candidate.startswith(prefix) for prefix in stop_prefixes):
+                    return ""
+                return candidate
+            return ""
+
+        compiled_patterns = [re.compile(pattern, re.IGNORECASE) for pattern in label_patterns]
+        for index, raw_line in enumerate(lines):
+            line = raw_line.strip()
+            if not line:
+                continue
+            for pattern in compiled_patterns:
+                match = pattern.match(line)
+                if not match:
+                    continue
+                value = match.group(1).strip() if match.lastindex else ""
+                if not value:
+                    value = _next_non_empty_line(index)
+                value = value.strip().rstrip('.,;:')
+                return value or None
+        return None
+
+    def _parse_offer_year(self, raw_value: Optional[str]):
+        if not raw_value:
+            return None
+        cleaned = raw_value.strip()
+        year_match = re.search(r'\b(20\d{2}|19\d{2})\b', cleaned)
+        if year_match:
+            try:
+                return int(year_match.group(1))
+            except ValueError:
+                pass
+        return cleaned or None
+
+    def _parse_years_of_experience(self, raw_value: Optional[str]):
+        if not raw_value:
+            return None
+        cleaned = raw_value.strip()
+        exp_match = re.search(r'(\d+(?:[.,]\d+)?)', cleaned)
+        if exp_match:
+            value = float(exp_match.group(1).replace(',', '.'))
+            return int(value) if value.is_integer() else value
+        return cleaned or None
+
+    def _extract_offer(self, content: str, company: str, voz_thread_id: str, voz_post_id: Optional[str], source_review_id: Optional[str] = None) -> Optional[dict]:
+        """Extract a structured offer payload from review content when the post matches the offer template."""
+        if not company or company == "Unknown" or not voz_post_id:
+            return None
+
+        position = self._extract_labeled_value(content, [r'^\s*(?:vị trí|vi tri)\s*:\s*(.*)$'])
+        offer_year = self._parse_offer_year(self._extract_labeled_value(content, [r'^\s*(?:thời điểm(?:\s*\(.*?\))?|thoi diem(?:\s*\(.*?\))?)\s*:\s*(.*)$']))
+        bonus = self._extract_labeled_value(content, [r'^\s*bonus\s*:\s*(.*)$'])
+        years_of_experience = self._parse_years_of_experience(
+            self._extract_labeled_value(
+                content,
+                [
+                    r'^\s*(?:số năm kinh nghiệm khi nhận offer|so nam kinh nghiem khi nhan offer)\s*:\s*(.*)$',
+                    r'^\s*(?:kinh nghiệm khi nhận offer|kinh nghiem khi nhan offer)\s*:\s*(.*)$',
+                ],
+            )
+        )
+        monthly_salary_million = self._extract_monthly_salary_million(content)
+
+        offer_signals = sum(
+            value is not None and value != ""
+            for value in [position, offer_year, bonus, years_of_experience, monthly_salary_million]
+        )
+        has_offer_phrase = 'nhận offer' in content.lower() or 'nhan offer' in content.lower()
+        if offer_signals < 2 and not (has_offer_phrase and offer_signals >= 1):
+            return None
+
+        offer_doc = {
+            "voz_thread_id": voz_thread_id or "",
+            "voz_post_id": voz_post_id,
+            "company": company,
+            "monthly_salary_million": monthly_salary_million,
+            "position": position,
+            "offer_year": offer_year,
+            "bonus": bonus,
+            "years_of_experience": years_of_experience,
+        }
+        if source_review_id:
+            offer_doc["source_review_id"] = source_review_id
+        return offer_doc
+
     def _extract_company(self, content: str) -> str:
         """
         Extract company name from review content.
@@ -424,16 +523,25 @@ class VozCrawler:
                         # Ensure company exists
                         if post_data["company"] and post_data["company"] != "Unknown":
                             await upsert_company(post_data["company"])
-                        
+
                         # Insert review if not duplicated by voz_post_id
-                        _, inserted = await insert_review(post_data)
-                        if not inserted:
-                            continue
-                        total_reviews += 1
-                        
-                        # Update company count only for newly inserted reviews
-                        if post_data["company"] != "Unknown":
-                            await increment_company_review_count(post_data["company"])
+                        review_id, inserted = await insert_review(post_data)
+                        if inserted:
+                            total_reviews += 1
+
+                            # Update company count only for newly inserted reviews
+                            if post_data["company"] != "Unknown":
+                                await increment_company_review_count(post_data["company"])
+
+                        offer_data = self._extract_offer(
+                            post_data.get("content") or "",
+                            post_data.get("company") or "Unknown",
+                            post_data.get("voz_thread_id") or "",
+                            post_data.get("voz_post_id"),
+                            source_review_id=review_id,
+                        )
+                        if offer_data:
+                            await upsert_offer(offer_data)
                     except Exception as e:
                         print(f"Error inserting review: {e}")
                         continue
