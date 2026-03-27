@@ -318,6 +318,21 @@
                     </div>
                 </div>
                 <div class="card-body">
+                    {% if result.parent_review %}
+                    {% set parent_review = result.parent_review %}
+                    <div class="reply-context">
+                        <div class="reply-label">
+                            ↳ Reply to {{ parent_review.author }}
+                        </div>
+                        <div class="reply-snippet">{{ parent_review.content[:220] }}{% if parent_review.content|length > 220 %}...{% endif %}</div>
+                    </div>
+                    {% elif result.reply_post_id %}
+                    <div class="reply-context">
+                        <div class="reply-label">
+                            ↳ Reply to post #{{ result.reply_post_id }}
+                        </div>
+                    </div>
+                    {% endif %}
                     <div class="review-content {% if result.content|length > 500 %}truncated{% endif %}" id="content-{{ loop.index }}">{{ result.content }}</div>
                     {% if result.content|length > 500 %}
                     <span class="read-more-btn" onclick="toggleReview({{ loop.index }})" id="btn-{{ loop.index }}">▼ Xem thêm</span>

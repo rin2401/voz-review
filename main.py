@@ -215,6 +215,11 @@ async def company_detail(
             if post_id:
                 review_by_post_id[str(post_id)] = parent_review
 
+        for review in reviews:
+            reply_post_id = review.get("reply_post_id")
+            if reply_post_id:
+                review["parent_review"] = review_by_post_id.get(str(reply_post_id))
+
         root_post_ids = [str(review.get("voz_post_id")) for review in reviews if review.get("voz_post_id")]
         all_reply_ids_to_fetch = set(root_post_ids)
         fetched_post_ids = set()
@@ -304,6 +309,11 @@ async def search_page(request: Request, q: str = "", company: str = "", sort: st
         post_id = parent_review.get("voz_post_id")
         if post_id:
             review_by_post_id[str(post_id)] = parent_review
+
+    for result in results:
+        reply_post_id = result.get("reply_post_id")
+        if reply_post_id:
+            result["parent_review"] = review_by_post_id.get(str(reply_post_id))
 
     root_post_ids = [str(review.get("voz_post_id")) for review in results if review.get("voz_post_id")]
     all_reply_ids_to_fetch = set(root_post_ids)

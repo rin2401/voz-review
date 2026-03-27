@@ -589,8 +589,8 @@
                         </div>
                     </div>
                     <div class="card-body">
-                        {% if review.reply_post_id and review_by_post_id.get(review.reply_post_id) %}
-                        {% set parent_review = review_by_post_id.get(review.reply_post_id) %}
+                        {% if review.parent_review %}
+                        {% set parent_review = review.parent_review %}
                         <div class="reply-context">
                             <div class="reply-label">
                                 ↳ Reply to {{ parent_review.author }}
