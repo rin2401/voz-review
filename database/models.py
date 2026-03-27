@@ -2,10 +2,9 @@
 from datetime import datetime
 from typing import Optional
 
+from beanie import Document
 from pydantic import Field
 from pymongo import ASCENDING, DESCENDING, IndexModel, TEXT
-
-from database.beanie_compat import Document
 
 
 class ReviewDocument(Document):

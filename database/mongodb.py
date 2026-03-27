@@ -3,12 +3,12 @@ from datetime import datetime
 import re
 from typing import Any, Optional
 
+from beanie import init_beanie
 from motor.motor_asyncio import AsyncIOMotorClient
 from pymongo import ASCENDING, TEXT
 from pymongo.errors import DuplicateKeyError
 
 import config
-from database.beanie_compat import init_beanie
 from database.models import CompanyDocument, OfferDocument, ReviewDocument, ThreadDocument
 
 client: Optional[AsyncIOMotorClient] = None
@@ -132,8 +132,8 @@ async def get_all_companies(sort_by: str = "recent_review") -> list[dict]:
         "recent_review": [("latest_post_date", -1), ("name", ASCENDING)],
         "salary_desc": [("max_monthly_salary_million", -1), ("review_count", -1), ("name", ASCENDING)],
     }
-    cursor = CompanyDocument.get_motor_collection().find({}).sort(sort_map.get(sort_by, sort_map["az"]))
-    companies = await cursor.to_list(length=None)
+    documents = await CompanyDocument.find_all().sort(sort_map.get(sort_by, sort_map["az"])).to_list()
+    companies = [_document_to_dict(document) for document in documents]
     for company in companies:
         company.setdefault("review_count", 0)
         company.setdefault("latest_post_date", None)
@@ -278,9 +278,8 @@ async def get_reviews_by_company(
     if interview_only:
         query["content"] = {"$regex": r"phỏng vấn", "$options": "i"}
 
-    cursor = ReviewDocument.get_motor_collection().find(query).sort("post_date", -1).skip(skip).limit(limit)
-    reviews = await cursor.to_list(length=limit)
-    return [prepare_review_document(review) for review in reviews]
+    documents = await ReviewDocument.find(query).sort("-post_date").skip(skip).limit(limit).to_list()
+    return [prepare_review_document(_document_to_dict(document)) for document in documents]
 
 
 def build_offer_query(company: str = None, thread_id: str = None, position_keyword: str = "") -> dict:
@@ -314,16 +313,14 @@ async def get_offers_by_company(
         "position_az": [("position", 1), ("updated_at", -1)],
     }
 
-    cursor = OfferDocument.get_motor_collection().find(query).sort(sort_map.get(sort_by, sort_map["recent"])).skip(skip).limit(limit)
-    offers = await cursor.to_list(length=limit)
+    documents = await OfferDocument.find(query).sort(sort_map.get(sort_by, sort_map["recent"])).skip(skip).limit(limit).to_list()
+    offers = [_document_to_dict(document) for document in documents]
 
     post_ids = [str(offer.get("voz_post_id")) for offer in offers if offer.get("voz_post_id")]
     review_docs = []
     if post_ids:
-        review_docs = await ReviewDocument.get_motor_collection().find(
-            {"voz_post_id": {"$in": post_ids}},
-            {"_id": 0, "voz_post_id": 1, "url": 1, "post_date": 1},
-        ).to_list(length=None)
+        review_documents = await ReviewDocument.find({"voz_post_id": {"$in": post_ids}}).to_list()
+        review_docs = [_document_to_dict(document) for document in review_documents]
     review_map = {str(doc.get("voz_post_id")): doc for doc in review_docs if doc.get("voz_post_id")}
 
     for offer in offers:
@@ -503,21 +500,25 @@ async def sync_offers_for_post(voz_post_id: str, offer_docs: list[dict]) -> tupl
         if created:
             created_count += 1
 
-    result = await OfferDocument.get_motor_collection().delete_many(
+    stale_offer_docs = await OfferDocument.find(
         {
             "voz_post_id": voz_post_id,
             "offer_index": {"$nin": list(seen_indexes)},
         }
-    )
-    return upserted_count, created_count, result.deleted_count
+    ).to_list()
+    for stale_offer in stale_offer_docs:
+        await stale_offer.delete()
+    return upserted_count, created_count, len(stale_offer_docs)
 
 
 async def delete_offer_by_post_id(voz_post_id: str) -> int:
     """Delete stale extracted offers by VOZ post id."""
     if not voz_post_id:
         return 0
-    result = await OfferDocument.get_motor_collection().delete_many({"voz_post_id": voz_post_id})
-    return result.deleted_count
+    offer_docs = await OfferDocument.find({"voz_post_id": voz_post_id}).to_list()
+    for offer_doc in offer_docs:
+        await offer_doc.delete()
+    return len(offer_docs)
 
 
 async def get_thread_state(thread_id: str = None, url: str = None) -> Optional[dict]:
@@ -583,18 +584,16 @@ async def get_replies_for_posts(post_ids: list[str]) -> list[dict]:
     """Get replies whose reply_post_id points to any of the given post IDs."""
     if not post_ids:
         return []
-    cursor = ReviewDocument.get_motor_collection().find({"reply_post_id": {"$in": post_ids}}).sort("created_at", 1)
-    replies = await cursor.to_list(length=None)
-    return [prepare_review_document(reply) for reply in replies]
+    documents = await ReviewDocument.find({"reply_post_id": {"$in": post_ids}}).sort("created_at").to_list()
+    return [prepare_review_document(_document_to_dict(document)) for document in documents]
 
 
 async def get_posts_by_ids(post_ids: list[str]) -> list[dict]:
     """Get posts by voz_post_id for reply context rendering."""
     if not post_ids:
         return []
-    cursor = ReviewDocument.get_motor_collection().find({"voz_post_id": {"$in": post_ids}})
-    posts = await cursor.to_list(length=None)
-    return [prepare_review_document(post) for post in posts]
+    documents = await ReviewDocument.find({"voz_post_id": {"$in": post_ids}}).to_list()
+    return [prepare_review_document(_document_to_dict(document)) for document in documents]
 
 
 async def get_all_threads() -> list[dict]:
