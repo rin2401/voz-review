@@ -376,6 +376,7 @@ async def threads_page(request: Request):
             total_reviews=0,
             total_company_reviews=0,
             total_companies=0,
+            total_offers=0,
             total_threads=0,
         ))
 
@@ -384,6 +385,7 @@ async def threads_page(request: Request):
     total_reviews = await get_review_count()
     total_company_reviews = await get_company_review_count()
     total_companies = len(await get_all_companies())
+    total_offers = await get_offer_count()
     return HTMLResponse(template.render(
         request=request,
         threads_auth_required=False,
@@ -392,6 +394,7 @@ async def threads_page(request: Request):
         total_reviews=total_reviews,
         total_company_reviews=total_company_reviews,
         total_companies=total_companies,
+        total_offers=total_offers,
         total_threads=len(threads),
     ))
 
@@ -411,6 +414,7 @@ async def threads_login(request: Request):
             total_reviews=0,
             total_company_reviews=0,
             total_companies=0,
+            total_offers=0,
             total_threads=0,
         ), status_code=401)
 
