@@ -1,6 +1,5 @@
 """Backfill review companies, apply aliases, refresh salary/thread fields, and rebuild company summaries."""
 import asyncio
-import json
 import sys
 from pathlib import Path
 
@@ -9,15 +8,14 @@ if str(ROOT_DIR) not in sys.path:
     sys.path.insert(0, str(ROOT_DIR))
 
 from crawler.voz_scraper import VozCrawler
-from database.mongodb import connect, close, get_database, prepare_review_document, rebuild_companies_collection
+from database.company_aliases import load_company_alias_map, resolve_canonical_company
+from database.mongodb import connect, close, fill_company_aliases, get_database, prepare_review_document, rebuild_companies_collection
 
 ALIASES_PATH = ROOT_DIR / "data" / "company_aliases.json"
 
 async def main():
     crawler = VozCrawler()
-    alias_map = {}
-    if ALIASES_PATH.exists():
-        alias_map = json.loads(ALIASES_PATH.read_text(encoding="utf-8"))
+    alias_map = load_company_alias_map() if ALIASES_PATH.exists() else {}
 
     await connect()
     db = get_database()
@@ -27,6 +25,7 @@ async def main():
     salary_updates = 0
     thread_id_updates = 0
     rebuilt_companies = 0
+    alias_fill_result = {"updated_companies": 0, "missing_canonical_companies": [], "missing_canonical_count": 0}
 
     try:
         cursor = db.reviews.find(
@@ -41,8 +40,8 @@ async def main():
             fallback_company = reparsed_companies[0] if reparsed_companies else (doc.get("company") or "Unknown")
             updated_review = prepare_review_document(
                 {
-                    "company": alias_map.get(fallback_company, fallback_company),
-                    "companies": [alias_map.get(company, company) for company in reparsed_companies],
+                    "company": resolve_canonical_company(fallback_company, alias_map=alias_map),
+                    "companies": [resolve_canonical_company(company, alias_map=alias_map) for company in reparsed_companies],
                 }
             )
             if updated_review["companies"] != list(doc.get("companies") or []):
@@ -63,6 +62,7 @@ async def main():
                 await db.reviews.update_one({"_id": doc["_id"]}, {"$set": updates})
 
         rebuilt_companies = await rebuild_companies_collection(db)
+        alias_fill_result = await fill_company_aliases(db)
 
         print(
             {
@@ -72,6 +72,8 @@ async def main():
                 "thread_id_updates": thread_id_updates,
                 "aliases_loaded": len(alias_map),
                 "rebuilt_companies": rebuilt_companies,
+                "updated_company_aliases": alias_fill_result["updated_companies"],
+                "missing_canonical_companies": alias_fill_result["missing_canonical_companies"],
                 "alias_file": str(ALIASES_PATH),
             }
         )

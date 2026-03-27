@@ -42,6 +42,7 @@ class ReviewDocument(Document):
 
 class CompanyDocument(Document):
     name: str
+    aliases: list[str] = Field(default_factory=list)
     review_count: int = 0
     created_at: Optional[datetime] = None
     updated_at: Optional[datetime] = None

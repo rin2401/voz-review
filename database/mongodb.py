@@ -9,6 +9,7 @@ from pymongo import ASCENDING, TEXT
 from pymongo.errors import DuplicateKeyError
 
 import config
+from database.company_aliases import build_company_aliases_by_canonical, company_aliases_for_name, normalize_aliases
 from database.models import CompanyDocument, OfferDocument, ReviewDocument, ThreadDocument
 
 client: Optional[AsyncIOMotorClient] = None
@@ -24,6 +25,10 @@ def _document_to_dict(document: Any) -> dict:
 def get_database():
     """Return the active Mongo database handle."""
     return db
+
+
+def _normalized_company_aliases_for_name(name: str) -> list[str]:
+    return normalize_aliases(company_aliases_for_name(name), canonical_name=name)
 
 
 def _normalize_company_names(raw_companies: list[Any]) -> list[str]:
@@ -148,6 +153,7 @@ async def get_all_companies(sort_by: str = "recent_review") -> list[dict]:
     documents = await CompanyDocument.find_all().sort(sort_map.get(sort_by, sort_map["az"])).to_list()
     companies = [_document_to_dict(document) for document in documents]
     for company in companies:
+        company["aliases"] = normalize_aliases(company.get("aliases") or [], canonical_name=company.get("name"))
         company.setdefault("review_count", 0)
         company.setdefault("latest_post_date", None)
         company.setdefault("max_monthly_salary_million", None)
@@ -248,12 +254,14 @@ def build_company_aggregation_pipeline() -> list[dict]:
 async def rebuild_companies_collection(target_db=None) -> int:
     """Rebuild company summary collection from review documents."""
     active_db = target_db if target_db is not None else CompanyDocument.get_motor_database()
+    company_aliases = build_company_aliases_by_canonical()
     await active_db.companies.delete_many({})
     docs = []
     async for row in active_db.reviews.aggregate(build_company_aggregation_pipeline()):
         docs.append(
             {
                 "name": row["_id"],
+                "aliases": company_aliases.get(row["_id"], []),
                 "review_count": row["review_count"],
                 "created_at": row.get("created_at"),
                 "updated_at": row.get("latest_review"),
@@ -371,12 +379,14 @@ async def upsert_company(name: str) -> dict:
     now = datetime.utcnow()
     document = await CompanyDocument.find_one({"name": name})
     if document:
+        document.aliases = _normalized_company_aliases_for_name(name)
         document.updated_at = now
         await document.save()
         return _document_to_dict(document)
 
     document = CompanyDocument(
         name=name,
+        aliases=_normalized_company_aliases_for_name(name),
         created_at=now,
         updated_at=now,
         review_count=0,
@@ -389,6 +399,7 @@ async def upsert_company(name: str) -> dict:
         existing = await CompanyDocument.find_one({"name": name})
         if existing is None:
             raise
+        existing.aliases = _normalized_company_aliases_for_name(name)
         existing.updated_at = now
         await existing.save()
         document = existing
@@ -421,6 +432,7 @@ async def increment_company_review_count(company_name: str):
     if document is None:
         document = CompanyDocument(
             name=company_name,
+            aliases=_normalized_company_aliases_for_name(company_name),
             review_count=1,
             created_at=datetime.utcnow(),
             updated_at=datetime.utcnow(),
@@ -429,8 +441,35 @@ async def increment_company_review_count(company_name: str):
         return
 
     document.review_count += 1
+    document.aliases = _normalized_company_aliases_for_name(company_name)
     document.updated_at = datetime.utcnow()
     await document.save()
+
+
+async def fill_company_aliases(target_db=None) -> dict[str, int | list[str]]:
+    """Populate aliases for existing canonical company documents without creating new companies."""
+    active_db = target_db if target_db is not None else CompanyDocument.get_motor_database()
+    company_aliases = build_company_aliases_by_canonical()
+    existing_names = set()
+    updated = 0
+
+    async for doc in active_db.companies.find({}, {"_id": 1, "name": 1, "aliases": 1}):
+        name = (doc.get("name") or "").strip()
+        if not name:
+            continue
+        existing_names.add(name)
+        aliases = normalize_aliases(company_aliases.get(name, []), canonical_name=name)
+        if aliases == normalize_aliases(doc.get("aliases") or [], canonical_name=name):
+            continue
+        result = await active_db.companies.update_one({"_id": doc["_id"]}, {"$set": {"aliases": aliases}})
+        updated += result.modified_count
+
+    missing_canonicals = sorted(name for name in company_aliases if name not in existing_names)
+    return {
+        "updated_companies": updated,
+        "missing_canonical_companies": missing_canonicals,
+        "missing_canonical_count": len(missing_canonicals),
+    }
 
 
 async def insert_review(review_data: dict) -> tuple[str | None, bool]:

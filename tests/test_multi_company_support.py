@@ -4,6 +4,7 @@ from types import SimpleNamespace
 from unittest.mock import AsyncMock, patch
 
 from crawler.voz_scraper import VozCrawler
+from database.company_aliases import normalize_aliases, resolve_canonical_company
 from database.mongodb import prepare_review_document, ensure_companies_exist, primary_review_company, sync_offers_for_post
 
 
@@ -66,6 +67,24 @@ Bonus: 2 tháng
         self.assertEqual(len(offers), 2)
         self.assertEqual([offer["company"] for offer in offers], ["Alpha Tech", "Beta Systems"])
         self.assertEqual([offer["offer_index"] for offer in offers], [0, 1])
+
+    def test_resolve_canonical_company_follows_alias_chains(self):
+        alias_map = {
+            "Line Technology Vietnam": "Line Technology",
+            "Line Technology": "LINE VN",
+            "LINE VN": "LINE VN",
+        }
+
+        self.assertEqual(
+            resolve_canonical_company("Line Technology Vietnam", alias_map=alias_map),
+            "LINE VN",
+        )
+
+    def test_normalize_aliases_deduplicates_and_excludes_canonical_name(self):
+        self.assertEqual(
+            normalize_aliases([" AXON ", "Axon", "AXON", "Unknown", "", "A**n"], canonical_name="AXON"),
+            ["A**n"],
+        )
 
 
 class CompanyUpsertSyncTests(unittest.IsolatedAsyncioTestCase):

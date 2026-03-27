@@ -3,11 +3,9 @@ Voz Forum Crawler
 Crawls review threads from voz.vn
 """
 import asyncio
-import json
 import re
 import httpx
 from datetime import datetime
-from pathlib import Path
 from typing import Optional, List, Tuple
 from bs4 import BeautifulSoup
 from playwright.async_api import async_playwright
@@ -16,6 +14,7 @@ from playwright_stealth.stealth import Stealth
 from urllib.parse import urljoin
 
 import config
+from database.company_aliases import load_company_alias_map, resolve_canonical_company
 from database.mongodb import (
     insert_review,
     sync_offers_for_post,
@@ -205,11 +204,8 @@ class VozCrawler:
         return match.group(1) if match else ""
 
     def _load_company_alias_map(self) -> dict:
-        alias_path = Path(__file__).resolve().parent.parent / 'data' / 'company_aliases.json'
-        if not alias_path.exists():
-            return {}
         try:
-            return json.loads(alias_path.read_text(encoding='utf-8'))
+            return load_company_alias_map()
         except Exception:
             return {}
 
@@ -231,7 +227,7 @@ class VozCrawler:
         return candidates
 
     def _apply_company_alias(self, company: str) -> str:
-        return self.alias_map.get(company, company)
+        return resolve_canonical_company(company, alias_map=self.alias_map)
 
     def _normalize_companies(self, companies: List[str]) -> List[str]:
         normalized = []
