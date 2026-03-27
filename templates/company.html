@@ -127,6 +127,27 @@
             margin: 0.25rem 0 0.75rem;
             cursor: pointer;
         }
+        .company-links {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.4rem;
+            align-items: center;
+            margin-bottom: 0.75rem;
+        }
+        .company-link-chip {
+            display: inline-flex;
+            align-items: center;
+            padding: 0.2rem 0.55rem;
+            border-radius: 999px;
+            background: #21262d;
+            border: 1px solid #30363d;
+            color: #58a6ff !important;
+            font-size: 0.85rem;
+        }
+        body.light-mode .company-link-chip {
+            background: #f8fafd;
+            border-color: #d6e0ea;
+        }
         .navbar { background: #161b22 !important; border-bottom: 1px solid #30363d !important; }
         .navbar-dark .navbar-brand { color: #e6edf3 !important; }
         .navbar-dark .nav-link { color: #e6edf3 !important; }
@@ -589,6 +610,14 @@
                         </div>
                     </div>
                     <div class="card-body">
+                        {% set review_companies_list = review_companies(review) %}
+                        {% if review_companies_list|length > 1 %}
+                        <div class="company-links">
+                            {% for company_name in review_companies_list %}
+                            <a href="/company/{{ company_to_slug(company_name) }}" class="company-link-chip">{{ company_name }}</a>
+                            {% endfor %}
+                        </div>
+                        {% endif %}
                         {% if review.parent_review %}
                         {% set parent_review = review.parent_review %}
                         <div class="reply-context">

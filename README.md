@@ -68,5 +68,5 @@ python scripts/migrate_company_names.py
 ```
 
 Script này sẽ:
-- normalize lại `reviews.company`
+- backfill `reviews.companies` và cập nhật `reviews.company` primary
 - rebuild lại collection `companies`

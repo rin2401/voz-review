@@ -1,6 +1,6 @@
 """Pydantic models for review data"""
 from pydantic import BaseModel, Field
-from typing import Optional
+from typing import Optional, List
 from datetime import datetime
 
 
@@ -10,6 +10,7 @@ class Review(BaseModel):
     voz_post_id: str
     reply_post_id: Optional[str] = None
     company: str
+    companies: List[str] = Field(default_factory=list)
     content: str
     author: str
     author_url: Optional[str] = None

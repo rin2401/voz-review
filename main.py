@@ -26,10 +26,12 @@ from database.mongodb import (
     insert_review,
     upsert_company,
     increment_company_review_count,
+    normalize_review_companies,
     seed_threads,
     upsert_thread,
     get_thread_state,
     set_thread_crawl_status,
+    sync_offers_for_post,
     update_thread_state,
 )
 from crawler.voz_scraper import VozCrawler, THREAD_URLS
@@ -89,6 +91,10 @@ def company_to_slug(name: str) -> str:
     return (name or "").replace(" ", "-")
 
 
+def review_companies(review: dict) -> List[str]:
+    return normalize_review_companies(review)
+
+
 def is_threads_authed(request: Request) -> bool:
     return request.cookies.get(THREADS_AUTH_COOKIE) == THREADS_PASSWORD
 
@@ -116,6 +122,7 @@ async def resolve_company_name(slug_or_name: str) -> str:
 jinja_env.globals["company_to_slug"] = company_to_slug
 jinja_env.globals["format_dt_vn"] = format_dt_vn
 jinja_env.globals["format_salary_million"] = format_salary_million
+jinja_env.globals["review_companies"] = review_companies
 
 
 # ============== PAGES ==============
@@ -284,7 +291,10 @@ async def search_page(request: Request, q: str = "", company: str = "", sort: st
     results = await search_reviews(q, limit=50)
     if company:
         keyword = company.lower().strip()
-        results = [r for r in results if keyword in (r.get("company") or "").lower()]
+        results = [
+            r for r in results
+            if any(keyword in company_name.lower() for company_name in review_companies(r))
+        ]
 
     if sort == "likes_desc":
         results.sort(key=lambda item: item.get("likes") or 0, reverse=True)
@@ -547,15 +557,24 @@ async def process_thread_page(crawler, page_url: str, html: str):
 
     for post_data in posts:
         try:
-            if post_data["company"] and post_data["company"] != "Unknown":
-                await upsert_company(post_data["company"])
+            for company_name in post_data.get("companies") or []:
+                await upsert_company(company_name)
             _, inserted = await insert_review(post_data)
             if inserted:
                 inserted_count += 1
-                if post_data["company"] != "Unknown":
-                    await increment_company_review_count(post_data["company"])
+                for company_name in post_data.get("companies") or []:
+                    await increment_company_review_count(company_name)
             else:
                 skipped_count += 1
+
+            offer_docs = crawler._extract_offers(
+                post_data.get("content") or "",
+                post_data.get("company") or "Unknown",
+                post_data.get("voz_thread_id") or "",
+                post_data.get("voz_post_id"),
+            )
+            if post_data.get("voz_post_id"):
+                await sync_offers_for_post(post_data["voz_post_id"], offer_docs)
         except Exception as e:
             print(f"Error inserting review: {e}")
     print(f"  ✅ Page: {inserted_count} inserted, {skipped_count} skipped duplicates")

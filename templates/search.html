@@ -50,6 +50,15 @@
         a { color: #58a6ff !important; text-decoration: none; }
         a:hover { text-decoration: underline; }
         .company-name { color: #f0883e !important; font-weight: 600; }
+        .company-links {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.4rem;
+            align-items: center;
+        }
+        .company-separator {
+            color: #8b949e !important;
+        }
         .review-content {
             font-size: 0.95rem;
             line-height: 1.6;
@@ -308,7 +317,16 @@
             <div class="card mb-3">
                 <div class="card-header d-flex justify-content-between">
                     <div>
-                        <a href="/company/{{ company_to_slug(result.company) }}" class="company-name">{{ result.company }}</a>
+                        {% set companies = review_companies(result) %}
+                        <div class="company-links">
+                            {% for company_name in companies %}
+                            <a href="/company/{{ company_to_slug(company_name) }}" class="company-name">{{ company_name }}</a>
+                            {% if not loop.last %}<span class="company-separator">•</span>{% endif %}
+                            {% endfor %}
+                            {% if not companies %}
+                            <span class="company-name">{{ result.company }}</span>
+                            {% endif %}
+                        </div>
                         <span class="text-muted ms-2">by {{ result.author }}</span>
                     </div>
                     <div class="text-muted">

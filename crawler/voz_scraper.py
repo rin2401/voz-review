@@ -168,9 +168,8 @@ class VozCrawler:
                 if not content or len(content) < 20:
                     continue
                 
-                # Extract company name from content
-                company = self._extract_company(content)
-                company = self._apply_company_alias(company)
+                companies = self._extract_companies(content)
+                primary_company = companies[0] if companies else "Unknown"
                 monthly_salary_million = self._extract_monthly_salary_million(content)
                 
                 # Build full URL with page and post anchor
@@ -183,7 +182,8 @@ class VozCrawler:
                     "voz_thread_id": self._extract_thread_id(forum_url),
                     "voz_post_id": post_id,
                     "reply_post_id": reply_post_id,
-                    "company": company,
+                    "company": primary_company,
+                    "companies": companies,
                     "content": content[:5000],
                     "author": author,
                     "author_url": author_url,
@@ -232,6 +232,22 @@ class VozCrawler:
 
     def _apply_company_alias(self, company: str) -> str:
         return self.alias_map.get(company, company)
+
+    def _normalize_companies(self, companies: List[str]) -> List[str]:
+        normalized = []
+        seen = set()
+
+        for raw_company in companies:
+            company = self._apply_company_alias((raw_company or "").strip())
+            if not company or company == "Unknown":
+                continue
+            key = company.lower()
+            if key in seen:
+                continue
+            seen.add(key)
+            normalized.append(company)
+
+        return normalized
     
     def _clean_company_name(self, company: str) -> str:
         """Normalize extracted company names by removing trailing notes."""
@@ -480,6 +496,24 @@ class VozCrawler:
             return [offer_doc]
         return []
 
+    def _extract_companies(self, content: str) -> List[str]:
+        """Extract one or more company names from a review post."""
+        sections = self._split_offer_sections(content)
+        extracted_companies = []
+
+        if len(sections) > 1:
+            for section in sections:
+                company = self._extract_company(section)
+                if company and company != "Unknown":
+                    extracted_companies.append(company)
+
+        if not extracted_companies:
+            company = self._extract_company(content)
+            if company and company != "Unknown":
+                extracted_companies.append(company)
+
+        return self._normalize_companies(extracted_companies)
+
     def _extract_company(self, content: str) -> str:
         """
         Extract company name from review content.
@@ -599,18 +633,16 @@ class VozCrawler:
                 
                 for post_data in posts:
                     try:
-                        # Ensure company exists
-                        if post_data["company"] and post_data["company"] != "Unknown":
-                            await upsert_company(post_data["company"])
+                        for company_name in post_data.get("companies") or []:
+                            await upsert_company(company_name)
 
                         # Insert review if not duplicated by voz_post_id
                         _, inserted = await insert_review(post_data)
                         if inserted:
                             total_reviews += 1
 
-                            # Update company count only for newly inserted reviews
-                            if post_data["company"] != "Unknown":
-                                await increment_company_review_count(post_data["company"])
+                            for company_name in post_data.get("companies") or []:
+                                await increment_company_review_count(company_name)
 
                         offer_docs = self._extract_offers(
                             post_data.get("content") or "",
@@ -673,6 +705,6 @@ if __name__ == "__main__":
             posts = crawler.parse_thread_page(html, url)
             print(f"Found {len(posts)} posts")
             for p in posts[:3]:
-                print(f"  - {p['author']}: {p['company']} ({len(p['content'])} chars)")
+                print(f"  - {p['author']}: {', '.join(p.get('companies') or [p['company']])} ({len(p['content'])} chars)")
     
     asyncio.run(test())

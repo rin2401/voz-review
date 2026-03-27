@@ -35,8 +35,9 @@ async def create_indexes():
     """Create necessary indexes for performance"""
     # Reviews collection
     reviews = db.reviews
-    await reviews.create_index([("company", TEXT), ("content", TEXT)])
+    await reviews.create_index([("company", TEXT), ("companies", TEXT), ("content", TEXT)])
     await reviews.create_index("company")
+    await reviews.create_index("companies")
     await reviews.create_index("created_at")
     await reviews.create_index("voz_thread_id")
 
@@ -53,6 +54,7 @@ async def create_indexes():
     )
     await reviews.create_index("reply_post_id")
     await reviews.create_index([("company", ASCENDING), ("created_at", ASCENDING)])
+    await reviews.create_index([("companies", ASCENDING), ("created_at", ASCENDING)])
     
     # Companies collection (for aggregation)
     companies = db.companies
@@ -104,6 +106,124 @@ async def get_all_companies(sort_by: str = "recent_review") -> List[dict]:
     return await cursor.to_list(length=None)
 
 
+def normalize_review_companies(review_doc: dict) -> List[str]:
+    companies = review_doc.get("companies")
+    if isinstance(companies, list):
+        normalized = []
+        seen = set()
+        for raw_company in companies:
+            company = (raw_company or "").strip()
+            if not company or company == "Unknown":
+                continue
+            key = company.lower()
+            if key in seen:
+                continue
+            seen.add(key)
+            normalized.append(company)
+        if normalized:
+            return normalized
+
+    fallback = (review_doc.get("company") or "").strip()
+    if fallback and fallback != "Unknown":
+        return [fallback]
+    return []
+
+
+def prepare_review_document(review_doc: dict) -> dict:
+    normalized_companies = normalize_review_companies(review_doc)
+    review_doc["companies"] = normalized_companies
+    review_doc["company"] = normalized_companies[0] if normalized_companies else "Unknown"
+    return review_doc
+
+
+def build_company_match(company: str) -> dict:
+    escaped_company = re.escape(company)
+    company_regex = {"$regex": f"^{escaped_company}$", "$options": "i"}
+    return {
+        "$or": [
+            {"companies": company_regex},
+            {
+                "$and": [
+                    {"$or": [{"companies": {"$exists": False}}, {"companies": {"$size": 0}}]},
+                    {"company": company_regex},
+                ]
+            },
+        ]
+    }
+
+
+def build_known_company_query() -> dict:
+    return {
+        "$or": [
+            {"companies.0": {"$exists": True}},
+            {
+                "$and": [
+                    {"$or": [{"companies": {"$exists": False}}, {"companies": {"$size": 0}}]},
+                    {"company": {"$exists": True, "$nin": [None, "", "Unknown"]}},
+                ]
+            },
+        ]
+    }
+
+
+def build_company_aggregation_pipeline() -> List[dict]:
+    return [
+        {
+            "$project": {
+                "created_at": 1,
+                "post_date": 1,
+                "monthly_salary_million": 1,
+                "companies_for_aggregation": {
+                    "$cond": [
+                        {"$gt": [{"$size": {"$ifNull": ["$companies", []]}}, 0]},
+                        "$companies",
+                        {
+                            "$cond": [
+                                {"$and": [{"$ne": ["$company", None]}, {"$ne": ["$company", ""]}, {"$ne": ["$company", "Unknown"]}]},
+                                ["$company"],
+                                [],
+                            ]
+                        },
+                    ]
+                },
+            }
+        },
+        {"$unwind": "$companies_for_aggregation"},
+        {
+            "$group": {
+                "_id": "$companies_for_aggregation",
+                "review_count": {"$sum": 1},
+                "latest_review": {"$max": "$post_date"},
+                "created_at": {"$min": "$created_at"},
+                "max_monthly_salary_million": {"$max": "$monthly_salary_million"},
+            }
+        },
+    ]
+
+
+async def rebuild_companies_collection(target_db=None) -> int:
+    """Rebuild company summary collection from review documents."""
+    active_db = target_db or db
+    await active_db.companies.delete_many({})
+    pipeline = build_company_aggregation_pipeline()
+    docs = []
+    async for row in active_db.reviews.aggregate(pipeline):
+        docs.append(
+            {
+                "name": row["_id"],
+                "review_count": row["review_count"],
+                "created_at": row.get("created_at"),
+                "updated_at": row.get("latest_review"),
+                "latest_post_date": row.get("latest_review"),
+                "max_monthly_salary_million": row.get("max_monthly_salary_million"),
+            }
+        )
+
+    if docs:
+        await active_db.companies.insert_many(docs)
+    return len(docs)
+
+
 async def get_reviews_by_company(
     company: str, 
     limit: int = 50, 
@@ -114,9 +234,7 @@ async def get_reviews_by_company(
     interview_only: bool = False,
 ) -> List[dict]:
     """Get reviews for a specific company"""
-    # Escape regex special characters in company name
-    escaped_company = re.escape(company)
-    query = {"company": {"$regex": f"^{escaped_company}$", "$options": "i"}}
+    query = build_company_match(company)
     if status:
         query["status"] = status
     if thread_id:
@@ -127,7 +245,8 @@ async def get_reviews_by_company(
         query["content"] = {"$regex": r"phỏng vấn", "$options": "i"}
 
     cursor = db.reviews.find(query).sort("post_date", -1).skip(skip).limit(limit)
-    return await cursor.to_list(length=limit)
+    reviews = await cursor.to_list(length=limit)
+    return [prepare_review_document(review) for review in reviews]
 
 
 def build_offer_query(company: str = None, thread_id: str = None, position_keyword: str = "") -> dict:
@@ -195,10 +314,7 @@ async def get_offer_count(company: str = None, thread_id: str = None, position_k
 
 async def get_review_count(company: str = None, status: str = None, thread_id: str = None, salary_only: bool = False, interview_only: bool = False) -> int:
     """Count reviews, optionally filtered by company or status"""
-    query = {}
-    if company:
-        escaped_company = re.escape(company)
-        query["company"] = {"$regex": f"^{escaped_company}$", "$options": "i"}
+    query = build_company_match(company) if company else {}
     if status:
         query["status"] = status
     if thread_id:
@@ -212,9 +328,7 @@ async def get_review_count(company: str = None, status: str = None, thread_id: s
 
 async def get_company_review_count() -> int:
     """Count reviews that have a known company name."""
-    return await db.reviews.count_documents(
-        {"company": {"$exists": True, "$nin": [None, "", "Unknown"]}}
-    )
+    return await db.reviews.count_documents(build_known_company_query())
 
 
 async def upsert_company(name: str) -> dict:
@@ -243,6 +357,7 @@ async def increment_company_review_count(company_name: str):
 
 async def insert_review(review_data: dict) -> tuple[str | None, bool]:
     """Insert a new review, return (inserted_id, inserted_new)"""
+    prepare_review_document(review_data)
     review_data["created_at"] = datetime.utcnow()
     review_data["status"] = config.STATUS_PENDING
     try:
@@ -372,7 +487,8 @@ async def get_replies_for_posts(post_ids: List[str]) -> List[dict]:
     cursor = db.reviews.find(
         {"reply_post_id": {"$in": post_ids}}
     ).sort("created_at", 1)
-    return await cursor.to_list(length=None)
+    replies = await cursor.to_list(length=None)
+    return [prepare_review_document(reply) for reply in replies]
 
 
 async def get_posts_by_ids(post_ids: List[str]) -> List[dict]:
@@ -380,7 +496,8 @@ async def get_posts_by_ids(post_ids: List[str]) -> List[dict]:
     if not post_ids:
         return []
     cursor = db.reviews.find({"voz_post_id": {"$in": post_ids}})
-    return await cursor.to_list(length=None)
+    posts = await cursor.to_list(length=None)
+    return [prepare_review_document(post) for post in posts]
 
 
 async def get_all_threads() -> List[dict]:
@@ -416,10 +533,12 @@ async def seed_threads(thread_urls: List[str]):
 
 async def get_company_thread_ids(company: str) -> List[str]:
     """Get distinct VOZ thread IDs for a company, sorted descending."""
-    escaped_company = re.escape(company)
     ids = await db.reviews.distinct(
         "voz_thread_id",
-        {"company": {"$regex": f"^{escaped_company}$", "$options": "i"}, "voz_thread_id": {"$exists": True, "$nin": [None, ""]}},
+        {
+            **build_company_match(company),
+            "voz_thread_id": {"$exists": True, "$nin": [None, ""]},
+        },
     )
     return sorted([str(x) for x in ids if x], reverse=True)
 
@@ -433,4 +552,5 @@ async def search_reviews(
     cursor = db.reviews.find(
         {"$text": {"$search": keyword}}
     ).sort("created_at", -1).skip(skip).limit(limit)
-    return await cursor.to_list(length=limit)
+    results = await cursor.to_list(length=limit)
+    return [prepare_review_document(result) for result in results]

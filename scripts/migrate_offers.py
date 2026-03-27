@@ -9,9 +9,8 @@ ROOT_DIR = Path(__file__).resolve().parent.parent
 if str(ROOT_DIR) not in sys.path:
     sys.path.insert(0, str(ROOT_DIR))
 
-import config
 from crawler.voz_scraper import VozCrawler
-from database.mongodb import connect, close, sync_offers_for_post, delete_offer_by_post_id
+from database.mongodb import connect, close, sync_offers_for_post, delete_offer_by_post_id, normalize_review_companies
 
 
 async def main():
@@ -35,13 +34,14 @@ async def main():
                 "voz_thread_id": 1,
                 "voz_post_id": 1,
                 "company": 1,
+                "companies": 1,
                 "content": 1,
             },
         )
         async for doc in cursor:
             scanned += 1
-            company = doc.get("company") or crawler._extract_company(doc.get("content") or "")
-            company = crawler._apply_company_alias(company)
+            companies = normalize_review_companies(doc)
+            company = companies[0] if companies else crawler._apply_company_alias(doc.get("company") or "Unknown")
             offer_docs = crawler._extract_offers(
                 doc.get("content") or "",
                 company,

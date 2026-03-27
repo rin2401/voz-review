@@ -11,7 +11,7 @@ if str(ROOT_DIR) not in sys.path:
     sys.path.insert(0, str(ROOT_DIR))
 
 import config
-from database.mongodb import connect, close
+from database.mongodb import connect, close, prepare_review_document, rebuild_companies_collection
 
 ALIASES_PATH = ROOT_DIR / "data" / "company_aliases.json"
 
@@ -30,43 +30,31 @@ async def main():
     rebuilt_companies = 0
 
     try:
-        for alias, canonical in alias_map.items():
-            if not alias or not canonical or alias == canonical:
-                continue
-            result = await db.reviews.update_many(
-                {"company": alias},
-                {"$set": {"company": canonical}},
-            )
-            changed_reviews += result.modified_count
+        cursor = db.reviews.find({}, {"_id": 1, "company": 1, "companies": 1})
+        async for review in cursor:
+            original_company = review.get("company")
+            original_companies = list(review.get("companies") or [])
 
-        await db.companies.delete_many({})
-        pipeline = [
-            {"$match": {"company": {"$exists": True, "$nin": [None, "", "Unknown"]}}},
-            {
-                "$group": {
-                    "_id": "$company",
-                    "review_count": {"$sum": 1},
-                    "latest_review": {"$max": "$created_at"},
-                    "created_at": {"$min": "$created_at"},
-                }
-            },
-            {"$sort": {"_id": 1}},
-        ]
-
-        docs = []
-        async for row in db.reviews.aggregate(pipeline):
-            docs.append(
+            mapped_company = alias_map.get(original_company, original_company)
+            mapped_companies = [alias_map.get(company, company) for company in original_companies]
+            updated_review = prepare_review_document(
                 {
-                    "name": row["_id"],
-                    "review_count": row["review_count"],
-                    "created_at": row.get("created_at"),
-                    "updated_at": row.get("latest_review"),
+                    "company": mapped_company,
+                    "companies": mapped_companies,
                 }
             )
 
-        if docs:
-            await db.companies.insert_many(docs)
-            rebuilt_companies = len(docs)
+            if (
+                updated_review["company"] != original_company
+                or updated_review["companies"] != original_companies
+            ):
+                result = await db.reviews.update_one(
+                    {"_id": review["_id"]},
+                    {"$set": {"company": updated_review["company"], "companies": updated_review["companies"]}},
+                )
+                changed_reviews += result.modified_count
+
+        rebuilt_companies = await rebuild_companies_collection(db)
 
         print(
             {
