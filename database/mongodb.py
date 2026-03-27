@@ -26,6 +26,21 @@ def get_database():
     return db
 
 
+def _normalize_company_names(raw_companies: list[Any]) -> list[str]:
+    normalized = []
+    seen = set()
+    for raw_company in raw_companies:
+        company = (raw_company or "").strip()
+        if not company or company == "Unknown":
+            continue
+        key = company.lower()
+        if key in seen:
+            continue
+        seen.add(key)
+        normalized.append(company)
+    return normalized
+
+
 async def connect():
     """Initialize database connection and Beanie documents."""
     global client, db
@@ -66,11 +81,10 @@ async def create_indexes():
         if index_name == "_id_":
             continue
         keys = index_info.get("key", [])
-        if keys and keys[0][0] == "_fts" and index_name != "company_text_companies_text_content_text":
+        if keys and keys[0][0] == "_fts" and index_name != "companies_text_content_text":
             await reviews.drop_index(index_name)
 
-    await reviews.create_index([("company", TEXT), ("companies", TEXT), ("content", TEXT)])
-    await reviews.create_index("company")
+    await reviews.create_index([("companies", TEXT), ("content", TEXT)])
     await reviews.create_index("companies")
     await reviews.create_index("created_at")
     await reviews.create_index("voz_thread_id")
@@ -86,7 +100,6 @@ async def create_indexes():
         partialFilterExpression={"voz_post_id": {"$exists": True, "$type": "string"}},
     )
     await reviews.create_index("reply_post_id")
-    await reviews.create_index([("company", ASCENDING), ("created_at", ASCENDING)])
     await reviews.create_index([("companies", ASCENDING), ("created_at", ASCENDING)])
 
     companies = CompanyDocument.get_motor_collection()
@@ -141,33 +154,29 @@ async def get_all_companies(sort_by: str = "recent_review") -> list[dict]:
     return companies
 
 
-def normalize_review_companies(review_doc: dict) -> list[str]:
+def normalize_review_companies(review_doc: dict, allow_legacy_fallback: bool = True) -> list[str]:
     companies = review_doc.get("companies")
     if isinstance(companies, list):
-        normalized = []
-        seen = set()
-        for raw_company in companies:
-            company = (raw_company or "").strip()
-            if not company or company == "Unknown":
-                continue
-            key = company.lower()
-            if key in seen:
-                continue
-            seen.add(key)
-            normalized.append(company)
+        normalized = _normalize_company_names(companies)
         if normalized:
             return normalized
 
-    fallback = (review_doc.get("company") or "").strip()
-    if fallback and fallback != "Unknown":
-        return [fallback]
+    if allow_legacy_fallback:
+        fallback = (review_doc.get("company") or "").strip()
+        if fallback and fallback != "Unknown":
+            return [fallback]
     return []
 
 
+def primary_review_company(review_doc: dict, default: str = "Unknown", allow_legacy_fallback: bool = True) -> str:
+    companies = normalize_review_companies(review_doc, allow_legacy_fallback=allow_legacy_fallback)
+    return companies[0] if companies else default
+
+
 def prepare_review_document(review_doc: dict) -> dict:
-    normalized_companies = normalize_review_companies(review_doc)
+    normalized_companies = normalize_review_companies(review_doc, allow_legacy_fallback=True)
     review_doc["companies"] = normalized_companies
-    review_doc["company"] = normalized_companies[0] if normalized_companies else "Unknown"
+    review_doc.pop("company", None)
     return review_doc
 
 

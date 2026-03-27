@@ -324,7 +324,7 @@
                             {% if not loop.last %}<span class="company-separator">•</span>{% endif %}
                             {% endfor %}
                             {% if not companies %}
-                            <span class="company-name">{{ result.company }}</span>
+                            <span class="company-name">{{ review_primary_company(result) }}</span>
                             {% endif %}
                         </div>
                         <span class="text-muted ms-2">by {{ result.author }}</span>

@@ -45,11 +45,7 @@ async def main():
                     "companies": [alias_map.get(company, company) for company in reparsed_companies],
                 }
             )
-            if (
-                updated_review["company"] != (doc.get("company") or "Unknown")
-                or updated_review["companies"] != list(doc.get("companies") or [])
-            ):
-                updates["company"] = updated_review["company"]
+            if updated_review["companies"] != list(doc.get("companies") or []):
                 updates["companies"] = updated_review["companies"]
                 company_updates += 1
 

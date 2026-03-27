@@ -21,7 +21,8 @@ from database.mongodb import (
     sync_offers_for_post,
     get_thread_state,
     update_thread_state,
-    increment_company_review_count
+    increment_company_review_count,
+    primary_review_company,
 )
 
 
@@ -654,7 +655,7 @@ class VozCrawler:
 
                         offer_docs = self._extract_offers(
                             post_data.get("content") or "",
-                            post_data.get("company") or "Unknown",
+                            primary_review_company(post_data, allow_legacy_fallback=True),
                             post_data.get("voz_thread_id") or "",
                             post_data.get("voz_post_id"),
                             post_data.get("companies") or [],
@@ -714,6 +715,7 @@ if __name__ == "__main__":
             posts = crawler.parse_thread_page(html, url)
             print(f"Found {len(posts)} posts")
             for p in posts[:3]:
-                print(f"  - {p['author']}: {', '.join(p.get('companies') or [p['company']])} ({len(p['content'])} chars)")
+                companies = p.get("companies") or [primary_review_company(p, allow_legacy_fallback=True)]
+                print(f"  - {p['author']}: {', '.join(companies)} ({len(p['content'])} chars)")
     
     asyncio.run(test())

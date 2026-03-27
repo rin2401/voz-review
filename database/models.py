@@ -11,7 +11,6 @@ class ReviewDocument(Document):
     voz_thread_id: str = ""
     voz_post_id: Optional[str] = None
     reply_post_id: Optional[str] = None
-    company: str = "Unknown"
     companies: list[str] = Field(default_factory=list)
     content: str
     author: str
@@ -27,8 +26,7 @@ class ReviewDocument(Document):
     class Settings:
         name = "reviews"
         indexes = [
-            IndexModel([("company", TEXT), ("companies", TEXT), ("content", TEXT)]),
-            IndexModel([("company", ASCENDING)]),
+            IndexModel([("companies", TEXT), ("content", TEXT)]),
             IndexModel([("companies", ASCENDING)]),
             IndexModel([("created_at", ASCENDING)]),
             IndexModel([("voz_thread_id", ASCENDING)]),
@@ -38,7 +36,6 @@ class ReviewDocument(Document):
                 partialFilterExpression={"voz_post_id": {"$exists": True, "$type": "string"}},
             ),
             IndexModel([("reply_post_id", ASCENDING)]),
-            IndexModel([("company", ASCENDING), ("created_at", ASCENDING)]),
             IndexModel([("companies", ASCENDING), ("created_at", ASCENDING)]),
         ]
 

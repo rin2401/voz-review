@@ -28,25 +28,19 @@ async def main():
     try:
         cursor = db.reviews.find({}, {"_id": 1, "company": 1, "companies": 1})
         async for review in cursor:
-            original_company = review.get("company")
             original_companies = list(review.get("companies") or [])
-
-            mapped_company = alias_map.get(original_company, original_company)
             mapped_companies = [alias_map.get(company, company) for company in original_companies]
             updated_review = prepare_review_document(
                 {
-                    "company": mapped_company,
+                    "company": alias_map.get(review.get("company"), review.get("company")),
                     "companies": mapped_companies,
                 }
             )
 
-            if (
-                updated_review["company"] != original_company
-                or updated_review["companies"] != original_companies
-            ):
+            if updated_review["companies"] != original_companies:
                 result = await db.reviews.update_one(
                     {"_id": review["_id"]},
-                    {"$set": {"company": updated_review["company"], "companies": updated_review["companies"]}},
+                    {"$set": {"companies": updated_review["companies"]}},
                 )
                 changed_reviews += result.modified_count
 

@@ -4,7 +4,7 @@ from types import SimpleNamespace
 from unittest.mock import AsyncMock, patch
 
 from crawler.voz_scraper import VozCrawler
-from database.mongodb import prepare_review_document, ensure_companies_exist, sync_offers_for_post
+from database.mongodb import prepare_review_document, ensure_companies_exist, primary_review_company, sync_offers_for_post
 
 
 class MultiCompanySupportTests(unittest.TestCase):
@@ -22,8 +22,22 @@ class MultiCompanySupportTests(unittest.TestCase):
 
         prepared = prepare_review_document(review)
 
-        self.assertEqual(prepared["company"], "Alpha Tech")
         self.assertEqual(prepared["companies"], ["Alpha Tech", "Beta Systems"])
+        self.assertNotIn("company", prepared)
+
+    def test_primary_review_company_uses_legacy_company_only_as_fallback(self):
+        self.assertEqual(
+            primary_review_company({"companies": ["Alpha Tech"], "company": "Legacy Corp"}),
+            "Alpha Tech",
+        )
+        self.assertEqual(
+            primary_review_company({"company": "Legacy Corp"}),
+            "Legacy Corp",
+        )
+        self.assertEqual(
+            primary_review_company({"company": "Legacy Corp"}, allow_legacy_fallback=False),
+            "Unknown",
+        )
 
     def test_extract_offers_maps_sections_to_matching_companies(self):
         content = """

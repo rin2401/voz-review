@@ -22,6 +22,7 @@ from database.mongodb import (
     get_replies_for_posts,
     get_posts_by_ids,
     get_company_thread_ids,
+    primary_review_company,
     search_reviews,
     insert_review,
     increment_company_review_count,
@@ -94,6 +95,10 @@ def review_companies(review: dict) -> List[str]:
     return normalize_review_companies(review)
 
 
+def review_primary_company(review: dict) -> str:
+    return primary_review_company(review, allow_legacy_fallback=True)
+
+
 def is_threads_authed(request: Request) -> bool:
     return request.cookies.get(THREADS_AUTH_COOKIE) == THREADS_PASSWORD
 
@@ -122,6 +127,7 @@ jinja_env.globals["company_to_slug"] = company_to_slug
 jinja_env.globals["format_dt_vn"] = format_dt_vn
 jinja_env.globals["format_salary_million"] = format_salary_million
 jinja_env.globals["review_companies"] = review_companies
+jinja_env.globals["review_primary_company"] = review_primary_company
 
 
 # ============== PAGES ==============
@@ -566,7 +572,7 @@ async def process_thread_page(crawler, page_url: str, html: str):
 
             offer_docs = crawler._extract_offers(
                 post_data.get("content") or "",
-                post_data.get("company") or "Unknown",
+                primary_review_company(post_data, allow_legacy_fallback=True),
                 post_data.get("voz_thread_id") or "",
                 post_data.get("voz_post_id"),
                 post_data.get("companies") or [],

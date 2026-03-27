@@ -9,7 +9,6 @@ class Review(BaseModel):
     voz_thread_id: str
     voz_post_id: str
     reply_post_id: Optional[str] = None
-    company: str
     companies: List[str] = Field(default_factory=list)
     content: str
     author: str
