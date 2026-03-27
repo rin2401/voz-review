@@ -81,7 +81,7 @@ async def create_indexes():
         unique=True,
         partialFilterExpression={
             "voz_post_id": {"$exists": True, "$type": "string"},
-            "company": {"$exists": True, "$type": "string", "$nin": ["", "Unknown"]},
+            "company": {"$exists": True, "$type": "string"},
         },
     )
     await offers.create_index("company")
