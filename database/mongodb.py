@@ -111,7 +111,12 @@ async def get_all_companies(sort_by: str = "recent_review") -> List[dict]:
         "salary_desc": [("max_monthly_salary_million", -1), ("review_count", -1), ("name", ASCENDING)],
     }
     cursor = db.companies.find({}).sort(sort_map.get(sort_by, sort_map["az"]))
-    return await cursor.to_list(length=None)
+    companies = await cursor.to_list(length=None)
+    for company in companies:
+        company.setdefault("review_count", 0)
+        company.setdefault("latest_post_date", None)
+        company.setdefault("max_monthly_salary_million", None)
+    return companies
 
 
 def normalize_review_companies(review_doc: dict) -> List[str]:
@@ -347,7 +352,12 @@ async def upsert_company(name: str) -> dict:
         {"name": name},
         {
             "$set": {"updated_at": now},
-            "$setOnInsert": {"created_at": now, "review_count": 0}
+            "$setOnInsert": {
+                "created_at": now,
+                "review_count": 0,
+                "latest_post_date": None,
+                "max_monthly_salary_million": None,
+            }
         },
         upsert=True,
         return_document=True
