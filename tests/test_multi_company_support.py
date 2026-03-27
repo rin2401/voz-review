@@ -56,21 +56,19 @@ Bonus: 2 tháng
 
 class CompanyUpsertSyncTests(unittest.IsolatedAsyncioTestCase):
     async def test_ensure_companies_exist_deduplicates_without_touching_unknown(self):
-        companies = SimpleNamespace(find_one_and_update=AsyncMock())
-
-        with patch("database.mongodb.db", SimpleNamespace(companies=companies)):
+        with patch("database.mongodb.upsert_company", AsyncMock()) as upsert_company:
             normalized = await ensure_companies_exist(
                 ["Alias Corp", "alias corp", "Unknown", "", "Mapped Inc"]
             )
 
         self.assertEqual(normalized, ["Alias Corp", "Mapped Inc"])
-        self.assertEqual(companies.find_one_and_update.await_count, 2)
+        self.assertEqual(upsert_company.await_count, 2)
 
     async def test_sync_offers_for_post_creates_missing_company_docs(self):
         offers = SimpleNamespace(delete_many=AsyncMock(return_value=SimpleNamespace(deleted_count=0)))
-        companies = SimpleNamespace(find_one_and_update=AsyncMock())
 
-        with patch("database.mongodb.db", SimpleNamespace(offers=offers, companies=companies)), \
+        with patch("database.mongodb.ensure_companies_exist", AsyncMock(return_value=["Mapped Corp"])) as ensure_companies_exist_mock, \
+             patch("database.mongodb.OfferDocument.get_motor_collection", return_value=offers), \
              patch("database.mongodb.upsert_offer", AsyncMock(return_value=("post-1", True))):
             upserted, created, deleted = await sync_offers_for_post(
                 "post-1",
@@ -81,7 +79,7 @@ class CompanyUpsertSyncTests(unittest.IsolatedAsyncioTestCase):
             )
 
         self.assertEqual((upserted, created, deleted), (2, 2, 0))
-        companies.find_one_and_update.assert_awaited_once()
+        ensure_companies_exist_mock.assert_awaited_once()
 
 if __name__ == "__main__":
     unittest.main()

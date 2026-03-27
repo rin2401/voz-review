@@ -4,15 +4,12 @@ import json
 import sys
 from pathlib import Path
 
-from motor.motor_asyncio import AsyncIOMotorClient
-
 ROOT_DIR = Path(__file__).resolve().parent.parent
 if str(ROOT_DIR) not in sys.path:
     sys.path.insert(0, str(ROOT_DIR))
 
-import config
 from crawler.voz_scraper import VozCrawler
-from database.mongodb import connect, close, prepare_review_document, rebuild_companies_collection
+from database.mongodb import connect, close, get_database, prepare_review_document, rebuild_companies_collection
 
 ALIASES_PATH = ROOT_DIR / "data" / "company_aliases.json"
 
@@ -23,8 +20,7 @@ async def main():
         alias_map = json.loads(ALIASES_PATH.read_text(encoding="utf-8"))
 
     await connect()
-    client = AsyncIOMotorClient(config.MONGO_URI)
-    db = client[config.MONGO_DB]
+    db = get_database()
 
     scanned = 0
     company_updates = 0
@@ -84,7 +80,6 @@ async def main():
             }
         )
     finally:
-        client.close()
         await close()
 
 

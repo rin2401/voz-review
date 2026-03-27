@@ -3,26 +3,26 @@ import asyncio
 import sys
 from pathlib import Path
 
-from motor.motor_asyncio import AsyncIOMotorClient
-
 ROOT_DIR = Path(__file__).resolve().parent.parent
 if str(ROOT_DIR) not in sys.path:
     sys.path.insert(0, str(ROOT_DIR))
 
-import config
+from database.mongodb import close, connect, get_database
 
 
 async def main():
-    client = AsyncIOMotorClient(config.MONGO_URI)
-    db = client[config.MONGO_DB]
+    await connect()
+    db = get_database()
 
-    collections = ["reviews", "companies", "threads"]
+    collections = ["reviews", "companies", "threads", "offers"]
 
-    for name in collections:
-        result = await db[name].delete_many({})
-        print(f"Cleared {name}: {result.deleted_count} documents")
+    try:
+        for name in collections:
+            result = await db[name].delete_many({})
+            print(f"Cleared {name}: {result.deleted_count} documents")
+    finally:
+        await close()
 
-    client.close()
     print("Done. Database is ready for a fresh crawl.")
 
 

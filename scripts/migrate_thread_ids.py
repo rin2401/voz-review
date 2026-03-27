@@ -3,23 +3,19 @@ import asyncio
 import sys
 from pathlib import Path
 
-from motor.motor_asyncio import AsyncIOMotorClient
-
 ROOT_DIR = Path(__file__).resolve().parent.parent
 if str(ROOT_DIR) not in sys.path:
     sys.path.insert(0, str(ROOT_DIR))
 
-import config
 from crawler.voz_scraper import VozCrawler
-from database.mongodb import connect, close
+from database.mongodb import connect, close, get_database
 
 
 async def main():
     crawler = VozCrawler()
 
     await connect()
-    client = AsyncIOMotorClient(config.MONGO_URI)
-    db = client[config.MONGO_DB]
+    db = get_database()
 
     scanned = 0
     updated = 0
@@ -65,7 +61,6 @@ async def main():
             }
         )
     finally:
-        client.close()
         await close()
 
 
