@@ -35,6 +35,14 @@ async def create_indexes():
     """Create necessary indexes for performance"""
     # Reviews collection
     reviews = db.reviews
+    existing_indexes = await reviews.index_information()
+    for index_name, index_info in existing_indexes.items():
+        if index_name == "_id_":
+            continue
+        keys = index_info.get("key", [])
+        if keys and keys[0][0] == "_fts" and index_name != "company_text_companies_text_content_text":
+            await reviews.drop_index(index_name)
+
     await reviews.create_index([("company", TEXT), ("companies", TEXT), ("content", TEXT)])
     await reviews.create_index("company")
     await reviews.create_index("companies")
