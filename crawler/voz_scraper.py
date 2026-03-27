@@ -453,9 +453,9 @@ class VozCrawler:
             return []
 
         sections = self._split_offer_sections(content)
-        offers_by_company = {}
+        offer_docs = []
 
-        for section in sections:
+        for index, section in enumerate(sections):
             section_company = self._extract_company(section)
             if not section_company or section_company == "Unknown":
                 section_company = company
@@ -468,13 +468,17 @@ class VozCrawler:
                 voz_post_id,
             )
             if offer_doc:
-                offers_by_company[offer_doc["company"]] = offer_doc
+                offer_doc["offer_index"] = index
+                offer_docs.append(offer_doc)
 
-        if offers_by_company:
-            return list(offers_by_company.values())
+        if offer_docs:
+            return offer_docs
 
         offer_doc = self._extract_offer(content, company, voz_thread_id, voz_post_id)
-        return [offer_doc] if offer_doc else []
+        if offer_doc:
+            offer_doc["offer_index"] = 0
+            return [offer_doc]
+        return []
 
     def _extract_company(self, content: str) -> str:
         """
