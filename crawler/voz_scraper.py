@@ -329,8 +329,9 @@ class VozCrawler:
             line = raw_line.strip()
             if not line:
                 continue
+            normalized_line = re.sub(r'^[•·●▪◦*\-]+\s*', '', line)
             for pattern in compiled_patterns:
-                match = pattern.match(line)
+                match = pattern.match(normalized_line)
                 if not match:
                     continue
                 value = match.group(1).strip() if match.lastindex else ""
@@ -367,27 +368,29 @@ class VozCrawler:
         if not company or company == "Unknown" or not voz_post_id:
             return None
 
-        position = self._extract_labeled_value(content, [r'^\s*(?:vị trí|vi tri)\s*:\s*(.*)$'])
-        offer_year = self._parse_offer_year(self._extract_labeled_value(content, [r'^\s*(?:thời điểm(?:\s*\(.*?\))?|thoi diem(?:\s*\(.*?\))?)\s*:\s*(.*)$']))
+        bullet_prefix = r'^(?:[•·●▪◦*\-]+\s*)?'
+        position = self._extract_labeled_value(content, [bullet_prefix + r'\s*(?:vị trí|vi tri)\s*:\s*(.*)$'])
+        offer_year = self._parse_offer_year(self._extract_labeled_value(content, [bullet_prefix + r'\s*(?:thời điểm(?:\s*\(.*?\))?|thoi diem(?:\s*\(.*?\))?)\s*:\s*(.*)$']))
         bonus = self._extract_labeled_value(
             content,
             [
-                r'^\s*bonus\s*:\s*\(.*?\)\s*:\s*(.*)$',
-                r'^\s*bonus(?:\s*\(.*?\))?\s*:\s*(.*)$',
+                bullet_prefix + r'\s*bonus\s*:\s*\(.*?\)\s*:\s*(.*)$',
+                bullet_prefix + r'\s*bonus(?:\s*\(.*?\))?\s*:\s*(.*)$',
+                bullet_prefix + r'\s*(?:phúc lợi|phuc loi)\s*:\s*(.*)$',
             ],
         )
         years_of_experience = self._parse_years_of_experience(
             self._extract_labeled_value(
                 content,
                 [
-                    r'^\s*(?:số năm kinh nghiệm khi nhận offer|so nam kinh nghiem khi nhan offer)\s*:\s*(.*)$',
-                    r'^\s*(?:kinh nghiệm khi nhận offer|kinh nghiem khi nhan offer)\s*:\s*(.*)$',
+                    bullet_prefix + r'\s*(?:số năm kinh nghiệm khi nhận offer|so nam kinh nghiem khi nhan offer)\s*:\s*(.*)$',
+                    bullet_prefix + r'\s*(?:kinh nghiệm khi nhận offer|kinh nghiem khi nhan offer)\s*:\s*(.*)$',
                 ],
             )
         )
         salary = self._extract_labeled_value(
             content,
-            [r'^\s*(?:lương tháng/năm(?:\s*\(.*?\))?|luong thang/nam(?:\s*\(.*?\))?)\s*:\s*(.*)$'],
+            [bullet_prefix + r'\s*(?:lương tháng/năm(?:\s*\(.*?\))?|luong thang/nam(?:\s*\(.*?\))?)\s*:\s*(.*)$'],
         )
         monthly_salary_million = self._extract_monthly_salary_million(content)
 
@@ -418,11 +421,12 @@ class VozCrawler:
             line = raw_line.strip()
             if not line:
                 continue
-            lower_line = line.lower()
-            if re.match(r'^\s*(?:tên công ty|ten cong ty|tên cty|ten cty)\s*:?', line, re.IGNORECASE):
+            normalized_line = re.sub(r'^[•·●▪◦*\-]+\s*', '', line)
+            lower_line = normalized_line.lower()
+            if re.match(r'^\s*(?:tên công ty|ten cong ty|tên cty|ten cty)\s*:?', normalized_line, re.IGNORECASE):
                 section_starts.append(index)
                 continue
-            if re.match(r'^\s*(?:công ty|cong ty)\s*:', line, re.IGNORECASE):
+            if re.match(r'^\s*(?:công ty|cong ty)\s*:', normalized_line, re.IGNORECASE):
                 section_starts.append(index)
                 continue
             if lower_line in {"công ty", "cong ty"}:
@@ -510,16 +514,17 @@ class VozCrawler:
         # Look for "Tên công ty:" / "Tên cty:" at the START of a line
         for index, raw_line in enumerate(lines):
             line = raw_line.strip()
-            lower_line = line.lower()
+            normalized_line = re.sub(r'^[•·●▪◦*\-]+\s*', '', line)
+            lower_line = normalized_line.lower()
             if lower_line.startswith('tên công ty') or lower_line.startswith('tên cty'):
                 # Extract after the colon; if value is on the next line, use that
-                if ':' in line:
-                    company = line.split(':', 1)[1].strip()
+                if ':' in normalized_line:
+                    company = normalized_line.split(':', 1)[1].strip()
                 else:
                     if lower_line.startswith('tên cty'):
-                        company = re.split(r'tên cty', line, maxsplit=1, flags=re.IGNORECASE)[1].strip()
+                        company = re.split(r'tên cty', normalized_line, maxsplit=1, flags=re.IGNORECASE)[1].strip()
                     else:
-                        company = re.split(r'tên công ty', line, maxsplit=1, flags=re.IGNORECASE)[1].strip()
+                        company = re.split(r'tên công ty', normalized_line, maxsplit=1, flags=re.IGNORECASE)[1].strip()
 
                 if not company:
                     company = _next_non_empty_line(index)
@@ -537,9 +542,10 @@ class VozCrawler:
         # Also try: starts with "Công ty" as a standalone line or label
         for index, raw_line in enumerate(lines):
             line = raw_line.strip()
-            lower_line = line.lower()
-            if lower_line.startswith('công ty') and len(line) < 80:
-                remainder = line[len('công ty'):].strip()
+            normalized_line = re.sub(r'^[•·●▪◦*\-]+\s*', '', line)
+            lower_line = normalized_line.lower()
+            if lower_line.startswith('công ty') and len(normalized_line) < 80:
+                remainder = normalized_line[len('công ty'):].strip()
                 if remainder.startswith(':'):
                     remainder = remainder[1:].strip()
                 company = remainder or _next_non_empty_line(index)
