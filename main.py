@@ -572,6 +572,7 @@ async def process_thread_page(crawler, page_url: str, html: str):
                 post_data.get("company") or "Unknown",
                 post_data.get("voz_thread_id") or "",
                 post_data.get("voz_post_id"),
+                post_data.get("companies") or [],
             )
             if post_data.get("voz_post_id"):
                 await sync_offers_for_post(post_data["voz_post_id"], offer_docs)

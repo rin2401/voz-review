@@ -463,18 +463,30 @@ class VozCrawler:
                 sections.append(section)
         return sections or [content]
 
-    def _extract_offers(self, content: str, company: str, voz_thread_id: str, voz_post_id: Optional[str]) -> List[dict]:
+    def _extract_offers(
+        self,
+        content: str,
+        company: str,
+        voz_thread_id: str,
+        voz_post_id: Optional[str],
+        companies: Optional[List[str]] = None,
+    ) -> List[dict]:
         """Extract one or more offers from a review post."""
         if not voz_post_id:
             return []
 
+        normalized_companies = self._normalize_companies(companies or [])
+        fallback_company = normalized_companies[0] if normalized_companies else self._apply_company_alias(company or "Unknown")
         sections = self._split_offer_sections(content)
         offer_docs = []
 
         for index, section in enumerate(sections):
             section_company = self._extract_company(section)
             if not section_company or section_company == "Unknown":
-                section_company = company
+                if index < len(normalized_companies):
+                    section_company = normalized_companies[index]
+                else:
+                    section_company = fallback_company
             section_company = self._apply_company_alias(section_company or "Unknown")
 
             offer_doc = self._extract_offer(
@@ -490,7 +502,7 @@ class VozCrawler:
         if offer_docs:
             return offer_docs
 
-        offer_doc = self._extract_offer(content, company, voz_thread_id, voz_post_id)
+        offer_doc = self._extract_offer(content, fallback_company, voz_thread_id, voz_post_id)
         if offer_doc:
             offer_doc["offer_index"] = 0
             return [offer_doc]
@@ -649,6 +661,7 @@ class VozCrawler:
                             post_data.get("company") or "Unknown",
                             post_data.get("voz_thread_id") or "",
                             post_data.get("voz_post_id"),
+                            post_data.get("companies") or [],
                         )
                         if post_data.get("voz_post_id"):
                             await sync_offers_for_post(post_data["voz_post_id"], offer_docs)

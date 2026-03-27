@@ -48,6 +48,7 @@ async def main():
                 company,
                 doc.get("voz_thread_id") or "",
                 doc.get("voz_post_id"),
+                companies,
             )
 
             if offer_docs:
