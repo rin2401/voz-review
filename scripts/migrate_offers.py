@@ -9,6 +9,7 @@ ROOT_DIR = Path(__file__).resolve().parent.parent
 if str(ROOT_DIR) not in sys.path:
     sys.path.insert(0, str(ROOT_DIR))
 
+import config
 from crawler.voz_scraper import VozCrawler
 from database.mongodb import connect, close, sync_offers_for_post, delete_offer_by_post_id, normalize_review_companies
 

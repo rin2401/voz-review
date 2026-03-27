@@ -211,7 +211,7 @@ def build_company_aggregation_pipeline() -> List[dict]:
 
 async def rebuild_companies_collection(target_db=None) -> int:
     """Rebuild company summary collection from review documents."""
-    active_db = target_db or db
+    active_db = target_db if target_db is not None else db
     await active_db.companies.delete_many({})
     pipeline = build_company_aggregation_pipeline()
     docs = []
