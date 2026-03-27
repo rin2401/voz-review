@@ -18,7 +18,7 @@ from urllib.parse import urljoin
 import config
 from database.mongodb import (
     insert_review,
-    upsert_offer,
+    sync_offers_for_post,
     upsert_company,
     get_thread_state,
     update_thread_state,
@@ -412,6 +412,66 @@ class VozCrawler:
         }
         return offer_doc
 
+    def _find_company_section_starts(self, lines: List[str]) -> List[int]:
+        section_starts = []
+        for index, raw_line in enumerate(lines):
+            line = raw_line.strip()
+            if not line:
+                continue
+            lower_line = line.lower()
+            if re.match(r'^\s*(?:tên công ty|ten cong ty|tên cty|ten cty)\s*:?', line, re.IGNORECASE):
+                section_starts.append(index)
+                continue
+            if re.match(r'^\s*(?:công ty|cong ty)\s*:', line, re.IGNORECASE):
+                section_starts.append(index)
+                continue
+            if lower_line in {"công ty", "cong ty"}:
+                section_starts.append(index)
+        return section_starts
+
+    def _split_offer_sections(self, content: str) -> List[str]:
+        lines = content.split('\n')
+        section_starts = self._find_company_section_starts(lines)
+        if len(section_starts) < 2:
+            return [content]
+
+        sections = []
+        boundaries = section_starts + [len(lines)]
+        for start, end in zip(boundaries, boundaries[1:]):
+            section = '\n'.join(lines[start:end]).strip()
+            if section:
+                sections.append(section)
+        return sections or [content]
+
+    def _extract_offers(self, content: str, company: str, voz_thread_id: str, voz_post_id: Optional[str]) -> List[dict]:
+        """Extract one or more offers from a review post."""
+        if not voz_post_id:
+            return []
+
+        sections = self._split_offer_sections(content)
+        offers_by_company = {}
+
+        for section in sections:
+            section_company = self._extract_company(section)
+            if not section_company or section_company == "Unknown":
+                section_company = company
+            section_company = self._apply_company_alias(section_company or "Unknown")
+
+            offer_doc = self._extract_offer(
+                section,
+                section_company,
+                voz_thread_id,
+                voz_post_id,
+            )
+            if offer_doc:
+                offers_by_company[offer_doc["company"]] = offer_doc
+
+        if offers_by_company:
+            return list(offers_by_company.values())
+
+        offer_doc = self._extract_offer(content, company, voz_thread_id, voz_post_id)
+        return [offer_doc] if offer_doc else []
+
     def _extract_company(self, content: str) -> str:
         """
         Extract company name from review content.
@@ -542,14 +602,14 @@ class VozCrawler:
                             if post_data["company"] != "Unknown":
                                 await increment_company_review_count(post_data["company"])
 
-                        offer_data = self._extract_offer(
+                        offer_docs = self._extract_offers(
                             post_data.get("content") or "",
                             post_data.get("company") or "Unknown",
                             post_data.get("voz_thread_id") or "",
                             post_data.get("voz_post_id"),
                         )
-                        if offer_data:
-                            await upsert_offer(offer_data)
+                        if post_data.get("voz_post_id"):
+                            await sync_offers_for_post(post_data["voz_post_id"], offer_docs)
                     except Exception as e:
                         print(f"Error inserting review: {e}")
                         continue

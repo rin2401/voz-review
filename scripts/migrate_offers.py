@@ -11,7 +11,7 @@ if str(ROOT_DIR) not in sys.path:
 
 import config
 from crawler.voz_scraper import VozCrawler
-from database.mongodb import connect, close, upsert_offer, delete_offer_by_post_id
+from database.mongodb import connect, close, sync_offers_for_post, delete_offer_by_post_id
 
 
 async def main():
@@ -41,18 +41,19 @@ async def main():
         async for doc in cursor:
             scanned += 1
             company = doc.get("company") or crawler._extract_company(doc.get("content") or "")
-            offer_doc = crawler._extract_offer(
+            company = crawler._apply_company_alias(company)
+            offer_docs = crawler._extract_offers(
                 doc.get("content") or "",
                 company,
                 doc.get("voz_thread_id") or "",
                 doc.get("voz_post_id"),
             )
 
-            if offer_doc:
-                _, created = await upsert_offer(offer_doc)
-                offers_upserted += 1
-                if created:
-                    offers_created += 1
+            if offer_docs:
+                upserted, created, deleted = await sync_offers_for_post(doc.get("voz_post_id"), offer_docs)
+                offers_upserted += upserted
+                offers_created += created
+                stale_offers_deleted += deleted
             else:
                 if not company or company == "Unknown":
                     skipped_unknown_company += 1

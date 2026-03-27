@@ -65,10 +65,24 @@ async def create_indexes():
 
     # Offers collection
     offers = db.offers
+    existing_offer_indexes = await offers.index_information()
+    for index_name, index_info in existing_offer_indexes.items():
+        keys = index_info.get("key", [])
+        key_names = [field for field, _ in keys]
+        if index_name == "_id_":
+            continue
+        if key_names == ["voz_post_id"] and index_info.get("unique"):
+            await offers.drop_index(index_name)
+        if key_names == ["voz_post_id", "company"] and not index_info.get("unique"):
+            await offers.drop_index(index_name)
+
     await offers.create_index(
-        "voz_post_id",
+        [("voz_post_id", ASCENDING), ("company", ASCENDING)],
         unique=True,
-        partialFilterExpression={"voz_post_id": {"$exists": True, "$type": "string"}}
+        partialFilterExpression={
+            "voz_post_id": {"$exists": True, "$type": "string"},
+            "company": {"$exists": True, "$type": "string", "$nin": ["", "Unknown"]},
+        },
     )
     await offers.create_index("company")
     await offers.create_index("voz_thread_id")
@@ -237,9 +251,10 @@ async def insert_review(review_data: dict) -> tuple[str | None, bool]:
 
 
 async def upsert_offer(offer_data: dict) -> tuple[str | None, bool]:
-    """Create or update an extracted offer, keyed by voz_post_id when available."""
+    """Create or update an extracted offer, keyed by (voz_post_id, company)."""
     voz_post_id = offer_data.get("voz_post_id")
-    if not voz_post_id:
+    company = offer_data.get("company")
+    if not voz_post_id or not company or company == "Unknown":
         return None, False
 
     now = datetime.utcnow()
@@ -247,7 +262,7 @@ async def upsert_offer(offer_data: dict) -> tuple[str | None, bool]:
     payload["updated_at"] = now
 
     result = await db.offers.find_one_and_update(
-        {"voz_post_id": voz_post_id},
+        {"voz_post_id": voz_post_id, "company": company},
         {
             "$set": payload,
             "$setOnInsert": {"created_at": now},
@@ -258,11 +273,40 @@ async def upsert_offer(offer_data: dict) -> tuple[str | None, bool]:
     return voz_post_id, result is None
 
 
+async def sync_offers_for_post(voz_post_id: str, offer_docs: List[dict]) -> tuple[int, int, int]:
+    """Upsert the latest extracted offers for a post and delete stale companies for that post."""
+    if not voz_post_id:
+        return 0, 0, 0
+
+    offers_by_company = {}
+    for offer_doc in offer_docs:
+        company = offer_doc.get("company")
+        if not company or company == "Unknown":
+            continue
+        offers_by_company[company] = offer_doc
+
+    created_count = 0
+    upserted_count = 0
+    for offer_doc in offers_by_company.values():
+        _, created = await upsert_offer(offer_doc)
+        upserted_count += 1
+        if created:
+            created_count += 1
+
+    result = await db.offers.delete_many(
+        {
+            "voz_post_id": voz_post_id,
+            "company": {"$nin": list(offers_by_company.keys())},
+        }
+    )
+    return upserted_count, created_count, result.deleted_count
+
+
 async def delete_offer_by_post_id(voz_post_id: str) -> int:
-    """Delete a stale extracted offer by VOZ post id."""
+    """Delete stale extracted offers by VOZ post id."""
     if not voz_post_id:
         return 0
-    result = await db.offers.delete_one({"voz_post_id": voz_post_id})
+    result = await db.offers.delete_many({"voz_post_id": voz_post_id})
     return result.deleted_count
 
 
