@@ -24,7 +24,6 @@ from database.mongodb import (
     get_company_thread_ids,
     search_reviews,
     insert_review,
-    upsert_company,
     increment_company_review_count,
     normalize_review_companies,
     seed_threads,
@@ -557,8 +556,6 @@ async def process_thread_page(crawler, page_url: str, html: str):
 
     for post_data in posts:
         try:
-            for company_name in post_data.get("companies") or []:
-                await upsert_company(company_name)
             _, inserted = await insert_review(post_data)
             if inserted:
                 inserted_count += 1

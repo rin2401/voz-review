@@ -1,8 +1,10 @@
 import unittest
 import asyncio
+from types import SimpleNamespace
+from unittest.mock import AsyncMock, patch
 
 from crawler.voz_scraper import VozCrawler
-from database.mongodb import prepare_review_document
+from database.mongodb import prepare_review_document, ensure_companies_exist, sync_offers_for_post
 
 
 class MultiCompanySupportTests(unittest.TestCase):
@@ -50,6 +52,36 @@ Bonus: 2 tháng
         self.assertEqual(len(offers), 2)
         self.assertEqual([offer["company"] for offer in offers], ["Alpha Tech", "Beta Systems"])
         self.assertEqual([offer["offer_index"] for offer in offers], [0, 1])
+
+
+class CompanyUpsertSyncTests(unittest.IsolatedAsyncioTestCase):
+    async def test_ensure_companies_exist_deduplicates_without_touching_unknown(self):
+        companies = SimpleNamespace(find_one_and_update=AsyncMock())
+
+        with patch("database.mongodb.db", SimpleNamespace(companies=companies)):
+            normalized = await ensure_companies_exist(
+                ["Alias Corp", "alias corp", "Unknown", "", "Mapped Inc"]
+            )
+
+        self.assertEqual(normalized, ["Alias Corp", "Mapped Inc"])
+        self.assertEqual(companies.find_one_and_update.await_count, 2)
+
+    async def test_sync_offers_for_post_creates_missing_company_docs(self):
+        offers = SimpleNamespace(delete_many=AsyncMock(return_value=SimpleNamespace(deleted_count=0)))
+        companies = SimpleNamespace(find_one_and_update=AsyncMock())
+
+        with patch("database.mongodb.db", SimpleNamespace(offers=offers, companies=companies)), \
+             patch("database.mongodb.upsert_offer", AsyncMock(return_value=("post-1", True))):
+            upserted, created, deleted = await sync_offers_for_post(
+                "post-1",
+                [
+                    {"company": "Mapped Corp", "voz_post_id": "post-1", "offer_index": 0},
+                    {"company": "Mapped Corp", "voz_post_id": "post-1", "offer_index": 1},
+                ],
+            )
+
+        self.assertEqual((upserted, created, deleted), (2, 2, 0))
+        companies.find_one_and_update.assert_awaited_once()
 
 if __name__ == "__main__":
     unittest.main()

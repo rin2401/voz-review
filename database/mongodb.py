@@ -355,6 +355,26 @@ async def upsert_company(name: str) -> dict:
     return result
 
 
+async def ensure_companies_exist(company_names: List[str]) -> List[str]:
+    """Ensure company documents exist for normalized company names without changing counts."""
+    normalized_names = []
+    seen = set()
+    for raw_name in company_names:
+        name = (raw_name or "").strip()
+        if not name or name == "Unknown":
+            continue
+        key = name.lower()
+        if key in seen:
+            continue
+        seen.add(key)
+        normalized_names.append(name)
+
+    for company_name in normalized_names:
+        await upsert_company(company_name)
+
+    return normalized_names
+
+
 async def increment_company_review_count(company_name: str):
     """Increment review count for company"""
     await db.companies.update_one(
@@ -366,6 +386,7 @@ async def increment_company_review_count(company_name: str):
 async def insert_review(review_data: dict) -> tuple[str | None, bool]:
     """Insert a new review, return (inserted_id, inserted_new)"""
     prepare_review_document(review_data)
+    await ensure_companies_exist(review_data.get("companies") or [])
     review_data["created_at"] = datetime.utcnow()
     review_data["status"] = config.STATUS_PENDING
     try:
@@ -418,6 +439,8 @@ async def sync_offers_for_post(voz_post_id: str, offer_docs: List[dict]) -> tupl
             continue
         seen_indexes.add(offer_index)
         normalized_offer_docs.append(offer_doc)
+
+    await ensure_companies_exist([offer_doc.get("company") for offer_doc in normalized_offer_docs])
 
     created_count = 0
     upserted_count = 0

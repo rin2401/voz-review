@@ -19,7 +19,6 @@ import config
 from database.mongodb import (
     insert_review,
     sync_offers_for_post,
-    upsert_company,
     get_thread_state,
     update_thread_state,
     increment_company_review_count
@@ -645,9 +644,6 @@ class VozCrawler:
                 
                 for post_data in posts:
                     try:
-                        for company_name in post_data.get("companies") or []:
-                            await upsert_company(company_name)
-
                         # Insert review if not duplicated by voz_post_id
                         _, inserted = await insert_review(post_data)
                         if inserted:
