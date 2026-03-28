@@ -64,6 +64,53 @@ class CompanyDuplicateHeuristicsTests(unittest.TestCase):
         self.assertEqual(group["proposed_canonical_name"], "Positive Thinking Company")
         self.assertEqual(group["canonical_reason"], "existing_alias_map")
 
+    def test_groups_shared_strong_token_with_single_token_expansion(self):
+        report = analyze_likely_duplicate_companies(
+            [
+                {"name": "Tiktok", "review_count": 11},
+                {"name": "Tiktok - London", "review_count": 2},
+                {"name": "Another Company", "review_count": 1},
+            ],
+            alias_map={},
+        )
+
+        self.assertEqual(report["summary"]["group_count"], 1)
+        group = report["groups"][0]
+        self.assertEqual(group["confidence"], "medium")
+        self.assertIn("shared_strong_token", group["reasons"])
+        pair_match = group["pair_matches"][0]
+        self.assertEqual(pair_match["match_reason"], "shared_strong_token")
+        self.assertEqual(pair_match["shared_tokens"], ["tiktok"])
+
+    def test_groups_shared_strong_token_with_multiple_strong_tokens(self):
+        report = analyze_likely_duplicate_companies(
+            [
+                {"name": "Hitachi Vantara", "review_count": 5},
+                {"name": "Hitachi Vantara VN", "review_count": 1},
+                {"name": "Standalone Co", "review_count": 1},
+            ],
+            alias_map={},
+        )
+
+        self.assertEqual(report["summary"]["group_count"], 1)
+        group = report["groups"][0]
+        self.assertEqual(group["confidence"], "medium")
+        self.assertIn("shared_strong_token", group["reasons"])
+        pair_match = group["pair_matches"][0]
+        self.assertEqual(pair_match["shared_tokens"], ["hitachi", "vantara"])
+
+    def test_does_not_group_generic_or_broad_brand_families(self):
+        report = analyze_likely_duplicate_companies(
+            [
+                {"name": "Amazon", "review_count": 9},
+                {"name": "Amazon Web Services", "review_count": 4},
+                {"name": "Acme Solutions", "review_count": 3},
+                {"name": "Beta Solutions", "review_count": 3},
+            ]
+        )
+
+        self.assertEqual(report["summary"]["group_count"], 0)
+
 
 if __name__ == "__main__":
     unittest.main()

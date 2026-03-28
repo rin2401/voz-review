@@ -38,6 +38,33 @@ CORPORATE_SUFFIXES = {
     "vietnam",
 }
 
+GENERIC_MATCH_TOKENS = CORPORATE_SUFFIXES | {
+    "bank",
+    "capital",
+    "digital",
+    "global",
+    "group",
+    "holding",
+    "holdings",
+    "international",
+    "partner",
+    "partners",
+    "service",
+    "services",
+    "software",
+    "solution",
+    "solutions",
+    "system",
+    "systems",
+    "tech",
+    "technology",
+    "technologies",
+}
+
+STRONG_TOKEN_MIN_LENGTH = 5
+MAX_SHARED_TOKEN_FREQUENCY = 4
+MAX_SINGLE_TOKEN_EXPANSION = 1
+
 HIGH_CONFIDENCE = "high"
 MEDIUM_CONFIDENCE = "medium"
 
@@ -57,6 +84,8 @@ class CompanyProfile:
     review_count: int
     aliases: tuple[str, ...]
     alias_set: frozenset[str]
+    tokens: tuple[str, ...]
+    strong_tokens: frozenset[str]
     compact: str
     masked_compact: str
     leet_compact: str
@@ -71,7 +100,9 @@ class PairEvidence:
     left_name: str
     right_name: str
     score: int
+    match_reason: str
     reasons: tuple[str, ...]
+    shared_tokens: tuple[str, ...] = ()
 
 
 class _UnionFind:
@@ -147,6 +178,18 @@ def _quality_score(name: str, review_count: int) -> int:
     return score
 
 
+def _normalized_tokens(text: str) -> tuple[str, ...]:
+    return tuple(re.findall(r"[a-z0-9]+", _normalize_space_punctuation(text)))
+
+
+def _strong_tokens(tokens: tuple[str, ...]) -> frozenset[str]:
+    return frozenset(
+        token
+        for token in tokens
+        if len(token) >= STRONG_TOKEN_MIN_LENGTH and token not in GENERIC_MATCH_TOKENS
+    )
+
+
 def build_company_profile(company: dict, alias_map: dict[str, str] | None = None) -> CompanyProfile:
     name = str(company.get("name") or "").strip()
     review_count = int(company.get("review_count") or 0)
@@ -161,6 +204,8 @@ def build_company_profile(company: dict, alias_map: dict[str, str] | None = None
         review_count=review_count,
         aliases=aliases,
         alias_set=alias_set,
+        tokens=_normalized_tokens(name),
+        strong_tokens=_strong_tokens(_normalized_tokens(name)),
         compact=_compact(name),
         masked_compact=_leet_fold(_compact(name, keep_mask=True), keep_mask=True),
         leet_compact=_leet_fold(_compact(name)),
@@ -200,18 +245,56 @@ def _close_spelling_match(left: CompanyProfile, right: CompanyProfile) -> bool:
     return SequenceMatcher(None, left_value, right_value).ratio() >= 0.92
 
 
-def _pair_evidence(left: CompanyProfile, right: CompanyProfile) -> PairEvidence | None:
+def _is_single_token_expansion(left_tokens: tuple[str, ...], right_tokens: tuple[str, ...]) -> bool:
+    if not left_tokens or not right_tokens:
+        return False
+    shorter, longer = sorted((left_tokens, right_tokens), key=len)
+    extra = len(longer) - len(shorter)
+    if extra < 0 or extra > MAX_SINGLE_TOKEN_EXPANSION:
+        return False
+    return longer[: len(shorter)] == shorter or longer[-len(shorter) :] == shorter
+
+
+def _shared_strong_tokens(
+    left: CompanyProfile,
+    right: CompanyProfile,
+    token_frequencies: dict[str, int],
+) -> tuple[str, ...]:
+    return tuple(
+        sorted(
+            token
+            for token in (left.strong_tokens & right.strong_tokens)
+            if token_frequencies.get(token, 0) <= MAX_SHARED_TOKEN_FREQUENCY
+        )
+    )
+
+
+def _pair_evidence(
+    left: CompanyProfile,
+    right: CompanyProfile,
+    token_frequencies: dict[str, int],
+) -> PairEvidence | None:
     left_name = left.name
     right_name = right.name
     reasons = []
     score = 0
+    match_reason = ""
+    shared_tokens: tuple[str, ...] = ()
+
+    def apply_reason(reason: str, new_score: int, *, matched_tokens: tuple[str, ...] = ()) -> None:
+        nonlocal score, match_reason, shared_tokens
+        reasons.append(reason)
+        if matched_tokens:
+            shared_tokens = matched_tokens
+        if new_score > score:
+            score = new_score
+            match_reason = reason
 
     if left_name == right_name:
         return None
 
     if left_name.casefold() in right.alias_set or right_name.casefold() in left.alias_set:
-        reasons.append("alias_cross_reference")
-        score = max(score, 98)
+        apply_reason("alias_cross_reference", 98)
 
     if (
         left.canonical_target
@@ -219,20 +302,16 @@ def _pair_evidence(left: CompanyProfile, right: CompanyProfile) -> PairEvidence 
         and left.canonical_target == right.canonical_target
         and len({left_name, right_name, left.canonical_target}) > 1
     ):
-        reasons.append("same_alias_canonical")
-        score = max(score, 95)
+        apply_reason("same_alias_canonical", 95)
 
     if left.compact and left.compact == right.compact:
-        reasons.append("case_spacing_punctuation_fold")
-        score = max(score, 100)
+        apply_reason("case_spacing_punctuation_fold", 100)
 
     if left.leet_compact and left.leet_compact == right.leet_compact and left.compact != right.compact:
-        reasons.append("leetspeak_fold")
-        score = max(score, 95)
+        apply_reason("leetspeak_fold", 95)
 
     if _masked_match(left, right):
-        reasons.append("masked_character_match")
-        score = max(score, 92)
+        apply_reason("masked_character_match", 92)
 
     if (
         left.core_compact
@@ -240,16 +319,31 @@ def _pair_evidence(left: CompanyProfile, right: CompanyProfile) -> PairEvidence 
         and left.leet_compact != right.leet_compact
         and len(left.core_compact) >= 5
     ):
-        reasons.append("corporate_suffix_fold")
-        score = max(score, 88)
+        apply_reason("corporate_suffix_fold", 88)
+
+    pair_shared_tokens = _shared_strong_tokens(left, right, token_frequencies)
+    if pair_shared_tokens:
+        has_subset_support = bool(left.strong_tokens) and bool(right.strong_tokens) and (
+            left.strong_tokens <= right.strong_tokens or right.strong_tokens <= left.strong_tokens
+        )
+        if len(pair_shared_tokens) >= 2 and has_subset_support:
+            apply_reason("shared_strong_token", 88, matched_tokens=pair_shared_tokens)
+        elif len(pair_shared_tokens) == 1 and has_subset_support and _is_single_token_expansion(left.tokens, right.tokens):
+            apply_reason("shared_strong_token", 84, matched_tokens=pair_shared_tokens)
 
     if _close_spelling_match(left, right):
-        reasons.append("close_spelling_variant")
-        score = max(score, 84)
+        apply_reason("close_spelling_variant", 84)
 
     if score < 84:
         return None
-    return PairEvidence(left_name=left_name, right_name=right_name, score=score, reasons=tuple(sorted(set(reasons))))
+    return PairEvidence(
+        left_name=left_name,
+        right_name=right_name,
+        score=score,
+        match_reason=match_reason,
+        reasons=tuple(sorted(set(reasons))),
+        shared_tokens=shared_tokens,
+    )
 
 
 def _propose_canonical_name(profiles: list[CompanyProfile]) -> tuple[str, str]:
@@ -307,6 +401,8 @@ def analyze_likely_duplicate_companies(
     leet_buckets: dict[str, list[CompanyProfile]] = {}
     core_buckets: dict[str, list[CompanyProfile]] = {}
     masked_buckets: dict[str, list[CompanyProfile]] = {}
+    strong_token_buckets: dict[str, list[CompanyProfile]] = {}
+    token_frequencies: dict[str, int] = {}
 
     for profile in profiles:
         if profile.compact:
@@ -320,6 +416,9 @@ def analyze_likely_duplicate_companies(
                 f"{len(profile.masked_compact)}:{profile.masked_compact[:1]}:{profile.masked_compact[-1:]}",
                 [],
             ).append(profile)
+        for token in profile.strong_tokens:
+            token_frequencies[token] = token_frequencies.get(token, 0) + 1
+            strong_token_buckets.setdefault(token, []).append(profile)
 
     candidate_pairs: set[tuple[str, str]] = set()
 
@@ -353,8 +452,16 @@ def analyze_likely_duplicate_companies(
             for right in ordered[index + 1 :]:
                 candidate_pairs.add(tuple(sorted((left.name, right.name))))
 
+    for token, bucket in strong_token_buckets.items():
+        if len(bucket) < 2 or token_frequencies.get(token, 0) > MAX_SHARED_TOKEN_FREQUENCY:
+            continue
+        ordered = sorted(bucket, key=lambda item: item.name.casefold())
+        for index, left in enumerate(ordered):
+            for right in ordered[index + 1 :]:
+                candidate_pairs.add(tuple(sorted((left.name, right.name))))
+
     for left_name, right_name in sorted(candidate_pairs):
-        evidence = _pair_evidence(profiles_by_name[left_name], profiles_by_name[right_name])
+        evidence = _pair_evidence(profiles_by_name[left_name], profiles_by_name[right_name], token_frequencies)
         if evidence is not None:
             all_evidence[(left_name, right_name)] = evidence
 
@@ -404,7 +511,9 @@ def analyze_likely_duplicate_companies(
                         "left_name": evidence.left_name,
                         "right_name": evidence.right_name,
                         "confidence_score": evidence.score,
+                        "match_reason": evidence.match_reason,
                         "reasons": list(evidence.reasons),
+                        "shared_tokens": list(evidence.shared_tokens),
                     }
                     for evidence in sorted(member_pairs, key=lambda item: (-item.score, item.left_name.casefold(), item.right_name.casefold()))
                 ],
@@ -434,6 +543,7 @@ def analyze_likely_duplicate_companies(
             "Leetspeak folding for common substitutions: 0->o, 1->i, 3->e, 4->a, 5->s, 6->g, 7->t, 8->b.",
             "Masked-character matching when one or both variants replace characters with * at the same positions.",
             "Corporate-suffix folding for generic suffixes such as company, co, corp, inc, ltd, llc, jsc, vn, vietnam.",
+            "Shared strong-token matching for low-frequency, non-generic company tokens with conservative token-expansion guards.",
             "Close-spelling matching within blocked buckets using SequenceMatcher with conservative thresholds.",
             "Canonical suggestion prefers existing alias-map canonicals, then the highest-quality, highest-volume variant.",
         ],

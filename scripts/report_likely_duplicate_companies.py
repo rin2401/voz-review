@@ -12,12 +12,13 @@ if str(ROOT_DIR) not in sys.path:
 from database.mongodb import build_likely_duplicate_company_report, close, connect, get_database
 
 REPORT_PATH = ROOT_DIR / "scripts" / "output" / "likely_duplicate_companies_report.json"
-RUN_TIMEOUT_SECONDS = 5
+RUN_TIMEOUT_SECONDS = 30
 HEURISTIC_SUMMARY = [
     "ASCII-normalized case/spacing/punctuation folding.",
     "Leetspeak substitutions such as 0->o and 1->i.",
     "Masked-character matches using * in aligned positions.",
     "Corporate suffix folding for generic endings like company, corp, inc, ltd, llc, vn, vietnam.",
+    "Shared strong-token matches for low-frequency, non-generic company tokens with conservative token-expansion guards.",
     "Conservative close-spelling detection within blocked buckets.",
 ]
 
