@@ -274,7 +274,11 @@ class VozCrawler:
         return company.strip()
 
     def _extract_monthly_salary_million(self, content: str) -> Optional[float]:
-        """Extract monthly salary from lines like 50m/50 triệu or plain values like 86 gross / 86 net."""
+        """Extract monthly salary from lines like 50m/50 triệu or plain values like 86 gross / 86 net.
+
+        If a monthly salary label is present and the value is a plain number (for example
+        ``Lương tháng (gross): 46``), interpret it as million VND per month.
+        """
         lines = content.split('\n')
 
         def _next_non_empty_line(start_index: int) -> str:
@@ -307,6 +311,8 @@ class VozCrawler:
                 m = re.search(r'(\d+(?:[.,]\d+)?)\s*(gross|net)\b', lower_salary)
             if not m:
                 m = re.search(r'(\d+(?:[.,]\d+)?)\s*/\s*tháng\b', lower_salary)
+            if not m:
+                m = re.fullmatch(r'(\d+(?:[.,]\d+)?)', lower_salary)
             if not m:
                 return None
 
