@@ -10,6 +10,7 @@ from pymongo.errors import DuplicateKeyError, OperationFailure
 
 import config
 from database.company_aliases import build_company_aliases_by_canonical, company_aliases_for_name, normalize_aliases
+from database.company_duplicates import analyze_likely_duplicate_companies
 from database.models import CompanyDocument, OfferDocument, ReviewDocument, ThreadDocument
 
 client: Optional[AsyncIOMotorClient] = None
@@ -697,6 +698,15 @@ async def build_company_data_report(target_db=None) -> dict[str, list[dict] | li
         "alias_duplicates": alias_duplicates,
         "missing_canonical_companies": missing_canonical_companies,
     }
+
+
+async def build_likely_duplicate_company_report(target_db=None) -> dict[str, Any]:
+    """Collect likely duplicate company-name groups for manual review only."""
+    active_db = target_db if target_db is not None else CompanyDocument.get_motor_database()
+    docs = []
+    async for doc in active_db.companies.find({}, {"name": 1, "aliases": 1, "review_count": 1}):
+        docs.append(doc)
+    return analyze_likely_duplicate_companies(docs)
 
 
 async def insert_review(review_data: dict) -> tuple[str | None, bool]:

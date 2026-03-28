@@ -1,0 +1,19 @@
+{
+  "generated_at": "2026-03-28T06:23:50.813094+00:00",
+  "status": "error",
+  "error": "Timed out after 5s while connecting to MongoDB or querying company data.",
+  "total_companies_scanned": 0,
+  "groups": [],
+  "summary": {
+    "group_count": 0,
+    "high_confidence_groups": 0,
+    "medium_confidence_groups": 0
+  },
+  "heuristics": [
+    "ASCII-normalized case/spacing/punctuation folding.",
+    "Leetspeak substitutions such as 0->o and 1->i.",
+    "Masked-character matches using * in aligned positions.",
+    "Corporate suffix folding for generic endings like company, corp, inc, ltd, llc, vn, vietnam.",
+    "Conservative close-spelling detection within blocked buckets."
+  ]
+}
