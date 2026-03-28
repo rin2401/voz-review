@@ -1,12 +1,11 @@
 {
-  "status": "not_generated_in_sandbox",
-  "reason": "Sandbox blocks localhost MongoDB socket access (connect EPERM 127.0.0.1:27017), so the live dirty-data report could not be generated here.",
-  "generator": "scripts/report_dirty_company_data.py",
-  "intended_output": [
-    "suspicious_names",
-    "case_collisions",
-    "alias_conflicts",
-    "alias_duplicates",
-    "missing_canonical_companies"
+  "suspicious_names": [],
+  "case_collisions": [],
+  "alias_conflicts": [],
+  "alias_duplicates": [],
+  "missing_canonical_companies": [
+    "Apar",
+    "Infinity Tech",
+    "Unknown"
   ]
 }
