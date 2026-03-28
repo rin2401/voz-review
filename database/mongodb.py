@@ -5,13 +5,14 @@ from typing import Any, Optional
 
 from beanie import init_beanie
 from motor.motor_asyncio import AsyncIOMotorClient
+from pymongo import ReturnDocument
 from pymongo import ASCENDING, DESCENDING, TEXT
 from pymongo.errors import DuplicateKeyError, OperationFailure
 
 import config
 from database.company_aliases import build_company_aliases_by_canonical, company_aliases_for_name, normalize_aliases
 from database.company_duplicates import analyze_likely_duplicate_companies
-from database.models import CompanyDocument, OfferDocument, ReviewDocument, ThreadDocument
+from database.models import CompanyDocument, OfferDocument, ReviewDocument, SchedulerStateDocument, ThreadDocument
 
 client: Optional[AsyncIOMotorClient] = None
 db = None
@@ -103,6 +104,7 @@ async def connect():
             ReviewDocument,
             CompanyDocument,
             ThreadDocument,
+            SchedulerStateDocument,
             OfferDocument,
         ],
     )
@@ -164,6 +166,10 @@ async def create_indexes():
     threads = ThreadDocument.get_motor_collection()
     await threads.create_index("url", unique=True)
     await threads.create_index("thread_id", unique=True, sparse=True)
+
+    scheduler_states = SchedulerStateDocument.get_motor_collection()
+    await scheduler_states.create_index("job_name", unique=True)
+    await scheduler_states.create_index("updated_at")
 
     offers = OfferDocument.get_motor_collection()
     existing_offer_indexes = await offers.index_information()
@@ -885,6 +891,121 @@ async def get_all_threads() -> list[dict]:
     """Get all configured crawl threads from DB."""
     documents = await ThreadDocument.find_all().sort("-created_at").to_list()
     return [_document_to_dict(document) for document in documents]
+
+
+async def ensure_scheduler_state(
+    job_name: str,
+    timezone: str,
+    enabled: bool,
+    next_run_at: datetime | None = None,
+) -> dict:
+    """Create or update persisted scheduler state."""
+    now = datetime.utcnow()
+    collection = SchedulerStateDocument.get_motor_collection()
+    document = await collection.find_one_and_update(
+        {"job_name": job_name},
+        {
+            "$setOnInsert": {
+                "job_name": job_name,
+                "schedule_kind": "hourly",
+                "schedule_minute": 0,
+                "created_at": now,
+                "last_status": "idle",
+            },
+            "$set": {
+                "timezone": timezone,
+                "enabled": enabled,
+                "next_run_at": next_run_at,
+                "updated_at": now,
+            },
+        },
+        upsert=True,
+        return_document=ReturnDocument.AFTER,
+    )
+    document.pop("_id", None)
+    return document
+
+
+async def get_scheduler_state(job_name: str) -> Optional[dict]:
+    """Fetch persisted scheduler state for a job."""
+    document = await SchedulerStateDocument.find_one({"job_name": job_name})
+    return _document_to_dict(document) if document else None
+
+
+async def try_acquire_scheduler_lock(
+    job_name: str,
+    reason: str,
+    timezone: str,
+    enabled: bool,
+    lock_until: datetime,
+    next_run_at: datetime | None = None,
+) -> Optional[dict]:
+    """Acquire the scheduler lock if no active run is holding it."""
+    now = datetime.utcnow()
+    collection = SchedulerStateDocument.get_motor_collection()
+    document = await collection.find_one_and_update(
+        {
+            "job_name": job_name,
+            "$or": [
+                {"lock_until": {"$exists": False}},
+                {"lock_until": None},
+                {"lock_until": {"$lte": now}},
+            ],
+        },
+        {
+            "$set": {
+                "timezone": timezone,
+                "enabled": enabled,
+                "next_run_at": next_run_at,
+                "lock_until": lock_until,
+                "current_run_started_at": now,
+                "current_run_reason": reason,
+                "last_started_at": now,
+                "last_status": "running",
+                "last_result": None,
+                "last_error": None,
+                "updated_at": now,
+            },
+        },
+        return_document=ReturnDocument.AFTER,
+    )
+    if document:
+        document.pop("_id", None)
+    return document
+
+
+async def complete_scheduler_run(
+    job_name: str,
+    status: str,
+    result: str | None = None,
+    error: str | None = None,
+    next_run_at: datetime | None = None,
+) -> Optional[dict]:
+    """Mark a scheduler job finished and release its lock."""
+    now = datetime.utcnow()
+    collection = SchedulerStateDocument.get_motor_collection()
+    document = await collection.find_one_and_update(
+        {"job_name": job_name},
+        {
+            "$set": {
+                "last_status": status,
+                "last_result": result,
+                "last_error": error,
+                "last_finished_at": now,
+                "next_run_at": next_run_at,
+                "updated_at": now,
+            },
+            "$unset": {
+                "lock_until": "",
+                "current_run_started_at": "",
+                "current_run_reason": "",
+            },
+        },
+        return_document=ReturnDocument.AFTER,
+    )
+    if document:
+        document.pop("_id", None)
+    return document
 
 
 async def upsert_thread(url: str, title: str = None, thread_id: str = None, kind: str = "thread"):

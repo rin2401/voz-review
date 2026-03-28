@@ -265,6 +265,41 @@
             </div>
         </div>
 
+        <div class="card mb-4">
+            <div class="card-header">
+                <h5 class="mb-0">⏰ Hourly Scheduler</h5>
+            </div>
+            <div class="card-body">
+                {% set state = scheduler_state %}
+                <div class="row g-3">
+                    <div class="col-12 col-md-6 col-lg-3">
+                        <small class="text-muted d-block">Status</small>
+                        <strong>{{ scheduler_status_label(state) }}</strong>
+                    </div>
+                    <div class="col-12 col-md-6 col-lg-3">
+                        <small class="text-muted d-block">Timezone</small>
+                        <strong>{{ state.timezone if state else '-' }}</strong>
+                    </div>
+                    <div class="col-12 col-md-6 col-lg-3">
+                        <small class="text-muted d-block">Next Run</small>
+                        <strong>{{ format_dt_vn(state.next_run_at) if state else '-' }}</strong>
+                    </div>
+                    <div class="col-12 col-md-6 col-lg-3">
+                        <small class="text-muted d-block">Last Finished</small>
+                        <strong>{{ format_dt_vn(state.last_finished_at) if state else '-' }}</strong>
+                    </div>
+                    <div class="col-12 col-lg-6">
+                        <small class="text-muted d-block">Last Result</small>
+                        <strong>{{ state.last_result if state and state.last_result else '-' }}</strong>
+                    </div>
+                    <div class="col-12 col-lg-6">
+                        <small class="text-muted d-block">Last Error</small>
+                        <strong>{{ state.last_error if state and state.last_error else '-' }}</strong>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <div class="card">
             <div class="card-header d-flex justify-content-between align-items-center">
                 <h5 class="mb-0">🧵 Threads</h5>
@@ -361,7 +396,8 @@
             try {
                 const res = await fetch('/api/crawl/all?max_pages=0', { method: 'POST' });
                 if (!res.ok) throw new Error(await res.text());
-                button.textContent = '✅ Started';
+                const payload = await res.json();
+                button.textContent = payload.status === 'already_running' ? '⏸ Already Running' : '✅ Started';
             } catch (e) {
                 alert('Lỗi crawl all: ' + e.message);
                 button.disabled = false;

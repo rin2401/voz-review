@@ -14,6 +14,7 @@ from database.mongodb import (
     connect, close,
     get_all_companies,
     get_all_threads,
+    get_scheduler_state,
     get_reviews_by_company,
     get_offers_by_company,
     get_review_count,
@@ -36,6 +37,7 @@ from database.mongodb import (
 )
 from crawler.voz_scraper import VozCrawler, THREAD_URLS
 import config
+from scheduler import CrawlAllRunManager, HourlyCrawlScheduler, SCHEDULER_JOB_NAME
 
 
 @asynccontextmanager
@@ -43,7 +45,18 @@ async def lifespan(app: FastAPI):
     """Startup and shutdown events"""
     await connect()
     await seed_threads(THREAD_URLS)
+    crawl_all_manager = CrawlAllRunManager(
+        timezone_name=config.HOURLY_CRAWL_SCHEDULER_TIMEZONE,
+        enabled=config.HOURLY_CRAWL_SCHEDULER_ENABLED,
+        lease_minutes=config.HOURLY_CRAWL_SCHEDULER_LEASE_MINUTES,
+        crawl_all_callable=crawl_all_forums,
+    )
+    hourly_scheduler = HourlyCrawlScheduler(crawl_all_manager)
+    app.state.crawl_all_manager = crawl_all_manager
+    app.state.hourly_scheduler = hourly_scheduler
+    await hourly_scheduler.start()
     yield
+    await hourly_scheduler.stop()
     await close()
 
 
@@ -87,6 +100,14 @@ def format_salary_million(value) -> str:
     return f"{numeric:g}M"
 
 
+def scheduler_status_label(state: Optional[dict]) -> str:
+    if not state:
+        return "not_configured"
+    if not state.get("enabled", True):
+        return "disabled"
+    return state.get("last_status") or "idle"
+
+
 def company_to_slug(name: str) -> str:
     return (name or "").replace(" ", "-")
 
@@ -128,6 +149,7 @@ jinja_env.globals["format_dt_vn"] = format_dt_vn
 jinja_env.globals["format_salary_million"] = format_salary_million
 jinja_env.globals["review_companies"] = review_companies
 jinja_env.globals["review_primary_company"] = review_primary_company
+jinja_env.globals["scheduler_status_label"] = scheduler_status_label
 
 
 # ============== PAGES ==============
@@ -378,6 +400,10 @@ async def refresh_thread_job_statuses():
             await set_thread_crawl_status(url, "idle")
 
 
+async def get_hourly_scheduler_status() -> Optional[dict]:
+    return await get_scheduler_state(SCHEDULER_JOB_NAME)
+
+
 @app.get("/threads", response_class=HTMLResponse)
 async def threads_page(request: Request):
     """List configured crawl threads"""
@@ -393,6 +419,7 @@ async def threads_page(request: Request):
             total_companies=0,
             total_offers=0,
             total_threads=0,
+            scheduler_state=None,
         ))
 
     await refresh_thread_job_statuses()
@@ -401,6 +428,7 @@ async def threads_page(request: Request):
     total_company_reviews = await get_company_review_count()
     total_companies = len(await get_all_companies())
     total_offers = await get_offer_count()
+    scheduler_state = await get_hourly_scheduler_status()
     return HTMLResponse(template.render(
         request=request,
         threads_auth_required=False,
@@ -411,6 +439,7 @@ async def threads_page(request: Request):
         total_companies=total_companies,
         total_offers=total_offers,
         total_threads=len(threads),
+        scheduler_state=scheduler_state,
     ))
 
 
@@ -431,6 +460,7 @@ async def threads_login(request: Request):
             total_companies=0,
             total_offers=0,
             total_threads=0,
+            scheduler_state=None,
         ), status_code=401)
 
     response = RedirectResponse(url="/threads", status_code=303)
@@ -485,15 +515,27 @@ async def api_stats():
     }
 
 
+@app.get("/api/scheduler")
+async def api_scheduler_status(request: Request):
+    """Get persisted hourly scheduler status."""
+    require_threads_auth(request)
+    return await get_hourly_scheduler_status()
+
+
 # ============== CRAWLER ENDPOINTS ==============
 
 @app.post("/api/crawl/all")
 async def api_crawl_all(request: Request, max_pages: int = 0):
     """Crawl all configured threads from DB"""
     require_threads_auth(request)
-    asyncio.create_task(crawl_all_forums(max_pages))
+    result = await request.app.state.crawl_all_manager.start_run(reason="manual", max_pages=max_pages)
     threads = await get_all_threads()
-    return {"status": "started", "threads": len(threads)}
+    return {
+        "status": result["status"],
+        "reason": result["reason"],
+        "threads": len(threads),
+        "max_pages": "all" if max_pages == 0 else max_pages,
+    }
 
 
 @app.post("/api/crawl/thread")
@@ -515,6 +557,7 @@ async def crawl_thread(url: str, max_pages: int):
     """Crawl a specific thread - resume from threads.last_page when available."""
     crawler = VozCrawler()
     thread_id = crawler._extract_thread_id(url) or None
+    pages_crawled = 0
     try:
         async with crawler:
             first_page_url = url if url.endswith('/') else url + '/'
@@ -543,13 +586,16 @@ async def crawl_thread(url: str, max_pages: int):
 
                 await process_thread_page(crawler, page_url, html)
                 await update_thread_state(thread_id=thread_id, url=url, last_page=page)
+                pages_crawled += 1
                 await asyncio.sleep(2)
 
         await set_thread_crawl_status(url, "idle")
         print(f"✅ Thread crawl complete: {url}")
+        return {"status": "success", "url": url, "pages_crawled": pages_crawled}
     except Exception as e:
         await set_thread_crawl_status(url, "error", error=str(e))
         print(f"❌ Thread crawl failed: {e}")
+        return {"status": "error", "url": url, "pages_crawled": pages_crawled, "error": str(e)}
     finally:
         RUNNING_CRAWL_URLS.discard(url)
 
@@ -597,6 +643,12 @@ async def run_crawler(thread_url: str, max_pages: int):
 async def crawl_all_forums(max_pages: int):
     """Crawl all configured threads from DB, sequentially using the same per-thread flow."""
     threads = await get_all_threads()
+    summary = {
+        "threads_total": len(threads),
+        "threads_started": 0,
+        "threads_skipped_running": 0,
+        "threads_failed": 0,
+    }
     for thread in threads:
         url = thread.get("url")
         if not url:
@@ -605,13 +657,18 @@ async def crawl_all_forums(max_pages: int):
         current_state = await get_thread_state(url=url)
         if current_state and current_state.get("crawl_status") == "running":
             if url in RUNNING_CRAWL_URLS:
+                summary["threads_skipped_running"] += 1
                 continue
             await set_thread_crawl_status(url, "idle")
 
         await set_thread_crawl_status(url, "running")
         RUNNING_CRAWL_URLS.add(url)
-        await crawl_thread(url, max_pages)
+        summary["threads_started"] += 1
+        result = await crawl_thread(url, max_pages)
+        if result.get("status") == "error":
+            summary["threads_failed"] += 1
         await asyncio.sleep(5)  # Be nice between threads
+    return summary
 
 
 # ============== INFO ==============

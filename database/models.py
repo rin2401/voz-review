@@ -256,6 +256,70 @@ class ThreadDocument(Document):
         ]
 
 
+class SchedulerStateDocument(Document):
+    model_config = ConfigDict(extra="ignore")
+
+    job_name: str
+    timezone: str = "Asia/Ho_Chi_Minh"
+    enabled: bool = True
+    schedule_kind: str = "hourly"
+    schedule_minute: int = 0
+    next_run_at: Optional[datetime] = None
+    lock_until: Optional[datetime] = None
+    current_run_started_at: Optional[datetime] = None
+    current_run_reason: Optional[str] = None
+    last_started_at: Optional[datetime] = None
+    last_finished_at: Optional[datetime] = None
+    last_status: str = "idle"
+    last_result: Optional[str] = None
+    last_error: Optional[str] = None
+    created_at: Optional[datetime] = None
+    updated_at: Optional[datetime] = None
+
+    @field_validator(
+        "job_name",
+        "timezone",
+        "schedule_kind",
+        "current_run_reason",
+        "last_status",
+        "last_result",
+        "last_error",
+        mode="before",
+    )
+    @classmethod
+    def _normalize_scheduler_strings(cls, value):
+        if value is None:
+            return None
+        text = str(value).strip()
+        return text or None
+
+    @field_validator(
+        "next_run_at",
+        "lock_until",
+        "current_run_started_at",
+        "last_started_at",
+        "last_finished_at",
+        "created_at",
+        "updated_at",
+        mode="before",
+    )
+    @classmethod
+    def _normalize_scheduler_datetimes(cls, value):
+        return _coerce_datetime(value)
+
+    @field_validator("schedule_minute", mode="before")
+    @classmethod
+    def _normalize_schedule_minute(cls, value):
+        return _coerce_int(value)
+
+    class Settings:
+        name = "scheduler_states"
+        indexes = [
+            IndexModel([("job_name", ASCENDING)], unique=True),
+            IndexModel([("updated_at", DESCENDING)]),
+        ]
+
+
 class OfferDocument(Document):
     model_config = ConfigDict(extra="ignore")
 

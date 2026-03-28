@@ -21,6 +21,7 @@ uvicorn main:app --reload --host 0.0.0.0 --port 8000
 ## Features
 
 - Crawl review threads từ nhiều sub-forum Voz
+- Tự động crawl toàn bộ tracked threads vào đúng đầu mỗi giờ trong app process
 - Tổng hợp review theo công ty
 - Full-text search
 - API endpoints
@@ -31,16 +32,21 @@ uvicorn main:app --reload --host 0.0.0.0 --port 8000
 - `GET /` - Trang chủ
 - `GET /company/{name}` - Xem review của công ty
 - `GET /search?q=...` - Tìm kiếm
-- `POST /api/crawl/forum/{key}` - Crawl 1 forum
+- `POST /api/crawl/thread?url=...` - Crawl 1 thread
 - `POST /api/crawl/all` - Crawl tất cả forum
+- `GET /api/scheduler` - Xem trạng thái scheduler hourly
 - `GET /api/stats` - Xem thống kê
 
-## Forum Keys
+## Hourly Scheduler
 
-- `it_career` - Review công ty IT
-- `salary` - Review salary
-- `interview` - Review interview
-- `work_life` - Review work life
+Scheduler chạy bên trong web app process và mặc định bắn vào đúng đầu mỗi giờ theo timezone `Asia/Ho_Chi_Minh`.
+Các biến môi trường liên quan:
+
+- `HOURLY_CRAWL_SCHEDULER_ENABLED=true|false`
+- `HOURLY_CRAWL_SCHEDULER_TIMEZONE=Asia/Ho_Chi_Minh`
+- `HOURLY_CRAWL_SCHEDULER_LEASE_MINUTES=180`
+
+Scheduler dùng state/lock trong MongoDB để tránh overlap giữa các lần `crawl all`. Nếu một lần crawl trước vẫn đang chạy khi sang giờ mới, lần giờ đó sẽ bị bỏ qua thay vì chồng job.
 
 ## Notes
 
