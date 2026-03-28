@@ -5,6 +5,7 @@ from unittest.mock import AsyncMock, patch
 
 from crawler.voz_scraper import VozCrawler
 from database.company_aliases import normalize_aliases, resolve_canonical_company
+from database.models import _coerce_datetime, _coerce_float, _coerce_int, _coerce_string_list
 from database.mongodb import prepare_review_document, ensure_companies_exist, primary_review_company, sync_offers_for_post
 
 
@@ -24,6 +25,17 @@ class MultiCompanySupportTests(unittest.TestCase):
         prepared = prepare_review_document(review)
 
         self.assertEqual(prepared["companies"], ["Alpha Tech", "Beta Systems"])
+        self.assertNotIn("company", prepared)
+
+    def test_prepare_review_document_tolerates_legacy_scalar_companies(self):
+        review = {
+            "company": "Fallback Corp",
+            "companies": "Alpha Tech",
+        }
+
+        prepared = prepare_review_document(review)
+
+        self.assertEqual(prepared["companies"], ["Alpha Tech"])
         self.assertNotIn("company", prepared)
 
     def test_primary_review_company_uses_legacy_company_only_as_fallback(self):
@@ -85,6 +97,12 @@ Bonus: 2 tháng
             normalize_aliases([" AXON ", "Axon", "AXON", "Unknown", "", "A**n"], canonical_name="AXON"),
             ["A**n"],
         )
+
+    def test_model_coercion_helpers_handle_dirty_legacy_values(self):
+        self.assertEqual(_coerce_string_list("Alias Corp"), ["Alias Corp"])
+        self.assertEqual(_coerce_int("12"), 12)
+        self.assertEqual(_coerce_float("32,5"), 32.5)
+        self.assertEqual(_coerce_datetime("2026-03-27T10:00:00Z").year, 2026)
 
 
 class CompanyUpsertSyncTests(unittest.IsolatedAsyncioTestCase):

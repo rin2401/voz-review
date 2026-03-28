@@ -5,8 +5,8 @@ from typing import Any, Optional
 
 from beanie import init_beanie
 from motor.motor_asyncio import AsyncIOMotorClient
-from pymongo import ASCENDING, TEXT
-from pymongo.errors import DuplicateKeyError
+from pymongo import ASCENDING, DESCENDING, TEXT
+from pymongo.errors import DuplicateKeyError, OperationFailure
 
 import config
 from database.company_aliases import build_company_aliases_by_canonical, company_aliases_for_name, normalize_aliases
@@ -14,6 +14,33 @@ from database.models import CompanyDocument, OfferDocument, ReviewDocument, Thre
 
 client: Optional[AsyncIOMotorClient] = None
 db = None
+
+
+def _coerce_string(value: Any) -> str:
+    if value is None:
+        return ""
+    return str(value).strip()
+
+
+def _coerce_string_list(value: Any) -> list[str]:
+    if value is None:
+        return []
+    if isinstance(value, str):
+        value = [value]
+    if not isinstance(value, list):
+        return []
+    normalized = []
+    seen = set()
+    for item in value:
+        text = _coerce_string(item)
+        if not text:
+            continue
+        key = text.lower()
+        if key in seen:
+            continue
+        seen.add(key)
+        normalized.append(text)
+    return normalized
 
 
 def _document_to_dict(document: Any) -> dict:
@@ -46,6 +73,10 @@ def _normalize_company_names(raw_companies: list[Any]) -> list[str]:
     return normalized
 
 
+def _coerce_alias_list(raw_aliases: Any, canonical_name: str | None = None) -> list[str]:
+    return normalize_aliases(_coerce_string_list(raw_aliases), canonical_name=canonical_name)
+
+
 async def connect():
     """Initialize database connection and Beanie documents."""
     global client, db
@@ -54,6 +85,17 @@ async def connect():
 
     client = AsyncIOMotorClient(config.MONGO_URI)
     db = client[config.MONGO_DB]
+
+    # Drop legacy review text indexes before Beanie init so schema/index changes don't conflict.
+    reviews = db.reviews
+    existing_indexes = await reviews.index_information()
+    for index_name, index_info in existing_indexes.items():
+        if index_name == "_id_":
+            continue
+        keys = index_info.get("key", [])
+        if keys and keys[0][0] == "_fts" and index_name != "companies_text_content_text":
+            await reviews.drop_index(index_name)
+
     await init_beanie(
         database=db,
         document_models=[
@@ -108,7 +150,15 @@ async def create_indexes():
     await reviews.create_index([("companies", ASCENDING), ("created_at", ASCENDING)])
 
     companies = CompanyDocument.get_motor_collection()
-    await companies.create_index("name", unique=True)
+    try:
+        await companies.create_index("name", unique=True)
+    except OperationFailure as exc:
+        if exc.code != 11000:
+            raise
+        print("⚠️ Skipped unique company name index because legacy company documents still contain duplicates")
+    await companies.create_index([("review_count", -1), ("name", ASCENDING)])
+    await companies.create_index([("latest_post_date", -1), ("name", ASCENDING)])
+    await companies.create_index([("max_monthly_salary_million", -1), ("review_count", -1), ("name", ASCENDING)])
 
     threads = ThreadDocument.get_motor_collection()
     await threads.create_index("url", unique=True)
@@ -162,10 +212,9 @@ async def get_all_companies(sort_by: str = "recent_review") -> list[dict]:
 
 def normalize_review_companies(review_doc: dict, allow_legacy_fallback: bool = True) -> list[str]:
     companies = review_doc.get("companies")
-    if isinstance(companies, list):
-        normalized = _normalize_company_names(companies)
-        if normalized:
-            return normalized
+    normalized = _normalize_company_names(_coerce_string_list(companies))
+    if normalized:
+        return normalized
 
     if allow_legacy_fallback:
         fallback = (review_doc.get("company") or "").strip()
@@ -220,21 +269,112 @@ def build_company_aggregation_pipeline() -> list[dict]:
     return [
         {
             "$project": {
-                "created_at": 1,
-                "post_date": 1,
-                "monthly_salary_million": 1,
-                "companies_for_aggregation": {
-                    "$cond": [
-                        {"$gt": [{"$size": {"$ifNull": ["$companies", []]}}, 0]},
-                        "$companies",
+                "created_at": {
+                    "$convert": {
+                        "input": "$created_at",
+                        "to": "date",
+                        "onError": None,
+                        "onNull": None,
+                    }
+                },
+                "effective_post_date": {
+                    "$ifNull": [
                         {
-                            "$cond": [
-                                {"$and": [{"$ne": ["$company", None]}, {"$ne": ["$company", ""]}, {"$ne": ["$company", "Unknown"]}]},
-                                ["$company"],
-                                [],
-                            ]
+                            "$convert": {
+                                "input": "$post_date",
+                                "to": "date",
+                                "onError": None,
+                                "onNull": None,
+                            }
+                        },
+                        {
+                            "$convert": {
+                                "input": "$created_at",
+                                "to": "date",
+                                "onError": None,
+                                "onNull": None,
+                            }
                         },
                     ]
+                },
+                "monthly_salary_million": {
+                    "$convert": {
+                        "input": "$monthly_salary_million",
+                        "to": "double",
+                        "onError": None,
+                        "onNull": None,
+                    }
+                },
+                "companies_for_aggregation": {
+                    "$let": {
+                        "vars": {
+                            "legacy_company": {
+                                "$trim": {
+                                    "input": {
+                                        "$convert": {
+                                            "input": "$company",
+                                            "to": "string",
+                                            "onError": "",
+                                            "onNull": "",
+                                        }
+                                    }
+                                }
+                            },
+                            "normalized_companies": {
+                                "$cond": [
+                                    {"$isArray": "$companies"},
+                                    {
+                                        "$filter": {
+                                            "input": {
+                                                "$map": {
+                                                    "input": "$companies",
+                                                    "as": "company",
+                                                    "in": {
+                                                        "$trim": {
+                                                            "input": {
+                                                                "$convert": {
+                                                                    "input": "$$company",
+                                                                    "to": "string",
+                                                                    "onError": "",
+                                                                    "onNull": "",
+                                                                }
+                                                            }
+                                                        }
+                                                    },
+                                                }
+                                            },
+                                            "as": "company",
+                                            "cond": {
+                                                "$and": [
+                                                    {"$ne": ["$$company", ""]},
+                                                    {"$ne": ["$$company", "Unknown"]},
+                                                ]
+                                            },
+                                        }
+                                    },
+                                    [],
+                                ]
+                            },
+                        },
+                        "in": {
+                            "$cond": [
+                                {"$gt": [{"$size": "$$normalized_companies"}, 0]},
+                                {"$setUnion": ["$$normalized_companies", []]},
+                                {
+                                    "$cond": [
+                                        {
+                                            "$and": [
+                                                {"$ne": ["$$legacy_company", ""]},
+                                                {"$ne": ["$$legacy_company", "Unknown"]},
+                                            ]
+                                        },
+                                        ["$$legacy_company"],
+                                        [],
+                                    ]
+                                },
+                            ]
+                        },
+                    }
                 },
             }
         },
@@ -243,7 +383,7 @@ def build_company_aggregation_pipeline() -> list[dict]:
             "$group": {
                 "_id": "$companies_for_aggregation",
                 "review_count": {"$sum": 1},
-                "latest_review": {"$max": "$post_date"},
+                "latest_review": {"$max": "$effective_post_date"},
                 "created_at": {"$min": "$created_at"},
                 "max_monthly_salary_million": {"$max": "$monthly_salary_million"},
             }
@@ -258,11 +398,14 @@ async def rebuild_companies_collection(target_db=None) -> int:
     await active_db.companies.delete_many({})
     docs = []
     async for row in active_db.reviews.aggregate(build_company_aggregation_pipeline()):
+        name = _coerce_string(row.get("_id"))
+        if not name or name == "Unknown":
+            continue
         docs.append(
             {
-                "name": row["_id"],
-                "aliases": company_aliases.get(row["_id"], []),
-                "review_count": row["review_count"],
+                "name": name,
+                "aliases": _coerce_alias_list(company_aliases.get(name, []), canonical_name=name),
+                "review_count": int(row.get("review_count") or 0),
                 "created_at": row.get("created_at"),
                 "updated_at": row.get("latest_review"),
                 "latest_post_date": row.get("latest_review"),
@@ -272,6 +415,10 @@ async def rebuild_companies_collection(target_db=None) -> int:
 
     if docs:
         await active_db.companies.insert_many(docs)
+    await active_db.companies.create_index([("name", ASCENDING)], unique=True)
+    await active_db.companies.create_index([("review_count", DESCENDING), ("name", ASCENDING)])
+    await active_db.companies.create_index([("latest_post_date", DESCENDING), ("name", ASCENDING)])
+    await active_db.companies.create_index([("max_monthly_salary_million", DESCENDING), ("review_count", DESCENDING), ("name", ASCENDING)])
     return len(docs)
 
 
@@ -458,8 +605,8 @@ async def fill_company_aliases(target_db=None) -> dict[str, int | list[str]]:
         if not name:
             continue
         existing_names.add(name)
-        aliases = normalize_aliases(company_aliases.get(name, []), canonical_name=name)
-        if aliases == normalize_aliases(doc.get("aliases") or [], canonical_name=name):
+        aliases = _coerce_alias_list(company_aliases.get(name, []), canonical_name=name)
+        if aliases == _coerce_alias_list(doc.get("aliases"), canonical_name=name):
             continue
         result = await active_db.companies.update_one({"_id": doc["_id"]}, {"$set": {"aliases": aliases}})
         updated += result.modified_count
@@ -469,6 +616,86 @@ async def fill_company_aliases(target_db=None) -> dict[str, int | list[str]]:
         "updated_companies": updated,
         "missing_canonical_companies": missing_canonicals,
         "missing_canonical_count": len(missing_canonicals),
+    }
+
+
+async def build_company_data_report(target_db=None) -> dict[str, list[dict] | list[str]]:
+    """Collect suspicious company and alias issues that still need manual review."""
+    active_db = target_db if target_db is not None else CompanyDocument.get_motor_database()
+    alias_map = build_company_aliases_by_canonical()
+
+    docs = []
+    async for doc in active_db.companies.find({}, {"name": 1, "aliases": 1, "review_count": 1}):
+        docs.append(doc)
+
+    exact_names = {_coerce_string(doc.get("name")) for doc in docs if _coerce_string(doc.get("name"))}
+    lowercase_buckets: dict[str, list[str]] = {}
+    suspicious_names = []
+    alias_conflicts = []
+    alias_duplicates = []
+
+    for doc in docs:
+        raw_name = doc.get("name")
+        name = _coerce_string(doc.get("name"))
+        raw_alias_values = doc.get("aliases")
+        if isinstance(raw_alias_values, str):
+            raw_alias_values = [raw_alias_values]
+        elif not isinstance(raw_alias_values, list):
+            raw_alias_values = []
+        aliases = _coerce_alias_list(raw_alias_values, canonical_name=name)
+        review_count = int(doc.get("review_count") or 0)
+        if not name:
+            suspicious_names.append({"name": name, "issue": "blank_name", "review_count": review_count})
+            continue
+
+        lowercase_buckets.setdefault(name.lower(), []).append(name)
+
+        name_issues = []
+        if name == "Unknown":
+            name_issues.append("unknown_name")
+        if isinstance(raw_name, str) and raw_name != raw_name.strip():
+            name_issues.append("surrounding_whitespace")
+        if len(name) > 60:
+            name_issues.append("name_too_long")
+        if not re.search(r"[A-Za-z]", name):
+            name_issues.append("non_alpha_name")
+        if re.search(r"\b(xin review|cho em hỏi|cho mình hỏi|có ai|hỏi về)\b", name, re.IGNORECASE):
+            name_issues.append("looks_like_question")
+        if re.search(r"[()]", name):
+            name_issues.append("contains_note_parentheses")
+
+        if name_issues:
+            suspicious_names.append({"name": name, "issue": ",".join(name_issues), "review_count": review_count})
+
+        raw_seen_aliases = set()
+        for alias in raw_alias_values:
+            raw_alias = _coerce_string(alias)
+            if not raw_alias or raw_alias.lower() == name.lower():
+                continue
+            raw_alias_key = raw_alias.lower()
+            if raw_alias_key in raw_seen_aliases:
+                alias_duplicates.append({"name": name, "alias": raw_alias, "issue": "duplicate_alias_in_document"})
+            else:
+                raw_seen_aliases.add(raw_alias_key)
+
+        for alias in aliases:
+            alias_key = alias.lower()
+            if alias in exact_names and alias != name:
+                alias_conflicts.append({"name": name, "alias": alias, "issue": "alias_matches_existing_company"})
+
+    case_collisions = [
+        {"normalized_name": key, "variants": sorted(values)}
+        for key, values in sorted(lowercase_buckets.items())
+        if len(set(values)) > 1
+    ]
+    missing_canonical_companies = sorted(name for name in alias_map if name not in exact_names)
+
+    return {
+        "suspicious_names": suspicious_names,
+        "case_collisions": case_collisions,
+        "alias_conflicts": alias_conflicts,
+        "alias_duplicates": alias_duplicates,
+        "missing_canonical_companies": missing_canonical_companies,
     }
 
 

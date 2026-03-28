@@ -8,7 +8,7 @@ if str(ROOT_DIR) not in sys.path:
     sys.path.insert(0, str(ROOT_DIR))
 
 from database.company_aliases import load_company_alias_map, resolve_canonical_company
-from database.mongodb import connect, close, fill_company_aliases, get_database, prepare_review_document, rebuild_companies_collection
+from database.mongodb import connect, close, fill_company_aliases, get_database, normalize_review_companies, prepare_review_document, rebuild_companies_collection
 
 ALIASES_PATH = ROOT_DIR / "data" / "company_aliases.json"
 
@@ -29,7 +29,7 @@ async def main():
     try:
         cursor = db.reviews.find({}, {"_id": 1, "company": 1, "companies": 1})
         async for review in cursor:
-            original_companies = list(review.get("companies") or [])
+            original_companies = normalize_review_companies(review, allow_legacy_fallback=False)
             mapped_companies = [resolve_canonical_company(company, alias_map=alias_map) for company in original_companies]
             updated_review = prepare_review_document(
                 {

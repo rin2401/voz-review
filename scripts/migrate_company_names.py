@@ -2,6 +2,7 @@
 import asyncio
 import sys
 from pathlib import Path
+import json
 
 ROOT_DIR = Path(__file__).resolve().parent.parent
 if str(ROOT_DIR) not in sys.path:
@@ -9,9 +10,19 @@ if str(ROOT_DIR) not in sys.path:
 
 from crawler.voz_scraper import VozCrawler
 from database.company_aliases import load_company_alias_map, resolve_canonical_company
-from database.mongodb import connect, close, fill_company_aliases, get_database, prepare_review_document, rebuild_companies_collection
+from database.mongodb import (
+    build_company_data_report,
+    close,
+    connect,
+    fill_company_aliases,
+    get_database,
+    normalize_review_companies,
+    prepare_review_document,
+    rebuild_companies_collection,
+)
 
 ALIASES_PATH = ROOT_DIR / "data" / "company_aliases.json"
+REPORT_PATH = ROOT_DIR / "scripts" / "output" / "dirty_company_data_report.json"
 
 async def main():
     crawler = VozCrawler()
@@ -25,9 +36,11 @@ async def main():
     salary_updates = 0
     thread_id_updates = 0
     rebuilt_companies = 0
+    report = {}
     alias_fill_result = {"updated_companies": 0, "missing_canonical_companies": [], "missing_canonical_count": 0}
 
     try:
+        REPORT_PATH.parent.mkdir(parents=True, exist_ok=True)
         cursor = db.reviews.find(
             {"content": {"$exists": True, "$nin": [None, ""]}},
             {"_id": 1, "company": 1, "companies": 1, "content": 1, "monthly_salary_million": 1, "url": 1, "voz_thread_id": 1},
@@ -44,7 +57,7 @@ async def main():
                     "companies": [resolve_canonical_company(company, alias_map=alias_map) for company in reparsed_companies],
                 }
             )
-            if updated_review["companies"] != list(doc.get("companies") or []):
+            if updated_review["companies"] != normalize_review_companies(doc, allow_legacy_fallback=False):
                 updates["companies"] = updated_review["companies"]
                 company_updates += 1
 
@@ -63,6 +76,8 @@ async def main():
 
         rebuilt_companies = await rebuild_companies_collection(db)
         alias_fill_result = await fill_company_aliases(db)
+        report = await build_company_data_report(db)
+        REPORT_PATH.write_text(json.dumps(report, ensure_ascii=False, indent=2), encoding="utf-8")
 
         print(
             {
@@ -75,6 +90,7 @@ async def main():
                 "updated_company_aliases": alias_fill_result["updated_companies"],
                 "missing_canonical_companies": alias_fill_result["missing_canonical_companies"],
                 "alias_file": str(ALIASES_PATH),
+                "dirty_company_report": str(REPORT_PATH),
             }
         )
     finally:
