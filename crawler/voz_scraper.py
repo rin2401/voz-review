@@ -306,7 +306,7 @@ class VozCrawler:
             if any(token in lower_salary for token in ['năm', '/năm', 'year', '/year', 'package', 'usd', 'sgd', '$', 'vnd', 'k']):
                 return None
 
-            m = re.search(r'(\d+(?:[.,]\d+)?)\s*(m|tr|triệu)\b', lower_salary)
+            m = re.search(r'(\d+(?:[.,]\d+)?)\s*(m|tr|triệu|mil)\b', lower_salary)
             if not m:
                 m = re.search(r'(\d+(?:[.,]\d+)?)\s*(gross|net)\b', lower_salary)
             if not m:
