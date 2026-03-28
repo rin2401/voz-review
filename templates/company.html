@@ -611,7 +611,7 @@
                     </div>
                     <div class="card-body">
                         {% set review_companies_list = review_companies(review) %}
-                        {% if review_companies_list %}
+                        {% if review_companies_list|length > 1 %}
                         <div class="company-links">
                             {% for company_name in review_companies_list %}
                             <a href="/company/{{ company_to_slug(company_name) }}" class="company-link-chip">{{ company_name }}</a>
