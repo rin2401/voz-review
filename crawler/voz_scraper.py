@@ -312,6 +312,13 @@ class VozCrawler:
             if not m:
                 m = re.search(r'(\d+(?:[.,]\d+)?)\s*/\s*tháng\b', lower_salary)
             if not m:
+                m = re.search(r'(\d+(?:[.,]\d+)?)\s*x\b', lower_salary)
+                if m:
+                    value = float(m.group(1).replace(',', '.')) * 10
+                    if value > 200:
+                        return None
+                    return value
+            if not m:
                 m = re.fullmatch(r'(\d+(?:[.,]\d+)?)', lower_salary)
             if not m:
                 return None

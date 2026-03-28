@@ -89,6 +89,15 @@ Lương tháng (gross): 46
 
         self.assertEqual(salary, 46.0)
 
+    def test_extract_monthly_salary_expands_x_suffix_to_tens_of_million(self):
+        content = """
+Lương tháng/năm (gross): 9x
+        """.strip()
+
+        salary = self.crawler._extract_monthly_salary_million(content)
+
+        self.assertEqual(salary, 90.0)
+
     def test_resolve_canonical_company_follows_alias_chains(self):
         alias_map = {
             "Line Technology Vietnam": "Line Technology",
