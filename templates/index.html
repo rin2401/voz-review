@@ -299,7 +299,7 @@
                             </td>
                             <td>
                                 {% if company.latest_post_date %}
-                                {{ company.latest_post_date.strftime('%Y-%m-%d') }}
+                                {{ format_dt_vn(company.latest_post_date) }}
                                 {% else %}
                                 -
                                 {% endif %}
