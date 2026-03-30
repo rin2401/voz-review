@@ -667,7 +667,7 @@ class VozCrawler:
                             total_reviews += 1
 
                             for company_name in post_data.get("companies") or []:
-                                await increment_company_review_count(company_name)
+                                await increment_company_review_count(company_name, post_data.get("post_date"))
 
                         offer_docs = self._extract_offers(
                             post_data.get("content") or "",

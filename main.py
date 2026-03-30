@@ -612,7 +612,7 @@ async def process_thread_page(crawler, page_url: str, html: str):
             if inserted:
                 inserted_count += 1
                 for company_name in post_data.get("companies") or []:
-                    await increment_company_review_count(company_name)
+                    await increment_company_review_count(company_name, post_data.get("post_date"))
             else:
                 skipped_count += 1
 

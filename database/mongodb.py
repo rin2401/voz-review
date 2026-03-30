@@ -400,7 +400,7 @@ def build_company_aggregation_pipeline() -> list[dict]:
 
 async def rebuild_companies_collection(target_db=None) -> int:
     """Rebuild company summary collection from review documents."""
-    active_db = target_db if target_db is not None else CompanyDocument.get_motor_database()
+    active_db = target_db if target_db is not None else db
     company_aliases = build_company_aliases_by_canonical()
     await active_db.companies.delete_many({})
     docs = []
@@ -580,23 +580,27 @@ async def ensure_companies_exist(company_names: list[str]) -> list[str]:
     return normalized_names
 
 
-async def increment_company_review_count(company_name: str):
-    """Increment review count for company."""
+async def increment_company_review_count(company_name: str, post_date: datetime = None):
+    """Increment review count for company and update latest_post_date if the new review is more recent."""
+    now = datetime.utcnow()
     document = await CompanyDocument.find_one({"name": company_name})
     if document is None:
         document = CompanyDocument(
             name=company_name,
             aliases=_normalized_company_aliases_for_name(company_name),
             review_count=1,
-            created_at=datetime.utcnow(),
-            updated_at=datetime.utcnow(),
+            created_at=now,
+            updated_at=now,
+            latest_post_date=post_date,
         )
         await document.insert()
         return
 
     document.review_count += 1
     document.aliases = _normalized_company_aliases_for_name(company_name)
-    document.updated_at = datetime.utcnow()
+    document.updated_at = now
+    if post_date and (document.latest_post_date is None or post_date > document.latest_post_date):
+        document.latest_post_date = post_date
     await document.save()
 
 
