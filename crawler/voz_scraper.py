@@ -576,11 +576,14 @@ class VozCrawler:
             if len(company) < 1 or len(company) > 60:
                 return ""
             # Single uppercase letter followed by descriptive text: keep only the letter.
-            # e.g. "V mới deal 75 gross" -> "V"; "VNG" (single word) stays "VNG"
-            if len(words) == 1 and len(company) == 1:
-                return company
+            # e.g. "V mới deal 75 gross" -> "V"; "F S**t" (censored) stays "F S**t";
+            # "FPT Software" (first word >1 char) stays "FPT Software"
             if len(words) > 1 and len(words[0]) == 1 and company[0].isupper():
-                return words[0]
+                second = words[1]
+                is_censored = '*' in second
+                is_normal_word = len(second) > 1 and second[0].isupper()
+                if not is_censored and not is_normal_word:
+                    return words[0]
             return company
 
         # Look for "Tên công ty:" / "Tên cty:" at the START of a line
