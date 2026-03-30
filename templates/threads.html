@@ -35,6 +35,7 @@
         .card { background: #161b22 !important; border: 1px solid #30363d !important; }
         .card-header { background: #21262d !important; border-bottom: 1px solid #30363d !important; color: #e6edf3 !important; }
         .text-muted { color: var(--muted-color) !important; }
+        .text-dim { color: #ffffff !important; }
         a { color: var(--link-color) !important; text-decoration: none; }
         a:hover { text-decoration: underline; }
         .navbar { background: var(--bg-card) !important; border-bottom: 1px solid var(--border-color) !important; }
@@ -274,27 +275,27 @@
                 <div class="row g-3">
                     <div class="col-12 col-md-6 col-lg-3">
                         <small class="text-muted d-block">Status</small>
-                        <strong>{{ scheduler_status_label(state) }}</strong>
+                        <strong class="text-dim">{{ scheduler_status_label(state) }}</strong>
                     </div>
                     <div class="col-12 col-md-6 col-lg-3">
                         <small class="text-muted d-block">Timezone</small>
-                        <strong>{{ state.timezone if state else '-' }}</strong>
+                        <strong class="text-dim">{{ state.timezone if state else '-' }}</strong>
                     </div>
                     <div class="col-12 col-md-6 col-lg-3">
                         <small class="text-muted d-block">Next Run</small>
-                        <strong>{{ format_dt_vn(state.next_run_at) if state else '-' }}</strong>
+                        <strong class="text-dim">{{ format_dt_vn(state.next_run_at) if state else '-' }}</strong>
                     </div>
                     <div class="col-12 col-md-6 col-lg-3">
                         <small class="text-muted d-block">Last Finished</small>
-                        <strong>{{ format_dt_vn(state.last_finished_at) if state else '-' }}</strong>
+                        <strong class="text-dim">{{ format_dt_vn(state.last_finished_at) if state else '-' }}</strong>
                     </div>
                     <div class="col-12 col-lg-6">
                         <small class="text-muted d-block">Last Result</small>
-                        <strong>{{ state.last_result if state and state.last_result else '-' }}</strong>
+                        <strong class="text-dim">{{ state.last_result if state and state.last_result else '-' }}</strong>
                     </div>
                     <div class="col-12 col-lg-6">
                         <small class="text-muted d-block">Last Error</small>
-                        <strong>{{ state.last_error if state and state.last_error else '-' }}</strong>
+                        <strong class="text-dim">{{ state.last_error if state and state.last_error else '-' }}</strong>
                     </div>
                 </div>
             </div>
