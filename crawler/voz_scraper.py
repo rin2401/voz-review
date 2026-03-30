@@ -573,8 +573,14 @@ class VozCrawler:
                 return ""
             if len(words) > 6:
                 return ""
-            if len(company) < 2 or len(company) > 60:
+            if len(company) < 1 or len(company) > 60:
                 return ""
+            # Single uppercase letter followed by descriptive text: keep only the letter.
+            # e.g. "V mới deal 75 gross" -> "V"; "VNG" (single word) stays "VNG"
+            if len(words) == 1 and len(company) == 1:
+                return company
+            if len(words) > 1 and len(words[0]) == 1 and company[0].isupper():
+                return words[0]
             return company
 
         # Look for "Tên công ty:" / "Tên cty:" at the START of a line
@@ -596,7 +602,7 @@ class VozCrawler:
                     company = _next_non_empty_line(index)
 
                 # Skip if it's clearly not a company name
-                if len(company) < 2:
+                if len(company) < 1:
                     return "Unknown"
                 if any(x in company.lower() for x in ['xin', 'hỏi', 'review', 'cho', 'em ', 'mình ']):
                     return "Unknown"
