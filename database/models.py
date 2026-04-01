@@ -166,11 +166,8 @@ class CompanyDocument(Document):
 
     name: str
     aliases: list[str] = Field(default_factory=list)
-    review_count: int = 0
     created_at: Optional[datetime] = None
     updated_at: Optional[datetime] = None
-    latest_post_date: Optional[datetime] = None
-    max_monthly_salary_million: Optional[float] = None
 
     @field_validator("name", mode="before")
     @classmethod
@@ -182,28 +179,15 @@ class CompanyDocument(Document):
     def _normalize_aliases(cls, value):
         return _coerce_string_list(value)
 
-    @field_validator("review_count", mode="before")
-    @classmethod
-    def _normalize_review_count(cls, value):
-        return _coerce_int(value)
-
-    @field_validator("created_at", "updated_at", "latest_post_date", mode="before")
+    @field_validator("created_at", "updated_at", mode="before")
     @classmethod
     def _normalize_company_datetimes(cls, value):
         return _coerce_datetime(value)
-
-    @field_validator("max_monthly_salary_million", mode="before")
-    @classmethod
-    def _normalize_company_salary(cls, value):
-        return _coerce_float(value)
 
     class Settings:
         name = "companies"
         indexes = [
             IndexModel([("name", ASCENDING)], unique=True),
-            IndexModel([("review_count", DESCENDING), ("name", ASCENDING)]),
-            IndexModel([("latest_post_date", DESCENDING), ("name", ASCENDING)]),
-            IndexModel([("max_monthly_salary_million", DESCENDING), ("review_count", DESCENDING), ("name", ASCENDING)]),
         ]
 
 

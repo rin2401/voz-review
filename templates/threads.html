@@ -14,6 +14,7 @@
             --border-color: #30363d;
             --text-color: #e6edf3;
             --muted-color: #8b949e;
+            --dim-color: #e6edf3;
             --link-color: #58a6ff;
             --input-bg: #0d1117;
             --hover-bg: #21262d;
@@ -26,6 +27,7 @@
             --border-soft: #d6e0ea;
             --text-color: #223042;
             --muted-color: #5f6f82;
+            --dim-color: #223042;
             --link-color: #2f6fec;
             --input-bg: #f8fafd;
             --hover-bg: #e8eef8;
@@ -35,7 +37,7 @@
         .card { background: #161b22 !important; border: 1px solid #30363d !important; }
         .card-header { background: #21262d !important; border-bottom: 1px solid #30363d !important; color: #e6edf3 !important; }
         .text-muted { color: var(--muted-color) !important; }
-        .text-dim { color: #ffffff !important; }
+        .text-dim { color: var(--dim-color) !important; }
         a { color: var(--link-color) !important; text-decoration: none; }
         a:hover { text-decoration: underline; }
         .navbar { background: var(--bg-card) !important; border-bottom: 1px solid var(--border-color) !important; }
@@ -324,7 +326,11 @@
                     <tbody>
                         {% for thread in threads %}
                         <tr>
-                            <td><a href="{{ thread.url }}" target="_blank"><span class="badge">{{ thread.thread_id or '-' }}</span></a></td>
+                            <td>
+                                <a href="{{ thread.url }}{% if thread.last_page and thread.last_page > 1 %}page-{{ thread.last_page }}/{% endif %}" target="_blank">
+                                    <span class="badge">{{ thread.thread_id or '-' }}</span>
+                                </a>
+                            </td>
                             <td>{{ thread.last_page or '-' }}</td>
                             <td>
                                 {% if thread.last_crawl %}

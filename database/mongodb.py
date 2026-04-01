@@ -45,6 +45,19 @@ def _coerce_string_list(value: Any) -> list[str]:
     return normalized
 
 
+def _coerce_datetime(value: Any) -> Optional[datetime]:
+    if value is None or value == "":
+        return None
+    if isinstance(value, datetime):
+        return value
+    if isinstance(value, str):
+        try:
+            return datetime.fromisoformat(value.replace("Z", "+00:00"))
+        except ValueError:
+            return None
+    return None
+
+
 def _document_to_dict(document: Any) -> dict:
     payload = document.model_dump(mode="python")
     payload.pop("id", None)
@@ -153,15 +166,19 @@ async def create_indexes():
     await reviews.create_index([("companies", ASCENDING), ("created_at", ASCENDING)])
 
     companies = CompanyDocument.get_motor_collection()
+    existing_company_indexes = await companies.index_information()
+    for index_name, index_info in existing_company_indexes.items():
+        if index_name == "_id_":
+            continue
+        key_names = [field for field, _ in index_info.get("key", [])]
+        if key_names in (["review_count", "name"], ["max_monthly_salary_million", "review_count", "name"]):
+            await companies.drop_index(index_name)
     try:
         await companies.create_index("name", unique=True)
     except OperationFailure as exc:
         if exc.code != 11000:
             raise
         print("⚠️ Skipped unique company name index because legacy company documents still contain duplicates")
-    await companies.create_index([("review_count", -1), ("name", ASCENDING)])
-    await companies.create_index([("latest_post_date", -1), ("name", ASCENDING)])
-    await companies.create_index([("max_monthly_salary_million", -1), ("review_count", -1), ("name", ASCENDING)])
 
     threads = ThreadDocument.get_motor_collection()
     await threads.create_index("url", unique=True)
@@ -200,20 +217,76 @@ async def create_indexes():
 
 
 async def get_all_companies(sort_by: str = "recent_review") -> list[dict]:
-    """Get all companies with review counts."""
-    sort_map = {
-        "az": [("name", ASCENDING)],
-        "most_review": [("review_count", -1), ("name", ASCENDING)],
-        "recent_review": [("latest_post_date", -1), ("name", ASCENDING)],
-        "salary_desc": [("max_monthly_salary_million", -1), ("review_count", -1), ("name", ASCENDING)],
+    """Get all companies with summary fields derived from reviews."""
+    docs = [_document_to_dict(document) for document in await CompanyDocument.find_all().to_list()]
+    if not docs:
+        return []
+
+    company_names = [doc.get("name") for doc in docs if doc.get("name")]
+    aggregates_by_company: dict[str, dict[str, Any]] = {
+        name: {
+            "review_count": 0,
+            "latest_post_date": None,
+            "max_monthly_salary_million": None,
+        }
+        for name in company_names
     }
-    documents = await CompanyDocument.find_all().sort(sort_map.get(sort_by, sort_map["az"])).to_list()
-    companies = [_document_to_dict(document) for document in documents]
-    for company in companies:
-        company["aliases"] = normalize_aliases(company.get("aliases") or [], canonical_name=company.get("name"))
-        company.setdefault("review_count", 0)
-        company.setdefault("latest_post_date", None)
-        company.setdefault("max_monthly_salary_million", None)
+
+    pipeline = build_company_aggregation_pipeline() + [
+        {"$match": {"_id": {"$in": company_names}}},
+        {
+            "$project": {
+                "_id": 1,
+                "review_count": 1,
+                "latest_review": 1,
+                "max_monthly_salary_million": 1,
+            }
+        },
+    ]
+    async for row in ReviewDocument.get_motor_collection().aggregate(pipeline):
+        name = _coerce_string(row.get("_id"))
+        if not name:
+            continue
+        aggregates_by_company[name] = {
+            "review_count": int(row.get("review_count") or 0),
+            "latest_post_date": _coerce_datetime(row.get("latest_review")),
+            "max_monthly_salary_million": row.get("max_monthly_salary_million"),
+        }
+
+    companies = []
+    for company in docs:
+        company_name = company.get("name")
+        aggregate = aggregates_by_company.get(company_name, {})
+        company["aliases"] = normalize_aliases(company.get("aliases") or [], canonical_name=company_name)
+        company["review_count"] = int(aggregate.get("review_count") or 0)
+        company["latest_post_date"] = aggregate.get("latest_post_date")
+        company["max_monthly_salary_million"] = aggregate.get("max_monthly_salary_million")
+        companies.append(company)
+
+    if sort_by == "most_review":
+        companies.sort(key=lambda c: ((c.get("review_count") or 0), (c.get("name") or "").lower()), reverse=True)
+    elif sort_by == "recent_review":
+        companies.sort(
+            key=lambda c: (
+                c.get("latest_post_date") is not None,
+                c.get("latest_post_date") or datetime.min,
+                (c.get("name") or "").lower(),
+            ),
+            reverse=True,
+        )
+    elif sort_by == "salary_desc":
+        companies.sort(
+            key=lambda c: (
+                c.get("max_monthly_salary_million") is not None,
+                c.get("max_monthly_salary_million") or float("-inf"),
+                c.get("review_count") or 0,
+                (c.get("name") or "").lower(),
+            ),
+            reverse=True,
+        )
+    else:
+        companies.sort(key=lambda c: (c.get("name") or "").lower())
+
     return companies
 
 
@@ -412,20 +485,14 @@ async def rebuild_companies_collection(target_db=None) -> int:
             {
                 "name": name,
                 "aliases": _coerce_alias_list(company_aliases.get(name, []), canonical_name=name),
-                "review_count": int(row.get("review_count") or 0),
                 "created_at": row.get("created_at"),
                 "updated_at": row.get("latest_review"),
-                "latest_post_date": row.get("latest_review"),
-                "max_monthly_salary_million": row.get("max_monthly_salary_million"),
             }
         )
 
     if docs:
         await active_db.companies.insert_many(docs)
     await active_db.companies.create_index([("name", ASCENDING)], unique=True)
-    await active_db.companies.create_index([("review_count", DESCENDING), ("name", ASCENDING)])
-    await active_db.companies.create_index([("latest_post_date", DESCENDING), ("name", ASCENDING)])
-    await active_db.companies.create_index([("max_monthly_salary_million", DESCENDING), ("review_count", DESCENDING), ("name", ASCENDING)])
     return len(docs)
 
 
@@ -543,9 +610,6 @@ async def upsert_company(name: str) -> dict:
         aliases=_normalized_company_aliases_for_name(name),
         created_at=now,
         updated_at=now,
-        review_count=0,
-        latest_post_date=None,
-        max_monthly_salary_million=None,
     )
     try:
         await document.insert()
@@ -581,32 +645,27 @@ async def ensure_companies_exist(company_names: list[str]) -> list[str]:
 
 
 async def increment_company_review_count(company_name: str, post_date: datetime = None):
-    """Increment review count for company and update latest_post_date if the new review is more recent."""
+    """Ensure company document exists; review count is derived from reviews elsewhere."""
     now = datetime.utcnow()
     document = await CompanyDocument.find_one({"name": company_name})
     if document is None:
         document = CompanyDocument(
             name=company_name,
             aliases=_normalized_company_aliases_for_name(company_name),
-            review_count=1,
             created_at=now,
             updated_at=now,
-            latest_post_date=post_date,
         )
         await document.insert()
         return
 
-    document.review_count += 1
     document.aliases = _normalized_company_aliases_for_name(company_name)
     document.updated_at = now
-    if post_date and (document.latest_post_date is None or post_date > document.latest_post_date):
-        document.latest_post_date = post_date
     await document.save()
 
 
 async def fill_company_aliases(target_db=None) -> dict[str, int | list[str]]:
     """Populate aliases for existing canonical company documents without creating new companies."""
-    active_db = target_db if target_db is not None else CompanyDocument.get_motor_database()
+    active_db = target_db if target_db is not None else db
     company_aliases = build_company_aliases_by_canonical()
     existing_names = set()
     updated = 0
@@ -632,11 +691,18 @@ async def fill_company_aliases(target_db=None) -> dict[str, int | list[str]]:
 
 async def build_company_data_report(target_db=None) -> dict[str, list[dict] | list[str]]:
     """Collect suspicious company and alias issues that still need manual review."""
-    active_db = target_db if target_db is not None else CompanyDocument.get_motor_database()
+    active_db = target_db if target_db is not None else db
     alias_map = build_company_aliases_by_canonical()
 
+    review_counts_by_name: dict[str, int] = {}
+    async for row in active_db.reviews.aggregate(build_company_aggregation_pipeline()):
+        name = _coerce_string(row.get("_id"))
+        if not name:
+            continue
+        review_counts_by_name[name] = int(row.get("review_count") or 0)
+
     docs = []
-    async for doc in active_db.companies.find({}, {"name": 1, "aliases": 1, "review_count": 1}):
+    async for doc in active_db.companies.find({}, {"name": 1, "aliases": 1}):
         docs.append(doc)
 
     exact_names = {_coerce_string(doc.get("name")) for doc in docs if _coerce_string(doc.get("name"))}
@@ -654,7 +720,7 @@ async def build_company_data_report(target_db=None) -> dict[str, list[dict] | li
         elif not isinstance(raw_alias_values, list):
             raw_alias_values = []
         aliases = _coerce_alias_list(raw_alias_values, canonical_name=name)
-        review_count = int(doc.get("review_count") or 0)
+        review_count = review_counts_by_name.get(name, 0)
         if not name:
             suspicious_names.append({"name": name, "issue": "blank_name", "review_count": review_count})
             continue
@@ -690,7 +756,6 @@ async def build_company_data_report(target_db=None) -> dict[str, list[dict] | li
                 raw_seen_aliases.add(raw_alias_key)
 
         for alias in aliases:
-            alias_key = alias.lower()
             if alias in exact_names and alias != name:
                 alias_conflicts.append({"name": name, "alias": alias, "issue": "alias_matches_existing_company"})
 
@@ -712,10 +777,19 @@ async def build_company_data_report(target_db=None) -> dict[str, list[dict] | li
 
 async def build_likely_duplicate_company_report(target_db=None) -> dict[str, Any]:
     """Collect likely duplicate company-name groups for manual review only."""
-    active_db = target_db if target_db is not None else CompanyDocument.get_motor_database()
+    active_db = target_db if target_db is not None else db
+    review_counts_by_name: dict[str, int] = {}
+    async for row in active_db.reviews.aggregate(build_company_aggregation_pipeline()):
+        name = _coerce_string(row.get("_id"))
+        if not name:
+            continue
+        review_counts_by_name[name] = int(row.get("review_count") or 0)
+
     docs = []
-    async for doc in active_db.companies.find({}, {"name": 1, "aliases": 1, "review_count": 1}):
-        docs.append(doc)
+    async for doc in active_db.companies.find({}, {"name": 1, "aliases": 1}):
+        payload = dict(doc)
+        payload["review_count"] = review_counts_by_name.get(_coerce_string(doc.get("name")), 0)
+        docs.append(payload)
     return analyze_likely_duplicate_companies(docs)
 
 
