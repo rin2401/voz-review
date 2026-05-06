@@ -18,6 +18,25 @@ docker run -d -p 27017:27017 --name mongodb mongo:latest
 uvicorn main:app --reload --host 0.0.0.0 --port 8000
 ```
 
+## MongoDB Atlas
+
+The app uses local MongoDB by default, but it can connect to MongoDB Atlas with an SRV connection string:
+
+```bash
+export MONGO_URI='mongodb+srv://<user>:<password>@<cluster-host>/voz_crawler?retryWrites=true&w=majority'
+export MONGO_DB='voz_crawler'
+uvicorn main:app --reload --host 0.0.0.0 --port 8000
+```
+
+`MONGODB_URI` and `MONGODB_DB` are also supported aliases. On Vercel, add `MONGO_URI` and `MONGO_DB` as project environment variables. Keep the Atlas password URL-encoded if it contains special characters.
+
+To copy existing local data to Atlas:
+
+```bash
+export ATLAS_MONGO_URI='mongodb+srv://<user>:<password>@<cluster-host>/?retryWrites=true&w=majority'
+python scripts/migrate_mongo_to_atlas.py --source-uri mongodb://localhost:27017 --source-db voz_crawler --dest-db voz_crawler --drop-dest
+```
+
 ## Features
 
 - Crawl review threads từ nhiều sub-forum Voz

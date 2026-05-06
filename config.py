@@ -10,6 +10,13 @@ def _env_bool(name: str, default: bool) -> bool:
     return raw_value.strip().lower() in {"1", "true", "yes", "on"}
 
 
+def _env_int(name: str, default: int) -> int:
+    raw_value = os.getenv(name)
+    if raw_value is None:
+        return default
+    return int(raw_value)
+
+
 # Base paths
 BASE_DIR = Path(__file__).parent
 DATA_DIR = BASE_DIR / "data"
@@ -18,8 +25,9 @@ DATA_DIR.mkdir(exist_ok=True)
 # MongoDB
 MONGO_HOST = os.getenv("MONGO_HOST", "localhost")
 MONGO_PORT = int(os.getenv("MONGO_PORT", "27017"))
-MONGO_DB = os.getenv("MONGO_DB", "voz_crawler")
-MONGO_URI = f"mongodb://{MONGO_HOST}:{MONGO_PORT}"
+MONGO_DB = os.getenv("MONGO_DB") or os.getenv("MONGODB_DB") or "voz_crawler"
+MONGO_URI = os.getenv("MONGO_URI") or os.getenv("MONGODB_URI") or f"mongodb://{MONGO_HOST}:{MONGO_PORT}"
+MONGO_SERVER_SELECTION_TIMEOUT_MS = _env_int("MONGO_SERVER_SELECTION_TIMEOUT_MS", 30000)
 
 # Voz settings
 VOZ_BASE_URL = "https://voz.vn"

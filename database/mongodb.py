@@ -98,7 +98,10 @@ async def connect():
     if client is not None and db is not None:
         return
 
-    client = AsyncIOMotorClient(config.MONGO_URI)
+    client = AsyncIOMotorClient(
+        config.MONGO_URI,
+        serverSelectionTimeoutMS=config.MONGO_SERVER_SELECTION_TIMEOUT_MS,
+    )
     db = client[config.MONGO_DB]
 
     # Drop legacy review text indexes before Beanie init so schema/index changes don't conflict.
