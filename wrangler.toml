@@ -1,0 +1,6 @@
+name = "voz-review"
+main = "workers/voz-review-proxy.js"
+compatibility_date = "2025-04-01"
+
+[vars]
+ORIGIN_URL = "https://voz-review.vercel.app"

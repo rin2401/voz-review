@@ -24,3 +24,4 @@ mongod.log.*
 *.sqlite3
 .vercel
 nohup.out
+.wrangler/

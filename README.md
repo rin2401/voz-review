@@ -32,6 +32,16 @@ uvicorn main:app --reload --host 0.0.0.0 --port 8000
 
 `MONGODB_URI` and `MONGODB_DB` are also supported aliases. On Vercel, add `MONGO_URI` and `MONGO_DB` as project environment variables. Keep the Atlas password URL-encoded if it contains special characters.
 
+## Cloudflare Worker
+
+`wrangler.toml` deploys a lightweight Cloudflare Worker reverse proxy in front of the Vercel production deployment. The FastAPI app still runs on Vercel; the Worker only forwards traffic at the edge.
+
+```bash
+npx wrangler deploy
+```
+
+If the Vercel production URL changes, update `ORIGIN_URL` in `wrangler.toml` before deploying, or set it as a Worker variable in Cloudflare.
+
 To copy existing local data to Atlas:
 
 ```bash
