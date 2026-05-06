@@ -37,6 +37,15 @@ export ATLAS_MONGO_URI='mongodb+srv://<user>:<password>@<cluster-host>/?retryWri
 python scripts/migrate_mongo_to_atlas.py --source-uri mongodb://localhost:27017 --source-db voz_crawler --dest-db voz_crawler --drop-dest
 ```
 
+To crawl manually and write updates directly to Atlas instead of relying on the in-app hourly scheduler:
+
+```bash
+vercel env pull .env.local --environment=production --yes
+python scripts/crawl_voz_to_atlas.py --max-pages 0
+```
+
+The script loads `.env.local` before importing app config and refuses to run unless `MONGO_URI`/`MONGODB_URI` points to Atlas. Use `--url <voz-thread-url>` to crawl one thread, or `--seed-default-threads` to insert the built-in thread list into a fresh Atlas database before crawling.
+
 ## Features
 
 - Crawl review threads từ nhiều sub-forum Voz
@@ -58,10 +67,10 @@ python scripts/migrate_mongo_to_atlas.py --source-uri mongodb://localhost:27017 
 
 ## Hourly Scheduler
 
-Scheduler chạy bên trong web app process và mặc định bắn vào đúng đầu mỗi giờ theo timezone `Asia/Ho_Chi_Minh`.
+Scheduler chạy bên trong web app process và bắn vào đúng đầu mỗi giờ theo timezone `Asia/Ho_Chi_Minh` khi được bật. Mặc định scheduler đang tắt để tránh crawl tự động trên deployment; dùng `scripts/crawl_voz_to_atlas.py` cho crawl thủ công lên Atlas.
 Các biến môi trường liên quan:
 
-- `HOURLY_CRAWL_SCHEDULER_ENABLED=true|false`
+- `HOURLY_CRAWL_SCHEDULER_ENABLED=true|false` (mặc định `false`)
 - `HOURLY_CRAWL_SCHEDULER_TIMEZONE=Asia/Ho_Chi_Minh`
 - `HOURLY_CRAWL_SCHEDULER_LEASE_MINUTES=180`
 
