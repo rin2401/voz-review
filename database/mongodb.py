@@ -220,7 +220,7 @@ async def create_indexes():
 
 
 async def get_all_companies(sort_by: str = "recent_review") -> list[dict]:
-    """Get all companies with summary fields derived from reviews."""
+    """Get all companies with summary fields derived from reviews and offers."""
     docs = [_document_to_dict(document) for document in await CompanyDocument.find_all().to_list()]
     if not docs:
         return []
@@ -235,26 +235,42 @@ async def get_all_companies(sort_by: str = "recent_review") -> list[dict]:
         for name in company_names
     }
 
-    pipeline = build_company_aggregation_pipeline() + [
+    # Aggregate review data
+    review_pipeline = build_company_aggregation_pipeline() + [
         {"$match": {"_id": {"$in": company_names}}},
         {
             "$project": {
                 "_id": 1,
                 "review_count": 1,
                 "latest_review": 1,
-                "max_monthly_salary_million": 1,
             }
         },
     ]
-    async for row in ReviewDocument.get_motor_collection().aggregate(pipeline):
+    async for row in ReviewDocument.get_motor_collection().aggregate(review_pipeline):
         name = _coerce_string(row.get("_id"))
         if not name:
             continue
         aggregates_by_company[name] = {
             "review_count": int(row.get("review_count") or 0),
             "latest_post_date": _coerce_datetime(row.get("latest_review")),
-            "max_monthly_salary_million": row.get("max_monthly_salary_million"),
+            "max_monthly_salary_million": None,  # Will be filled from offers
         }
+
+    # Aggregate max salary from offers table
+    offers_collection = OfferDocument.get_motor_collection()
+    offers_pipeline = [
+        {"$match": {"company": {"$in": company_names}}},
+        {
+            "$group": {
+                "_id": "$company",
+                "max_monthly_salary_million": {"$max": "$monthly_salary_million"},
+            }
+        },
+    ]
+    async for row in offers_collection.aggregate(offers_pipeline):
+        name = _coerce_string(row.get("_id"))
+        if name in aggregates_by_company:
+            aggregates_by_company[name]["max_monthly_salary_million"] = row.get("max_monthly_salary_million")
 
     companies = []
     for company in docs:
