@@ -1,0 +1,4 @@
+interface:
+  display_name: "Voz Crawl"
+  short_description: "Run Voz Atlas crawl for this repository"
+  default_prompt: "Use $voz-crawl to rerun the Voz to Atlas crawl for this repository."
