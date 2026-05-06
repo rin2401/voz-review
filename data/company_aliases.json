@@ -175,6 +175,7 @@
   "Nav*r": "Naver",
   "Net company": "Netcompany",
   "Netcomany": "Net company",
+  "Nvidia": "NVIDIA",
   "Ngân hàng OCB": "OCB",
   "Ngân hàng T đỏ": "Techcombank",
   "Ngân hàng cây lúa Việt Nam": "Agribank",
@@ -293,11 +294,13 @@
   "VSF": "Vin Smart Future",
   "Viettel *T": "Viettel",
   "Nhà mạng V đỏ": "Viettel",
+  "VIN": "Vin Smart Future",
   "Vin": "Vin Smart Future",
   "VinSF": "Vin Smart Future",
   "Vinbigdata": "VinBigdata",
   "Vinbr***": "VinBrain",
   "Vinfa*t": "VinFast",
+  "Vf": "VinFast",
   "Vinfast": "VinFast",
   "Vê C Cọp": "VCCorp",
   "Vịt teo": "Viettel",
@@ -333,5 +336,7 @@
   "zalo-pay": "Zalopay",
   "đó lương thấp lắm": "Unknown",
   "đầu hơn kèo hoàn toàn nhé bác": "Unknown",
-  "ở Xuân Thủy": "Unknown"
+  "ở Xuân Thủy": "Unknown",
+  "V": "Vin Smart Future",
+  "WQ": "WorldQuant"
 }

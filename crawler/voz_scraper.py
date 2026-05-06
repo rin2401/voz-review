@@ -547,10 +547,13 @@ class VozCrawler:
         Extract company name from review content.
         Looks for patterns like:
         - "Tên công ty: XXX" (exactly at start of line)
-        - "Công ty XXX" 
+        - "Công ty XXX"
+
+        Rule: a single uppercase-letter company token is the lowest-priority fallback.
+        Prefer fuller names and alias/canonical matches whenever available.
         """
         lines = content.split('\n')
-        
+
         # Skip if this looks like a question/request post
         skip_phrases = ['xin review', 'cho em hỏi', 'cho mình hỏi', 'có ai', 'tuyển', 'nhận offer', 'hỏi về', 'cần hỏi']
         first_line = lines[0].lower() if lines else ""
@@ -558,7 +561,7 @@ class VozCrawler:
             # Check if it's a reply (contains "said:")
             if 'said:' not in content.lower():
                 return "Unknown"
-        
+
         def _next_non_empty_line(start_index: int) -> str:
             for candidate in lines[start_index + 1:]:
                 candidate = candidate.strip()
@@ -566,25 +569,24 @@ class VozCrawler:
                     return candidate
             return ""
 
-        def _normalize_extracted_company(company: str) -> str:
+        def _normalize_extracted_company(company: str) -> tuple[str, bool]:
             company = self._clean_company_name(company)
             words = [w for w in company.split() if w and w not in {'-', '–', '—'}]
             if not company or not company[0].isupper():
-                return ""
+                return "", False
             if len(words) > 6:
-                return ""
+                return "", False
             if len(company) < 1 or len(company) > 60:
-                return ""
-            # Single uppercase letter followed by descriptive text: keep only the letter.
-            # e.g. "V mới deal 75 gross" -> "V"; "F S**t" (censored) stays "F S**t";
-            # "FPT Software" (first word >1 char) stays "FPT Software"
+                return "", False
             if len(words) > 1 and len(words[0]) == 1 and company[0].isupper():
                 second = words[1]
                 is_censored = '*' in second
                 is_normal_word = len(second) > 1 and second[0].isupper()
                 if not is_censored and not is_normal_word:
-                    return words[0]
-            return company
+                    return words[0], True
+            return company, len(company) == 1 and company.isupper()
+
+        single_letter_candidate = ""
 
         # Look for "Tên công ty:" / "Tên cty:" at the START of a line
         for index, raw_line in enumerate(lines):
@@ -610,9 +612,11 @@ class VozCrawler:
                 if any(x in company.lower() for x in ['xin', 'hỏi', 'review', 'cho', 'em ', 'mình ']):
                     return "Unknown"
 
-                company = _normalize_extracted_company(company)
-                if company:
-                    return company
+                normalized_company, is_single_letter = _normalize_extracted_company(company)
+                if normalized_company and not is_single_letter:
+                    return normalized_company
+                if normalized_company and is_single_letter and not single_letter_candidate:
+                    single_letter_candidate = normalized_company
 
         # Also try: starts with "Công ty" as a standalone line or label
         for index, raw_line in enumerate(lines):
@@ -624,15 +628,20 @@ class VozCrawler:
                 if remainder.startswith(':'):
                     remainder = remainder[1:].strip()
                 company = remainder or _next_non_empty_line(index)
-                company = _normalize_extracted_company(company)
-                if company:
-                    return company
+                normalized_company, is_single_letter = _normalize_extracted_company(company)
+                if normalized_company and not is_single_letter:
+                    return normalized_company
+                if normalized_company and is_single_letter and not single_letter_candidate:
+                    single_letter_candidate = normalized_company
 
         # Fallback: longest matching alias/canonical name inside content for Unknown posts
         for candidate, canonical, pattern in self.company_candidates:
             if pattern.search(content):
                 return canonical
-        
+
+        if single_letter_candidate:
+            return single_letter_candidate
+
         return "Unknown"
     
     async def crawl_forum(self, forum_url: str, max_pages: int = 0) -> Tuple[int, int]:

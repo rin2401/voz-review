@@ -89,6 +89,15 @@ Lương tháng (gross): 46
 
         self.assertEqual(salary, 46.0)
 
+    def test_single_uppercase_letter_is_lowest_priority_after_alias_match(self):
+        content = """
+Tên công ty: N mới deal xong ở ngân hàng N đỏ
+        """.strip()
+
+        company = self.crawler._extract_company(content)
+
+        self.assertEqual(company, "NAB")
+
     def test_extract_monthly_salary_expands_x_suffix_to_tens_of_million(self):
         content = """
 Lương tháng/năm (gross): 9x
