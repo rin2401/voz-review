@@ -4,6 +4,8 @@ Crawler + web app để thu thập và tra cứu review công ty từ voz.vn.
 
 ## Setup
 
+App config is loaded automatically from `.env` and `.env.local` via `pydantic-settings`. Environment variables exported in the shell still override values from those files.
+
 ```bash
 # 1. Install dependencies
 pip install -r requirements.txt
@@ -20,7 +22,7 @@ uvicorn main:app --reload --host 0.0.0.0 --port 8000
 
 ## MongoDB Atlas
 
-The app uses local MongoDB by default, but it can connect to MongoDB Atlas with an SRV connection string:
+The app uses `MONGO_URI` for MongoDB connections. If unset, it falls back to `mongodb://localhost:27017`. It can also connect to MongoDB Atlas with an SRV connection string:
 
 ```bash
 export MONGO_URI='mongodb+srv://<user>:<password>@<cluster-host>/voz_crawler?retryWrites=true&w=majority'
