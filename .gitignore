@@ -22,3 +22,5 @@ mongod.log.*
 *.db
 *.sqlite
 *.sqlite3
+.vercel
+nohup.out

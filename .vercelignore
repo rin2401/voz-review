@@ -1,0 +1,13 @@
+.git
+.venv
+.uv-cache
+__pycache__
+**/__pycache__
+*.pyc
+*.pyo
+*.log
+nohup.out
+mongod.log*
+*.sock
+tests
+scripts/output
