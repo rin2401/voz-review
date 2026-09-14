@@ -31,6 +31,10 @@ export function loadConfig(env = {}) {
     crawlDelaySeconds: Number(env.CRAWL_DELAY_SECONDS ?? 2),
     threadDelaySeconds: Number(env.THREAD_DELAY_SECONDS ?? 5),
     maxPagesPerThread: Number(env.MAX_PAGES_PER_THREAD ?? 20),
+    fetchTimeoutSeconds: Number(env.FETCH_TIMEOUT_SECONDS ?? 30),
+    // Wall-clock budget for one scheduled run; cron handlers are killed at
+    // 15 min, so stay well under it to release the lock cleanly.
+    runBudgetSeconds: Number(env.RUN_BUDGET_SECONDS ?? 780),
     schedulerTimezone: env.HOURLY_CRAWL_SCHEDULER_TIMEZONE || "Asia/Ho_Chi_Minh",
     schedulerLeaseMinutes: Number(env.HOURLY_CRAWL_SCHEDULER_LEASE_MINUTES ?? 180),
   };
@@ -41,10 +45,12 @@ function sleep(seconds) {
 }
 
 /** Fetch a voz.vn page. XenForo pages are server-rendered; no browser needed. */
-export async function fetchPageHtml(url) {
+export async function fetchPageHtml(url, { timeoutSeconds = 30 } = {}) {
   const response = await fetch(url, {
     headers: { "User-Agent": VOZ_USER_AGENT },
     redirect: "follow",
+    // voz.vn (behind Cloudflare) can hang Worker fetches; never wait forever.
+    signal: AbortSignal.timeout(timeoutSeconds * 1000),
   });
   if (!response.ok) {
     throw new Error(`fetch ${url} failed: HTTP ${response.status}`);
@@ -94,12 +100,14 @@ export async function processThreadPage(pageUrl, html) {
 }
 
 /** Crawl a specific thread - resume from threads.last_page when available. */
-export async function crawlThread(url, maxPages, config) {
+export async function crawlThread(url, maxPages, config, deadline = null) {
   const threadId = extractThreadId(url) || null;
   let pagesCrawled = 0;
   try {
     const firstPageUrl = url.endsWith("/") ? url : `${url}/`;
-    const firstHtml = await fetchPageHtml(firstPageUrl);
+    const firstHtml = await fetchPageHtml(firstPageUrl, {
+      timeoutSeconds: config.fetchTimeoutSeconds,
+    });
 
     const totalPages = detectTotalPages(firstHtml);
 
@@ -115,6 +123,10 @@ export async function crawlThread(url, maxPages, config) {
     );
 
     for (let page = startPage; page <= endPage; page++) {
+      if (deadline !== null && Date.now() > deadline) {
+        console.log("Run budget exceeded, stopping this thread early");
+        break;
+      }
       let pageUrl;
       let html;
       if (page === 1) {
@@ -123,7 +135,7 @@ export async function crawlThread(url, maxPages, config) {
       } else {
         pageUrl = `${firstPageUrl}page-${page}/`;
         console.log(`Crawling page ${page}/${endPage}`);
-        html = await fetchPageHtml(pageUrl);
+        html = await fetchPageHtml(pageUrl, { timeoutSeconds: config.fetchTimeoutSeconds });
       }
 
       await processThreadPage(pageUrl, html);
@@ -143,7 +155,7 @@ export async function crawlThread(url, maxPages, config) {
 }
 
 /** Crawl all configured threads from DB sequentially, mirroring crawl_all_forums. */
-export async function crawlAllForums(maxPages, config) {
+export async function crawlAllForums(maxPages, config, deadline = null) {
   const threads = await getAllThreads();
   const summary = {
     threads_total: threads.length,
@@ -155,6 +167,11 @@ export async function crawlAllForums(maxPages, config) {
     const url = thread.url;
     if (!url) continue;
 
+    if (deadline !== null && Date.now() > deadline) {
+      console.log("Run budget exceeded, skipping remaining threads");
+      break;
+    }
+
     const currentState = await getThreadState({ url });
     if (currentState && currentState.crawl_status === "running") {
       // A previous run crashed mid-crawl; the scheduler lock we hold proves no
@@ -164,7 +181,7 @@ export async function crawlAllForums(maxPages, config) {
 
     await setThreadCrawlStatus(url, "running");
     summary.threads_started += 1;
-    const result = await crawlThread(url, maxPages, config);
+    const result = await crawlThread(url, maxPages, config, deadline);
     if (result.status === "error") {
       summary.threads_failed += 1;
     }
@@ -244,11 +261,13 @@ export async function runScheduledCrawl(env, { reason = "scheduled-hourly" } = {
       nextRunAt,
     });
     if (lockState === null) {
+      console.log("Scheduler lock held by another run, skipping this cycle");
       return { status: "already_running" };
     }
 
     try {
-      const summary = await crawlAllForums(config.maxPagesPerThread, config);
+      const deadline = Date.now() + config.runBudgetSeconds * 1000;
+      const summary = await crawlAllForums(config.maxPagesPerThread, config, deadline);
       const result = formatRunResult(summary);
       await completeSchedulerRun({
         jobName: SCHEDULER_JOB_NAME,
