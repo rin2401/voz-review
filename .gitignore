@@ -25,3 +25,12 @@ mongod.log.*
 .vercel
 nohup.out
 .wrangler/
+.env*
+.dev.vars
+
+# Node / worker tooling
+node_modules/
+
+# Local agent scratchpad
+scratchpad/
+.zcode/
