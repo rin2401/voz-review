@@ -1,3 +1,5 @@
+import { runScheduledCrawl } from "./crawler/crawl.js";
+
 const DEFAULT_ORIGIN = "https://voz-review.vercel.app";
 
 function buildOriginUrl(request, origin) {
@@ -26,5 +28,10 @@ export default {
       body: request.body,
       redirect: "manual",
     });
+  },
+
+  // Hourly cron trigger: crawl voz.vn threads and write to MongoDB Atlas.
+  async scheduled(event, env, ctx) {
+    ctx.waitUntil(runScheduledCrawl(env));
   },
 };

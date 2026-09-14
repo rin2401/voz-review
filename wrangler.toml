@@ -1,6 +1,18 @@
 name = "voz-review"
 main = "workers/voz-review-proxy.js"
 compatibility_date = "2025-04-01"
+compatibility_flags = ["nodejs_compat"]
+
+# Hourly crawl at the top of every hour (UTC), matching the Python scheduler.
+[triggers]
+crons = ["0 * * * *"]
 
 [vars]
 ORIGIN_URL = "https://voz-review.vercel.app"
+MONGODB_DB = "voz_crawler"
+VOZ_BASE_URL = "https://voz.vn"
+CRAWL_DELAY_SECONDS = "2"
+THREAD_DELAY_SECONDS = "5"
+MAX_PAGES_PER_THREAD = "20"
+HOURLY_CRAWL_SCHEDULER_TIMEZONE = "Asia/Ho_Chi_Minh"
+HOURLY_CRAWL_SCHEDULER_LEASE_MINUTES = "180"

@@ -1,0 +1,19 @@
+{
+  "name": "voz-review-workers",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "wrangler dev",
+    "deploy": "wrangler deploy",
+    "test": "vitest run",
+    "tail": "wrangler tail"
+  },
+  "dependencies": {
+    "mongodb": "^6.19.0",
+    "node-html-parser": "^7.0.3"
+  },
+  "devDependencies": {
+    "vitest": "^3.2.4",
+    "wrangler": "^4.42.0"
+  }
+}
