@@ -3,6 +3,13 @@ main = "workers/voz-review-proxy.js"
 compatibility_date = "2025-04-01"
 compatibility_flags = ["nodejs_compat"]
 
+# Self service binding: manual crawl slices chain through it to re-enter this
+# same worker's fetch handler (a plain fetch() to our own workers.dev URL is
+# 404'd at the Cloudflare edge).
+[[services]]
+binding = "SELF"
+service = "voz-review"
+
 # Hourly crawl at the top of every hour (UTC), matching the Python scheduler.
 [triggers]
 crons = ["0 * * * *"]

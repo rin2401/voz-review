@@ -12,7 +12,12 @@ let db = null;
 
 export async function connect(uri, dbName) {
   if (client && db) return db;
-  client = new MongoClient(uri, { serverSelectionTimeoutMS: 30000 });
+  client = new MongoClient(uri, {
+    serverSelectionTimeoutMS: 30000,
+    // Stalled socket reads must throw instead of hanging a cron run forever
+    // (default socketTimeoutMS=0 never times out).
+    socketTimeoutMS: 30000,
+  });
   await client.connect();
   db = client.db(dbName);
   return db;

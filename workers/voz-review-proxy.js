@@ -1,4 +1,9 @@
-import { executeCrawlRun, runScheduledCrawl, startCrawlRun } from "./crawler/crawl.js";
+import {
+  continueManualCrawl,
+  runManualCrawlAfterStart,
+  runScheduledCrawl,
+  startCrawlRun,
+} from "./crawler/crawl.js";
 
 const DEFAULT_ORIGIN = "https://voz-review.vercel.app";
 
@@ -23,7 +28,10 @@ function json(body, status) {
  * Manual crawl trigger for the web app: POST /__crawl with
  * "Authorization: Bearer <CRAWL_TRIGGER_TOKEN>" and an optional JSON body
  * { url, max_pages }. Acquires the same scheduler lock as the hourly cron,
- * then crawls in the background via ctx.waitUntil.
+ * then crawls in short self-chained waitUntil slices (fetch-handler
+ * waitUntil slots are cancelled shortly after the response returns, so one
+ * long background crawl cannot run there). Chain links POST back with
+ * { chain: true, skip } to continue an in-flight run.
  */
 async function handleCrawlTrigger(request, env, ctx) {
   const expectedToken = env.CRAWL_TRIGGER_TOKEN;
@@ -50,6 +58,22 @@ async function handleCrawlTrigger(request, env, ctx) {
   const threadUrl = typeof payload.url === "string" && payload.url.trim() ? payload.url.trim() : url.searchParams.get("url");
   const rawMaxPages = payload.max_pages ?? url.searchParams.get("max_pages");
   const maxPages = rawMaxPages === null || rawMaxPages === undefined ? null : Number(rawMaxPages);
+  const rawSkip = payload.skip ?? url.searchParams.get("skip");
+  const skip = rawSkip === null || rawSkip === undefined || !Number.isFinite(Number(rawSkip)) ? 0 : Number(rawSkip);
+
+  if (payload.chain) {
+    // Continuation of an in-flight manual run; its first slice already holds
+    // the scheduler lock for the whole chain.
+    ctx.waitUntil(
+      continueManualCrawl(env, {
+        selfUrl: request.url,
+        url: threadUrl,
+        maxPages: Number.isFinite(maxPages) ? maxPages : null,
+        skip,
+      }),
+    );
+    return json({ status: "chained" }, 202);
+  }
 
   const started = await startCrawlRun(env, {
     reason: "manual",
@@ -59,7 +83,7 @@ async function handleCrawlTrigger(request, env, ctx) {
   if (started.status !== "started") {
     return json({ status: "already_running" }, 200);
   }
-  ctx.waitUntil(executeCrawlRun(started));
+  ctx.waitUntil(runManualCrawlAfterStart(env, started, { selfUrl: request.url }));
   return json({ status: "started" }, 202);
 }
 

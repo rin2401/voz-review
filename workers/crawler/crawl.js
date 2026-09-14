@@ -122,9 +122,11 @@ export async function crawlThread(url, maxPages, config, deadline = null) {
       `Thread: ${totalPages} pages detected, resume from page ${startPage}, crawl until ${endPage}`,
     );
 
+    let budgetStopped = false;
     for (let page = startPage; page <= endPage; page++) {
       if (deadline !== null && Date.now() > deadline) {
         console.log("Run budget exceeded, stopping this thread early");
+        budgetStopped = true;
         break;
       }
       let pageUrl;
@@ -145,8 +147,10 @@ export async function crawlThread(url, maxPages, config, deadline = null) {
     }
 
     await setThreadCrawlStatus(url, "idle");
-    console.log(`Thread crawl complete: ${url}`);
-    return { status: "success", url, pages_crawled: pagesCrawled };
+    console.log(budgetStopped ? `Thread crawl paused early (budget): ${url}` : `Thread crawl complete: ${url}`);
+    // completed=false means the budget stopped this thread mid-crawl; the
+    // next slice must resume it (page state is saved in threads.last_page).
+    return { status: "success", url, pages_crawled: pagesCrawled, completed: !budgetStopped };
   } catch (error) {
     await setThreadCrawlStatus(url, "error", String(error));
     console.error(`Thread crawl failed: ${error}`);
@@ -154,8 +158,13 @@ export async function crawlThread(url, maxPages, config, deadline = null) {
   }
 }
 
-/** Crawl all configured threads from DB sequentially, mirroring crawl_all_forums. */
-export async function crawlAllForums(maxPages, config, deadline = null) {
+/**
+ * Crawl all configured threads from DB sequentially, mirroring crawl_all_forums.
+ * Returns { summary, complete, nextSkip }; when complete=false the caller can
+ * resume from nextSkip (threads are indexed by the created_at-desc list, and
+ * each thread resumes from its saved last_page).
+ */
+export async function crawlAllForums(maxPages, config, deadline = null, { skip = 0 } = {}) {
   const threads = await getAllThreads();
   const summary = {
     threads_total: threads.length,
@@ -163,13 +172,13 @@ export async function crawlAllForums(maxPages, config, deadline = null) {
     threads_skipped_running: 0,
     threads_failed: 0,
   };
-  for (const thread of threads) {
-    const url = thread.url;
+  for (let i = skip; i < threads.length; i++) {
+    const url = threads[i].url;
     if (!url) continue;
 
     if (deadline !== null && Date.now() > deadline) {
-      console.log("Run budget exceeded, skipping remaining threads");
-      break;
+      console.log("Run budget exceeded, resuming remaining threads in the next slice");
+      return { summary, complete: false, nextSkip: i };
     }
 
     const currentState = await getThreadState({ url });
@@ -185,9 +194,14 @@ export async function crawlAllForums(maxPages, config, deadline = null) {
     if (result.status === "error") {
       summary.threads_failed += 1;
     }
+    if (result.completed === false) {
+      // Budget hit mid-thread; the next slice resumes this same thread from
+      // its saved last_page.
+      return { summary, complete: false, nextSkip: i };
+    }
     await sleep(config.threadDelaySeconds);
   }
-  return summary;
+  return { summary, complete: true, nextSkip: threads.length };
 }
 
 export function formatRunResult(summary) {
@@ -245,7 +259,13 @@ export async function startCrawlRun(env, { reason = "scheduled-hourly", url = nu
 
   const now = new Date();
   const nextRunAt = nextTopOfHourUtc(now, config.schedulerTimezone);
-  const leaseUntil = new Date(now.getTime() + config.schedulerLeaseMinutes * 60 * 1000);
+  // Lease only needs to outlive the run budget; a killed run then ghosts the
+  // lock for minutes, not for the full 180-minute configured lease.
+  const leaseSeconds = Math.min(
+    config.schedulerLeaseMinutes * 60,
+    config.runBudgetSeconds + 120,
+  );
+  const leaseUntil = new Date(now.getTime() + leaseSeconds * 1000);
 
   await connect(config.mongoUri, config.mongoDb);
   await ensureSchedulerState({
@@ -265,34 +285,80 @@ export async function startCrawlRun(env, { reason = "scheduled-hourly", url = nu
   });
   if (lockState === null) {
     console.log("Scheduler lock held by another run, skipping this cycle");
-    await close();
+    // Do not close(): with self service bindings the chain link shares this
+    // isolate (and this module-level client) with the lock-holding run.
     return { status: "already_running" };
   }
   return { status: "started", config, nextRunAt, url, maxPages };
 }
 
 /**
- * Run the crawl started by startCrawlRun and release the lock. Long-running:
- * must run inside ctx.waitUntil, never awaited by an HTTP handler response.
+ * Scheduled entry point: acquire the shared scheduler lock and crawl all
+ * threads in SELF-chained slices. A single long invocation would exceed the
+ * per-invocation CPU limit (~2s on the free plan, observed 2026-09-14) on a
+ * full crawl, so the cron handler uses the same slice chain as manual runs.
  */
-export async function executeCrawlRun(started) {
+export async function runScheduledCrawl(env, { reason = "scheduled-hourly" } = {}) {
+  const started = await startCrawlRun(env, { reason });
+  if (started.status !== "started") return started;
+  return runManualCrawlAfterStart(env, started, { selfUrl: SCHEDULED_CHAIN_URL });
+}
+
+/**
+ * Wall-clock budget for one manual crawl slice. Manual runs execute in
+ * fetch-handler waitUntil slots, which Cloudflare cancels ~30s after the
+ * response returns, so a slice's worst case (budget + one in-flight page
+ * fetch + wrap-up) must stay under that window; slices then chain via the
+ * SELF service binding to get a fresh waitUntil window each.
+ */
+export const MANUAL_SLICE_SECONDS = 8;
+
+// Cap page fetches inside a manual slice so one hung voz.vn fetch cannot
+// push the slice past the waitUntil window (cron slices keep the full
+// configured timeout).
+const MANUAL_FETCH_TIMEOUT_SECONDS = 12;
+
+// Virtual URL for chaining slices from the scheduled handler: the SELF
+// service binding routes directly to this worker's fetch handler, so the
+// host never resolves; only the /__crawl path matters.
+const SCHEDULED_CHAIN_URL = "https://voz-review.internal/__crawl";
+
+/**
+ * Run one manual crawl slice; when the crawl is not finished, POST /__crawl
+ * back to this worker so the next slice runs in a fresh invocation. The
+ * scheduler lock stays held across the whole chain; a broken chain only
+ * ghosts the lock until the (short) lease expires and the next hourly cron
+ * cycle resumes the crawl from each thread's saved last_page.
+ */
+export async function runManualCrawlSlice(env, started, { selfUrl, skip = 0, sliceSeconds = MANUAL_SLICE_SECONDS }) {
   const { config, nextRunAt, url, maxPages } = started;
   const effectiveMaxPages = maxPages === null ? config.maxPagesPerThread : maxPages;
-  try {
-    const deadline = Date.now() + config.runBudgetSeconds * 1000;
-    let summary;
-    if (url) {
-      const result = await crawlThread(url, effectiveMaxPages, config, deadline);
-      summary = {
+  const deadline = Date.now() + sliceSeconds * 1000;
+  const sliceConfig = {
+    ...config,
+    fetchTimeoutSeconds: Math.min(config.fetchTimeoutSeconds, MANUAL_FETCH_TIMEOUT_SECONDS),
+  };
+  console.log(`Crawl slice: url=${url ?? "all"} skip=${skip} budget=${sliceSeconds}s`);
+
+  let outcome;
+  if (url) {
+    const result = await crawlThread(url, effectiveMaxPages, sliceConfig, deadline);
+    outcome = {
+      complete: result.completed !== false,
+      nextSkip: 0,
+      summary: {
         threads_total: 1,
         threads_started: 1,
         threads_skipped_running: 0,
         threads_failed: result.status === "error" ? 1 : 0,
-      };
-    } else {
-      summary = await crawlAllForums(effectiveMaxPages, config, deadline);
-    }
-    const result = formatRunResult(summary);
+      },
+    };
+  } else {
+    outcome = await crawlAllForums(effectiveMaxPages, sliceConfig, deadline, { skip });
+  }
+
+  if (outcome.complete) {
+    const result = formatRunResult(outcome.summary);
     await completeSchedulerRun({
       jobName: SCHEDULER_JOB_NAME,
       status: "success",
@@ -300,24 +366,76 @@ export async function executeCrawlRun(started) {
       nextRunAt,
     });
     console.log(`Crawl complete: ${result}`);
-    return { status: "success", result, summary };
+    return { status: "success", result };
+  }
+
+  // Chain through the SELF service binding (this same worker): a plain
+  // fetch() to our own workers.dev URL is 404'd at the Cloudflare edge, while
+  // a service binding invokes the fetch handler directly and the chained
+  // slice gets a fresh waitUntil window.
+  const selfFetch = env.SELF && typeof env.SELF.fetch === "function" ? env.SELF.fetch.bind(env.SELF) : fetch;
+  const response = await selfFetch(selfUrl, {
+    method: "POST",
+    headers: {
+      authorization: `Bearer ${env.CRAWL_TRIGGER_TOKEN}`,
+      "content-type": "application/json",
+    },
+    body: JSON.stringify({ url, max_pages: maxPages, skip: outcome.nextSkip, chain: true }),
+    signal: AbortSignal.timeout(10 * 1000),
+  });
+  if (!response.ok) {
+    const body = await response.text().catch(() => "");
+    throw new Error(`crawl chain fetch failed: HTTP ${response.status} ${body.slice(0, 200)}`);
+  }
+  console.log(`Crawl slice done, chained next slice from skip=${outcome.nextSkip}`);
+  return { status: "chained", nextSkip: outcome.nextSkip };
+}
+
+/**
+ * Continue an in-flight manual crawl chain (POST /__crawl with chain=true).
+ * The chain's first slice already holds the scheduler lock, so this skips
+ * lock acquisition and runs the next slice directly.
+ */
+export async function continueManualCrawl(env, { selfUrl, url = null, maxPages = null, skip = 0 }) {
+  console.log(`Chain link: skip=${skip} url=${url ?? "all"}`);
+  const config = loadConfig(env);
+  const now = new Date();
+  const nextRunAt = nextTopOfHourUtc(now, config.schedulerTimezone);
+  // The previous slice shares this isolate (SELF service binding) and may
+  // have left its client in an unknown state; chain links always reconnect.
+  await close();
+  await connect(config.mongoUri, config.mongoDb);
+  console.log("Chain link: mongo connected");
+  const started = { status: "started", config, nextRunAt, url, maxPages };
+  return runManualCrawlAfterStart(env, started, { selfUrl, skip });
+}
+
+/**
+ * Run manual crawl slices after the scheduler lock is held (by startCrawlRun
+ * or a chain link). Any failure — including a broken chain link — must
+ * release the lock and record the error, or the run ghosts the lock until
+ * the lease expires.
+ */
+export async function runManualCrawlAfterStart(env, started, { selfUrl, skip = 0, sliceSeconds }) {
+  let result;
+  try {
+    result = await runManualCrawlSlice(env, started, { selfUrl, skip, sliceSeconds });
   } catch (error) {
     await completeSchedulerRun({
       jobName: SCHEDULER_JOB_NAME,
       status: "error",
       error: String(error),
-      nextRunAt,
+      nextRunAt: started.nextRunAt,
     });
     console.error(`Crawl failed: ${error}`);
-    return { status: "error", error: String(error) };
-  } finally {
+    result = { status: "error", error: String(error) };
+  }
+  // Close only at terminal states: the chained slice re-enters this same
+  // isolate via the SELF service binding and shares this module-level
+  // client, so closing mid-chain would pull the connection out from under
+  // the next slice.
+  if (result.status !== "chained") {
     await close();
   }
-}
-
-/** Scheduled entry point: acquire the shared scheduler lock and crawl all threads. */
-export async function runScheduledCrawl(env, { reason = "scheduled-hourly", url = null, maxPages = null } = {}) {
-  const started = await startCrawlRun(env, { reason, url, maxPages });
-  if (started.status !== "started") return started;
-  return executeCrawlRun(started);
+  return result;
 }
