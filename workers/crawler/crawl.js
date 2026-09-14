@@ -232,8 +232,12 @@ export function nextTopOfHourUtc(now, timeZone) {
   return new Date(localNext - offset);
 }
 
-/** Scheduled entry point: acquire the shared scheduler lock and crawl all threads. */
-export async function runScheduledCrawl(env, { reason = "scheduled-hourly" } = {}) {
+/**
+ * Acquire the shared scheduler lock for a crawl run. Fast: connects to Mongo,
+ * ensures scheduler state, and takes the lock. Returns "started" or
+ * "already_running"; the caller must run executeCrawlRun afterwards.
+ */
+export async function startCrawlRun(env, { reason = "scheduled-hourly", url = null, maxPages = null } = {}) {
   const config = loadConfig(env);
   if (!config.mongoUri) {
     throw new Error("MONGODB_URI is not configured");
@@ -244,50 +248,76 @@ export async function runScheduledCrawl(env, { reason = "scheduled-hourly" } = {
   const leaseUntil = new Date(now.getTime() + config.schedulerLeaseMinutes * 60 * 1000);
 
   await connect(config.mongoUri, config.mongoDb);
+  await ensureSchedulerState({
+    jobName: SCHEDULER_JOB_NAME,
+    timezone: config.schedulerTimezone,
+    enabled: true,
+    nextRunAt,
+  });
+
+  const lockState = await tryAcquireSchedulerLock({
+    jobName: SCHEDULER_JOB_NAME,
+    reason,
+    timezone: config.schedulerTimezone,
+    enabled: true,
+    lockUntil: leaseUntil,
+    nextRunAt,
+  });
+  if (lockState === null) {
+    console.log("Scheduler lock held by another run, skipping this cycle");
+    await close();
+    return { status: "already_running" };
+  }
+  return { status: "started", config, nextRunAt, url, maxPages };
+}
+
+/**
+ * Run the crawl started by startCrawlRun and release the lock. Long-running:
+ * must run inside ctx.waitUntil, never awaited by an HTTP handler response.
+ */
+export async function executeCrawlRun(started) {
+  const { config, nextRunAt, url, maxPages } = started;
+  const effectiveMaxPages = maxPages === null ? config.maxPagesPerThread : maxPages;
   try {
-    await ensureSchedulerState({
+    const deadline = Date.now() + config.runBudgetSeconds * 1000;
+    let summary;
+    if (url) {
+      const result = await crawlThread(url, effectiveMaxPages, config, deadline);
+      summary = {
+        threads_total: 1,
+        threads_started: 1,
+        threads_skipped_running: 0,
+        threads_failed: result.status === "error" ? 1 : 0,
+      };
+    } else {
+      summary = await crawlAllForums(effectiveMaxPages, config, deadline);
+    }
+    const result = formatRunResult(summary);
+    await completeSchedulerRun({
       jobName: SCHEDULER_JOB_NAME,
-      timezone: config.schedulerTimezone,
-      enabled: true,
+      status: "success",
+      result,
       nextRunAt,
     });
-
-    const lockState = await tryAcquireSchedulerLock({
+    console.log(`Crawl complete: ${result}`);
+    return { status: "success", result, summary };
+  } catch (error) {
+    await completeSchedulerRun({
       jobName: SCHEDULER_JOB_NAME,
-      reason,
-      timezone: config.schedulerTimezone,
-      enabled: true,
-      lockUntil: leaseUntil,
+      status: "error",
+      error: String(error),
       nextRunAt,
     });
-    if (lockState === null) {
-      console.log("Scheduler lock held by another run, skipping this cycle");
-      return { status: "already_running" };
-    }
-
-    try {
-      const deadline = Date.now() + config.runBudgetSeconds * 1000;
-      const summary = await crawlAllForums(config.maxPagesPerThread, config, deadline);
-      const result = formatRunResult(summary);
-      await completeSchedulerRun({
-        jobName: SCHEDULER_JOB_NAME,
-        status: "success",
-        result,
-        nextRunAt,
-      });
-      console.log(`Scheduled crawl complete: ${result}`);
-      return { status: "success", result, summary };
-    } catch (error) {
-      await completeSchedulerRun({
-        jobName: SCHEDULER_JOB_NAME,
-        status: "error",
-        error: String(error),
-        nextRunAt,
-      });
-      console.error(`Scheduled crawl failed: ${error}`);
-      return { status: "error", error: String(error) };
-    }
+    console.error(`Crawl failed: ${error}`);
+    return { status: "error", error: String(error) };
   } finally {
     await close();
   }
+}
+
+/** Scheduled entry point: acquire the shared scheduler lock and crawl all threads. */
+export async function runScheduledCrawl(env, { reason = "scheduled-hourly", url = null, maxPages = null } = {}) {
+  const started = await startCrawlRun(env, { reason, url, maxPages });
+  if (started.status !== "started") return started;
+  return executeCrawlRun(started);
 }

@@ -524,10 +524,38 @@ async def api_scheduler_status(request: Request):
 
 # ============== CRAWLER ENDPOINTS ==============
 
+async def trigger_worker_crawl(payload: dict) -> Optional[dict]:
+    """Forward a manual crawl trigger to the Cloudflare Worker crawl.
+
+    Returns the worker response, or None when no worker URL is configured
+    (local runs fall back to the in-process crawler).
+    """
+    if not config.WORKER_CRAWL_URL:
+        return None
+    headers = {}
+    if config.CRAWL_TRIGGER_TOKEN:
+        headers["Authorization"] = f"Bearer {config.CRAWL_TRIGGER_TOKEN}"
+    import httpx
+    async with httpx.AsyncClient(timeout=30) as client:
+        response = await client.post(config.WORKER_CRAWL_URL, json=payload, headers=headers)
+        if response.status_code >= 400:
+            raise HTTPException(502, f"worker crawl trigger failed: HTTP {response.status_code} {response.text[:200]}")
+        return response.json()
+
+
 @app.post("/api/crawl/all")
 async def api_crawl_all(request: Request, max_pages: int = 0):
     """Crawl all configured threads from DB"""
     require_threads_auth(request)
+    worker_result = await trigger_worker_crawl({"max_pages": max_pages})
+    if worker_result is not None:
+        threads = await get_all_threads()
+        return {
+            "status": worker_result.get("status", "started"),
+            "reason": "manual",
+            "threads": len(threads),
+            "max_pages": "all" if max_pages == 0 else max_pages,
+        }
     result = await request.app.state.crawl_all_manager.start_run(reason="manual", max_pages=max_pages)
     threads = await get_all_threads()
     return {
@@ -542,6 +570,13 @@ async def api_crawl_all(request: Request, max_pages: int = 0):
 async def api_crawl_thread(request: Request, url: str, max_pages: int = 0):
     """Crawl a specific thread by URL. max_pages=0 means crawl all pages"""
     require_threads_auth(request)
+    worker_result = await trigger_worker_crawl({"url": url, "max_pages": max_pages})
+    if worker_result is not None:
+        return {
+            "status": worker_result.get("status", "started"),
+            "url": url,
+            "max_pages": "all" if max_pages == 0 else max_pages,
+        }
     thread = await get_thread_state(url=url)
     if thread and thread.get("crawl_status") == "running":
         if url in RUNNING_CRAWL_URLS:

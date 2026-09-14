@@ -48,6 +48,8 @@ class Settings(BaseSettings):
         default=180,
         validation_alias="HOURLY_CRAWL_SCHEDULER_LEASE_MINUTES",
     )
+    worker_crawl_url: str = Field(default="", validation_alias="WORKER_CRAWL_URL")
+    crawl_trigger_token: str = Field(default="", validation_alias="CRAWL_TRIGGER_TOKEN")
 
     status_pending: str = Field(default="pending", validation_alias="STATUS_PENDING")
     status_approved: str = Field(default="approved", validation_alias="STATUS_APPROVED")
@@ -69,6 +71,8 @@ PAGE_LOAD_TIMEOUT = settings.page_load_timeout
 HOURLY_CRAWL_SCHEDULER_ENABLED = settings.hourly_crawl_scheduler_enabled
 HOURLY_CRAWL_SCHEDULER_TIMEZONE = settings.hourly_crawl_scheduler_timezone
 HOURLY_CRAWL_SCHEDULER_LEASE_MINUTES = settings.hourly_crawl_scheduler_lease_minutes
+WORKER_CRAWL_URL = settings.worker_crawl_url
+CRAWL_TRIGGER_TOKEN = settings.crawl_trigger_token
 
 STATUS_PENDING = settings.status_pending
 STATUS_APPROVED = settings.status_approved
