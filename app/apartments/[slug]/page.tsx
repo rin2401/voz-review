@@ -1,9 +1,11 @@
 import Link from "next/link";
 
+import summaries from "../../../data/apartment_summaries.json";
+
 import { ReviewCard } from "@/components/review-card";
 import { Badge } from "@/components/ui/badge";
 import { Button, buttonVariants } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
+import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import {
   getApartmentPostsByIds,
   getApartmentRepliesForPosts,
@@ -15,6 +17,9 @@ import {
 import { buildReplyContext } from "@/lib/replies";
 import { companyToSlug, decodeSlug } from "@/lib/format";
 import { cn } from "@/lib/utils";
+
+type ApartmentSummary = { summary: string; pros: string[]; cons: string[] };
+const apartmentSummaries = summaries as Record<string, ApartmentSummary>;
 
 export const revalidate = 300;
 
@@ -88,6 +93,8 @@ export default async function ApartmentPage({
         : "border-border bg-muted/50 text-foreground hover:bg-accent",
     );
 
+  const summary = apartmentSummaries[apartmentName];
+
   return (
     <div className="space-y-4">
       <div className="flex flex-wrap items-center justify-between gap-2">
@@ -99,6 +106,50 @@ export default async function ApartmentPage({
           ← Back
         </Link>
       </div>
+
+      {summary && (
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0">
+            <h2 className="text-lg font-semibold">📝 Tóm tắt đánh giá</h2>
+            <span className="text-xs text-muted-foreground">
+              Tổng hợp từ {total} review của cư dân trên voz.vn
+            </span>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <p className="text-sm leading-relaxed text-foreground/90">{summary.summary}</p>
+            <div className="grid gap-4 sm:grid-cols-2">
+              <div className="space-y-2">
+                <h3 className="text-sm font-semibold text-green-600 dark:text-green-400">
+                  ✅ Ưu điểm
+                </h3>
+                <ul className="space-y-1.5">
+                  {summary.pros.map((item) => (
+                    <li key={item} className="text-sm text-muted-foreground">
+                      • {item}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+              <div className="space-y-2">
+                <h3 className="text-sm font-semibold text-red-600 dark:text-red-400">
+                  ⚠️ Nhược điểm
+                </h3>
+                <ul className="space-y-1.5">
+                  {summary.cons.map((item) => (
+                    <li key={item} className="text-sm text-muted-foreground">
+                      • {item}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </div>
+            <p className="text-xs text-muted-foreground">
+              Tóm tắt tổng hợp từ review thực tế, mang tính tham khảo — hãy đọc các review đầy
+              đủ bên dưới trước khi quyết định.
+            </p>
+          </CardContent>
+        </Card>
+      )}
 
       <div className="flex flex-wrap gap-2">
         <Link href={hrefFor({})} className={pillClass(!activeThreadId)}>
