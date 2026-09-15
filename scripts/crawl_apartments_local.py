@@ -81,10 +81,21 @@ SKIP_PHRASES = [
 VALUE_SKIP_TOKENS = [
     "xin", "hỏi", "hoi", "cho em", "cho mình", "có nên", "thế nào", "the nao",
     "tư vấn", "tu van", "tên gì", "ten gi",
+    "nào", "ok ko", "ok không", "mua được", "thấy sao", "mấy bác", "mấy thím",
+    "thì ổn", "giờ ổn", "nhà bạn", "nha bạn",
 ]
 DASH_NOTE_KEYWORDS = [
     "review", "xin review", "cho em hỏi", "cho mình hỏi", "có nên",
     "thế nào", "the nao", "tư vấn", "tu van", "hỏi", "hoi", "đánh giá", "danh gia",
+    "tại", "đang", "nghe đâu", "ráp căn",
+]
+# Structured labels that end the value search: a "Dự án:" label with the value
+# on the next line must not swallow the next label's value ("Vị trí: ...").
+VALUE_STOP_PREFIXES = [
+    "vị trí", "vi tri", "đơn giá", "don gia", "diện tích", "dien tich", "giá",
+    "chủ đầu tư", "chu dau tu", "cđt", "cdt", "tiến độ", "tien do",
+    "bàn giao", "ban giao", "hướng", "huong",
+    "tên dự án", "ten du an", "dự án", "du an",
 ]
 
 
@@ -220,8 +231,12 @@ class ApartmentExtractor:
         def _next_non_empty_line(start_index: int) -> str:
             for candidate in lines[start_index + 1:]:
                 candidate = candidate.strip()
-                if candidate:
-                    return candidate
+                if not candidate:
+                    continue
+                lower_candidate = candidate.lower()
+                if any(lower_candidate.startswith(prefix) for prefix in VALUE_STOP_PREFIXES):
+                    return ""
+                return candidate
             return ""
 
         # Look for "Tên dự án:" / "Dự án:" at the START of a line (optionally
