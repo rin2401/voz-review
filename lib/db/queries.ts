@@ -5,7 +5,7 @@
 
 import type { Db } from "mongodb";
 import { normalizeAliases as normalizeAliasesJs } from "../../workers/crawler/aliases.js";
-import { asciiSlug } from "@/lib/format";
+import { asciiSlug } from "../format";
 import {
   normalizeReviewCompanies,
   prepareReviewDocument,

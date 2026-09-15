@@ -3,7 +3,7 @@
 // The apartment collections are written by the Cloudflare Worker crawler only.
 
 import { normalizeAliases as normalizeAliasesJs } from "../../workers/crawler/aliases.js";
-import { asciiSlug } from "@/lib/format";
+import { asciiSlug } from "../format";
 import { getDb } from "./client";
 
 export type Dict = Record<string, any>;

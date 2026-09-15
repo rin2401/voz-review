@@ -1,5 +1,6 @@
 import Link from "next/link";
 
+import apartmentInfoJson from "../../../data/apartment_info.json";
 import summaries from "../../../data/apartment_summaries.json";
 
 import { ReviewCard } from "@/components/review-card";
@@ -20,6 +21,8 @@ import { cn } from "@/lib/utils";
 
 type ApartmentSummary = { summary: string; pros: string[]; cons: string[] };
 const apartmentSummaries = summaries as Record<string, ApartmentSummary>;
+type ApartmentInfo = { location: string | null; price_per_m2: string | null };
+const apartmentInfo = apartmentInfoJson as Record<string, ApartmentInfo>;
 
 export const revalidate = 300;
 
@@ -94,6 +97,7 @@ export default async function ApartmentPage({
     );
 
   const summary = apartmentSummaries[apartmentName];
+  const info = apartmentInfo[apartmentName];
 
   return (
     <div className="space-y-4">
@@ -106,6 +110,26 @@ export default async function ApartmentPage({
           ← Back
         </Link>
       </div>
+
+      {info && (info.location || info.price_per_m2) && (
+        <div className="space-y-1">
+          <div className="flex flex-wrap gap-2">
+            {info.location && (
+              <span className="rounded-full border bg-muted/50 px-3 py-1 text-sm text-foreground/90">
+                📍 {info.location}
+              </span>
+            )}
+            {info.price_per_m2 && (
+              <span className="rounded-full border bg-muted/50 px-3 py-1 text-sm text-foreground/90">
+                💰 {info.price_per_m2}
+              </span>
+            )}
+          </div>
+          <p className="text-xs text-muted-foreground">
+            Vị trí &amp; giá tổng hợp từ review của cư dân — mang tính tham khảo.
+          </p>
+        </div>
+      )}
 
       {summary && (
         <Card>
