@@ -34,3 +34,8 @@ node_modules/
 # Local agent scratchpad
 scratchpad/
 .zcode/
+
+# Next.js build output
+.next/
+next-env.d.ts
+*.tsbuildinfo
