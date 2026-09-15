@@ -161,7 +161,7 @@ export function createApartmentExtractor(map = apartmentAliasMap) {
 
       // Skip if it's clearly not a complex name
       if (apartment.length < 3) return "Unknown";
-      if (["xin", "hỏi", "hoi", "cho em", "cho mình", "có nên", "thế nào", "the nao", "tư vấn", "tu van"].some((x) => apartment.toLowerCase().includes(x))) {
+      if (["xin", "hỏi", "hoi", "cho em", "cho mình", "có nên", "thế nào", "the nao", "tư vấn", "tu van", "tên gì", "ten gi"].some((x) => apartment.toLowerCase().includes(x))) {
         return "Unknown";
       }
 

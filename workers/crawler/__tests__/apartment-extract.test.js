@@ -52,6 +52,7 @@ describe("extractApartment", () => {
 
   it("skips label values that are questions", () => {
     expect(extractor.extractApartment("Tên dự án: có nên mua không các bác")).toBe("Unknown");
+    expect(extractor.extractApartment("Dự án: tên gì thế các thím")).toBe("Unknown");
   });
 
   it("falls back to alias candidates found in content", () => {
