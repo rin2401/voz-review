@@ -23,7 +23,7 @@ import {
   resolveCompanyName,
 } from "@/lib/db/queries";
 import { buildReplyContext } from "@/lib/replies";
-import { companyToSlug, decodeSlug, formatSalaryMillion } from "@/lib/format";
+import { asciiSlug, decodeSlug, formatSalaryMillion } from "@/lib/format";
 import { cn } from "@/lib/utils";
 
 export const revalidate = 300;
@@ -85,7 +85,7 @@ export default async function CompanyPage({
   const skip = (page - 1) * LIMIT;
 
   const companyName = await resolveCompanyName(slug);
-  const companySlug = companyToSlug(companyName);
+  const companySlug = asciiSlug(companyName);
 
   const availableThreadIds = await getCompanyThreadIds(companyName);
   const activeThreadId = threadIdParam && availableThreadIds.includes(threadIdParam) ? threadIdParam : "";

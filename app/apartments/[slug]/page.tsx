@@ -15,7 +15,7 @@ import {
   resolveApartmentName,
 } from "@/lib/db/apartment-queries";
 import { buildReplyContext } from "@/lib/replies";
-import { companyToSlug, decodeSlug } from "@/lib/format";
+import { asciiSlug, decodeSlug } from "@/lib/format";
 import { cn } from "@/lib/utils";
 
 type ApartmentSummary = { summary: string; pros: string[]; cons: string[] };
@@ -52,7 +52,7 @@ export default async function ApartmentPage({
   const skip = (page - 1) * LIMIT;
 
   const apartmentName = await resolveApartmentName(slug);
-  const apartmentSlug = companyToSlug(apartmentName);
+  const apartmentSlug = asciiSlug(apartmentName);
 
   const availableThreadIds = await getApartmentThreadIds(apartmentName);
   const activeThreadId = threadIdParam && availableThreadIds.includes(threadIdParam) ? threadIdParam : "";

@@ -3,6 +3,7 @@
 // The apartment collections are written by the Cloudflare Worker crawler only.
 
 import { normalizeAliases as normalizeAliasesJs } from "../../workers/crawler/aliases.js";
+import { asciiSlug } from "@/lib/format";
 import { getDb } from "./client";
 
 export type Dict = Record<string, any>;
@@ -127,7 +128,12 @@ export async function resolveApartmentName(slugOrName: string): Promise<string> 
   if (names.includes(normalized)) return normalized;
 
   const lowerMap = new Map(names.map((name) => [name.toLowerCase(), name]));
-  return lowerMap.get(normalized.toLowerCase()) ?? slugOrName;
+  if (lowerMap.has(normalized.toLowerCase())) {
+    return lowerMap.get(normalized.toLowerCase()) as string;
+  }
+
+  const asciiMap = new Map(names.map((name) => [asciiSlug(name).toLowerCase(), name]));
+  return asciiMap.get(asciiSlug(slugOrName).toLowerCase()) ?? slugOrName;
 }
 
 // ============== apartment reviews ==============

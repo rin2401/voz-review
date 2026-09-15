@@ -13,7 +13,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { getAllCompanies } from "@/lib/db/queries";
-import { companyToSlug, formatDtVn, formatSalaryMillion } from "@/lib/format";
+import { asciiSlug, formatDtVn, formatSalaryMillion } from "@/lib/format";
 
 export const revalidate = 300;
 
@@ -119,7 +119,7 @@ export default async function HomePage({
                   <TableRow key={String(company.name)}>
                     <TableCell>
                       <Link
-                        href={`/company/${companyToSlug(String(company.name))}`}
+                        href={`/company/${asciiSlug(String(company.name))}`}
                         className="font-semibold text-orange-500 hover:underline"
                       >
                         {company.name}

@@ -13,7 +13,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { getAllApartments } from "@/lib/db/apartment-queries";
-import { companyToSlug, formatDtVn } from "@/lib/format";
+import { asciiSlug, formatDtVn } from "@/lib/format";
 
 export const revalidate = 300;
 
@@ -121,7 +121,7 @@ export default async function ApartmentsPage({
                   <TableRow key={String(apartment.name)}>
                     <TableCell>
                       <Link
-                        href={`/apartments/${companyToSlug(String(apartment.name))}`}
+                        href={`/apartments/${asciiSlug(String(apartment.name))}`}
                         className="font-semibold text-orange-500 hover:underline"
                       >
                         {apartment.name}

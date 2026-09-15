@@ -6,7 +6,7 @@ import Link from "next/link";
 import { buttonVariants } from "@/components/ui/button";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import type { Dict } from "@/lib/db/queries";
-import { formatDtVn } from "@/lib/format";
+import { asciiSlug, formatDtVn } from "@/lib/format";
 import { cn } from "@/lib/utils";
 
 function ReplyNode({
@@ -116,7 +116,7 @@ export function CompanyChips({ companies }: { companies: string[] }) {
       {companies.map((name) => (
         <Link
           key={name}
-          href={`/company/${name.replace(/ /g, "-")}`}
+          href={`/company/${asciiSlug(name)}`}
           className="rounded-full border bg-muted px-2 py-0.5 text-xs font-medium text-orange-500 hover:bg-accent"
         >
           {name}

@@ -5,6 +5,7 @@
 
 import type { Db } from "mongodb";
 import { normalizeAliases as normalizeAliasesJs } from "../../workers/crawler/aliases.js";
+import { asciiSlug } from "@/lib/format";
 import {
   normalizeReviewCompanies,
   prepareReviewDocument,
@@ -263,7 +264,12 @@ export async function resolveCompanyName(slugOrName: string): Promise<string> {
   if (names.includes(normalized)) return normalized;
 
   const lowerMap = new Map(names.map((name) => [name.toLowerCase(), name]));
-  return lowerMap.get(normalized.toLowerCase()) ?? slugOrName;
+  if (lowerMap.has(normalized.toLowerCase())) {
+    return lowerMap.get(normalized.toLowerCase()) as string;
+  }
+
+  const asciiMap = new Map(names.map((name) => [asciiSlug(name).toLowerCase(), name]));
+  return asciiMap.get(asciiSlug(slugOrName).toLowerCase()) ?? slugOrName;
 }
 
 // ============== reviews ==============
