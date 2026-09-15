@@ -1,5 +1,6 @@
 import Link from "next/link";
 
+import { SortSelect } from "@/components/sort-select";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -15,9 +16,6 @@ import { getAllCompanies } from "@/lib/db/queries";
 import { companyToSlug, formatDtVn, formatSalaryMillion } from "@/lib/format";
 
 export const revalidate = 300;
-
-const selectClass =
-  "flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-xs transition-[color,box-shadow] outline-none focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 disabled:cursor-not-allowed disabled:opacity-50 dark:bg-input/30";
 
 const SORT_OPTIONS = [
   { value: "az", label: "A-Z" },
@@ -71,6 +69,7 @@ export default async function HomePage({
       <Card>
         <CardContent className="pt-6">
           <form action="/" method="get" className="flex flex-col gap-3 sm:flex-row sm:items-end">
+            <input type="hidden" name="sort" value={sortKey} />
             <div className="flex-1 space-y-1.5">
               <label htmlFor="q" className="text-sm text-muted-foreground">
                 Filter company
@@ -81,13 +80,12 @@ export default async function HomePage({
               <label htmlFor="sort" className="text-sm text-muted-foreground">
                 Sort by
               </label>
-              <select id="sort" name="sort" defaultValue={sortKey} className={selectClass}>
-                {SORT_OPTIONS.map((option) => (
-                  <option key={option.value} value={option.value}>
-                    {option.label}
-                  </option>
-                ))}
-              </select>
+              <SortSelect
+                id="sort"
+                options={SORT_OPTIONS}
+                defaultValue="recent_review"
+                className="w-full"
+              />
             </div>
             <Button type="submit">Apply</Button>
           </form>

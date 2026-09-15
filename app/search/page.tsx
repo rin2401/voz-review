@@ -1,15 +1,13 @@
 import Link from "next/link";
 
 import { ReviewCard } from "@/components/review-card";
+import { SortSelect } from "@/components/sort-select";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { searchReviews } from "@/lib/db/queries";
 import { buildReplyContext } from "@/lib/replies";
 import { normalizeReviewCompanies } from "../../workers/crawler/mongo.js";
-
-const selectClass =
-  "flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-xs transition-[color,box-shadow] outline-none focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 dark:bg-input/30";
 
 export const dynamic = "force-dynamic";
 
@@ -80,6 +78,7 @@ export default async function SearchPage({
         <CardContent className="pt-6">
           <form action="/search" method="get" className="flex flex-col gap-3 sm:flex-row sm:items-end">
             <input type="hidden" name="q" value={q} />
+            <input type="hidden" name="sort" value={activeSort} />
             <div className="flex-1 space-y-1.5">
               <label htmlFor="company" className="text-sm text-muted-foreground">
                 Filter company
@@ -90,10 +89,15 @@ export default async function SearchPage({
               <label htmlFor="sort" className="text-sm text-muted-foreground">
                 Sort by
               </label>
-              <select id="sort" name="sort" defaultValue={activeSort} className={selectClass}>
-                <option value="recent_review">Recent review</option>
-                <option value="likes_desc">Most likes</option>
-              </select>
+              <SortSelect
+                id="sort"
+                options={[
+                  { value: "recent_review", label: "Recent review" },
+                  { value: "likes_desc", label: "Most likes" },
+                ]}
+                defaultValue="recent_review"
+                className="w-full"
+              />
             </div>
             <Button type="submit">Apply</Button>
           </form>
