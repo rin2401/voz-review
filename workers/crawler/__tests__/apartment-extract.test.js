@@ -40,6 +40,12 @@ describe("extractApartment", () => {
     );
   });
 
+  it("matches labels behind a numbered-list prefix", () => {
+    expect(
+      extractor.extractApartment("1. Tên dự án:\nLDG Sky\n2. Vị trí: Bình Dương"),
+    ).toBe("LDG Sky");
+  });
+
   it("skips question posts", () => {
     expect(extractor.extractApartment("Cho em hỏi chung cư này thế nào ạ")).toBe("Unknown");
   });

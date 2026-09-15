@@ -12,6 +12,13 @@ import {
 
 const BULLET_PREFIX = /^[•·●▪◦*\-]+\s*/;
 
+// Numbered-list prefixes ("1. Tên dự án:") are common in these threads.
+const LIST_PREFIX = /^(?:[•·●▪◦*\-]+|\d+[.)])\s*/;
+
+function stripListPrefix(line) {
+  return line.replace(LIST_PREFIX, "");
+}
+
 /**
  * Clean a raw apartment name. Unlike cleanCompanyName, location qualifiers
  * (quận/Q7/TP HCM/Thủ Đức...) are part of many complex names, so only
@@ -54,7 +61,7 @@ function findApartmentSectionStarts(lines) {
   for (let index = 0; index < lines.length; index++) {
     const line = lines[index].trim();
     if (!line) continue;
-    const normalizedLine = line.replace(BULLET_PREFIX, "");
+    const normalizedLine = stripListPrefix(line);
     if (/^\s*(?:tên dự án|ten du an|tên du an|dự án|du an)\s*:?/i.test(normalizedLine)) {
       sectionStarts.push(index);
     }
@@ -128,10 +135,11 @@ export function createApartmentExtractor(map = apartmentAliasMap) {
       return [apartment, false];
     };
 
-    // Look for "Tên dự án:" / "Dự án:" at the START of a line
+    // Look for "Tên dự án:" / "Dự án:" at the START of a line (optionally
+    // behind a bullet or numbered-list prefix)
     for (let index = 0; index < lines.length; index++) {
       const line = lines[index].trim();
-      const normalizedLine = line.replace(BULLET_PREFIX, "");
+      const normalizedLine = stripListPrefix(line);
       const lowerLine = normalizedLine.toLowerCase();
       if (
         !lowerLine.startsWith("tên dự án") &&
