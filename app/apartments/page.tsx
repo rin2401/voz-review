@@ -68,6 +68,34 @@ export default async function ApartmentsPage({
       </Card>
 
       <Card>
+        <CardContent className="pt-6">
+          <form
+            action="/apartments/search"
+            method="get"
+            className="flex flex-col gap-3 sm:flex-row sm:items-end"
+          >
+            <div className="flex-1 space-y-1.5">
+              <label htmlFor="search-q" className="text-sm text-muted-foreground">
+                Search apartment reviews
+              </label>
+              <Input
+                id="search-q"
+                name="q"
+                required
+                pattern=".*\S.*"
+                title="Query không được để trống"
+                className="h-10"
+                placeholder="Ví dụ: bàn giao, giá, Q2, Vinhomes, chung cư..."
+              />
+            </div>
+            <Button type="submit" className="h-10 px-6">
+              Search
+            </Button>
+          </form>
+        </CardContent>
+      </Card>
+
+      <Card>
         <CardHeader className="flex flex-row items-center justify-between space-y-0">
           <h2 className="text-lg font-semibold">🏘️ Apartments</h2>
           <span className="text-sm text-muted-foreground">{apartments.length} results</span>

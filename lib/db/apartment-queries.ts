@@ -170,6 +170,30 @@ export async function getApartmentThreadIds(apartment: string): Promise<string[]
   return ids.filter(Boolean).map(String).sort((a, b) => (a < b ? 1 : a > b ? -1 : 0));
 }
 
+// ============== search ==============
+
+// Substring search over review content. Regex (not $text): the apartment
+// collection has no text index, and substring matching fits partial
+// Vietnamese queries ("bàn giao", "Q2") better than word tokenization.
+export async function searchApartmentReviews(
+  keyword: string,
+  limit = 50,
+  skip = 0,
+): Promise<Dict[]> {
+  const db = await getDb();
+  const trimmed = keyword.trim();
+  const query = trimmed
+    ? { content: { $regex: escapeRegex(trimmed), $options: "i" } }
+    : {};
+  return (await db
+    .collection("apartment_reviews")
+    .find(query)
+    .sort({ post_date: -1 })
+    .skip(skip)
+    .limit(limit)
+    .toArray()).map((doc) => ({ ...doc, _id: undefined }) as Dict);
+}
+
 // ============== reply tree ==============
 
 export async function getApartmentPostsByIds(postIds: string[]): Promise<Dict[]> {
