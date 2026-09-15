@@ -35,6 +35,9 @@ export function SiteNavbar() {
           <Link href="/" className={cn(buttonVariants({ variant: "ghost", size: "sm" }))}>
             🏢 Company
           </Link>
+          <Link href="/apartments" className={cn(buttonVariants({ variant: "ghost", size: "sm" }))}>
+            🏘️ Apartments
+          </Link>
           <Link href="/threads" className={cn(buttonVariants({ variant: "ghost", size: "sm" }))}>
             🧵 Threads
           </Link>

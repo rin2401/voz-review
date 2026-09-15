@@ -10,6 +10,7 @@ import { Input } from "@/components/ui/input";
 export function AddThreadForm() {
   const router = useRouter();
   const [url, setUrl] = useState("");
+  const [kind, setKind] = useState("thread");
   const [pending, startTransition] = useState(false);
 
   async function handleSubmit(event: React.FormEvent) {
@@ -21,7 +22,7 @@ export function AddThreadForm() {
       const response = await fetch("/api/threads", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ url: trimmed }),
+        body: JSON.stringify({ url: trimmed, kind }),
       });
       if (!response.ok) throw new Error(await response.text());
       toast.success("Thread added");
@@ -48,6 +49,20 @@ export function AddThreadForm() {
           value={url}
           onChange={(event) => setUrl(event.target.value)}
         />
+      </div>
+      <div className="w-full space-y-1.5 sm:w-44">
+        <label htmlFor="threadKind" className="text-sm text-muted-foreground">
+          Kind
+        </label>
+        <select
+          id="threadKind"
+          value={kind}
+          onChange={(event) => setKind(event.target.value)}
+          className="h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-xs outline-none focus-visible:border-ring"
+        >
+          <option value="thread">🏢 Company</option>
+          <option value="apartment">🏘️ Apartment</option>
+        </select>
       </div>
       <Button type="submit" disabled={pending}>
         + Add

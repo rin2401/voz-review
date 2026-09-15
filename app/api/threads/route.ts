@@ -22,8 +22,9 @@ export async function POST(request: NextRequest) {
   if (!normalizedUrl) {
     return NextResponse.json({ detail: "URL is required" }, { status: 400 });
   }
+  const kind = payload.kind === "apartment" ? "apartment" : "thread";
   const threadIdMatch = normalizedUrl.match(/\/t(?:\/[^/]*?)?\.(\d+)(?:\/|$)/);
   const threadId = threadIdMatch ? threadIdMatch[1] : null;
-  await upsertThread(normalizedUrl, { threadId });
-  return NextResponse.json({ status: "created", url: normalizedUrl, thread_id: threadId });
+  await upsertThread(normalizedUrl, { threadId, kind });
+  return NextResponse.json({ status: "created", url: normalizedUrl, thread_id: threadId, kind });
 }

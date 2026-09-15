@@ -12,6 +12,7 @@ vi.mock("../mongo.js", () => ({
   SCHEDULER_JOB_NAME: "crawl_all_threads",
   close: vi.fn(),
   connect: vi.fn(),
+  ensureApartmentIndexes: vi.fn(),
   ensureSchedulerState: vi.fn(),
   tryAcquireSchedulerLock: vi.fn(),
   completeSchedulerRun: vi.fn(async (args) => {
@@ -22,6 +23,7 @@ vi.mock("../mongo.js", () => ({
   setThreadCrawlStatus: vi.fn(),
   updateThreadState: vi.fn(),
   insertReview: vi.fn(async () => ({ inserted: true, insertedId: "id" })),
+  insertApartmentReview: vi.fn(async () => ({ inserted: true, insertedId: "id" })),
   incrementCompanyReviewCount: vi.fn(),
   syncOffersForPost: vi.fn(),
   primaryReviewCompany: vi.fn(() => null),

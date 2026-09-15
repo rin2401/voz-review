@@ -151,34 +151,40 @@ export default async function ThreadsPage({
         <CardContent className="p-0">
           <div className="overflow-x-auto">
             <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>ID</TableHead>
-                  <TableHead>Page</TableHead>
-                  <TableHead>Last</TableHead>
-                  <TableHead>Status</TableHead>
-                  <TableHead>Actions</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {threads.length === 0 ? (
+                <TableHeader>
                   <TableRow>
-                    <TableCell colSpan={5} className="py-8 text-center text-muted-foreground">
-                      Chưa có thread nào trong DB.
-                    </TableCell>
+                    <TableHead>ID</TableHead>
+                    <TableHead>Kind</TableHead>
+                    <TableHead>Page</TableHead>
+                    <TableHead>Last</TableHead>
+                    <TableHead>Status</TableHead>
+                    <TableHead>Actions</TableHead>
                   </TableRow>
-                ) : (
-                  threads.map((thread) => {
-                    const threadUrl = thread.url || "";
-                    const lastPage = thread.last_page || 0;
-                    const href = lastPage > 1 ? `${threadUrl}page-${lastPage}/` : threadUrl;
-                    return (
-                      <TableRow key={String(thread._id ?? thread.url)}>
-                        <TableCell>
-                          <a href={href} target="_blank" rel="noreferrer">
-                            <Badge variant="secondary">{thread.thread_id || "-"}</Badge>
-                          </a>
-                        </TableCell>
+                </TableHeader>
+                <TableBody>
+                  {threads.length === 0 ? (
+                    <TableRow>
+                      <TableCell colSpan={6} className="py-8 text-center text-muted-foreground">
+                        Chưa có thread nào trong DB.
+                      </TableCell>
+                    </TableRow>
+                  ) : (
+                    threads.map((thread) => {
+                      const threadUrl = thread.url || "";
+                      const lastPage = thread.last_page || 0;
+                      const href = lastPage > 1 ? `${threadUrl}page-${lastPage}/` : threadUrl;
+                      return (
+                        <TableRow key={String(thread._id ?? thread.url)}>
+                          <TableCell>
+                            <a href={href} target="_blank" rel="noreferrer">
+                              <Badge variant="secondary">{thread.thread_id || "-"}</Badge>
+                            </a>
+                          </TableCell>
+                          <TableCell>
+                            <Badge variant="outline">
+                              {thread.kind === "apartment" ? "🏘️ Apartment" : "🏢 Company"}
+                            </Badge>
+                          </TableCell>
                         <TableCell>{thread.last_page || "-"}</TableCell>
                         <TableCell>{thread.last_crawl ? formatDtVn(thread.last_crawl) : "-"}</TableCell>
                         <TableCell>{thread.crawl_status || "idle"}</TableCell>

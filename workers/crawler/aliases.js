@@ -2,6 +2,7 @@
 // The alias JSON is bundled into the worker at build time.
 
 import rawAliasPayload from "../../data/company_aliases.json" with { type: "json" };
+import rawApartmentAliasPayload from "../../data/apartment_aliases.json" with { type: "json" };
 
 function buildAliasMap(payload) {
   const map = new Map();
@@ -15,6 +16,10 @@ function buildAliasMap(payload) {
 }
 
 export const aliasMap = buildAliasMap(rawAliasPayload);
+
+// Apartment (chung cư) complex alias map; same mechanics as companies but a
+// separate fixture + resolution domain.
+export const apartmentAliasMap = buildAliasMap(rawApartmentAliasPayload);
 
 /** Resolve an alias chain to its canonical company name. */
 export function resolveCanonicalCompany(name, map = aliasMap) {
@@ -67,11 +72,28 @@ export function buildCompanyAliasesByCanonical(map = aliasMap) {
 }
 
 /** Aliases registered for a canonical company name. */
-export function companyAliasesForName(name, map = aliasMap) {
+export function companyAliasesForName(name) {
   const canonicalName = (name || "").trim();
   if (!canonicalName) return [];
   if (aliasesByCanonicalCache === null) {
-    aliasesByCanonicalCache = buildCompanyAliasesByCanonical(map);
+    aliasesByCanonicalCache = buildCompanyAliasesByCanonical(aliasMap);
   }
   return aliasesByCanonicalCache.get(canonicalName) || [];
+}
+
+let apartmentAliasesByCanonicalCache = null;
+
+/** Aliases registered for a canonical apartment complex name. */
+export function apartmentAliasesForName(name) {
+  const canonicalName = (name || "").trim();
+  if (!canonicalName) return [];
+  if (apartmentAliasesByCanonicalCache === null) {
+    apartmentAliasesByCanonicalCache = buildCompanyAliasesByCanonical(apartmentAliasMap);
+  }
+  return apartmentAliasesByCanonicalCache.get(canonicalName) || [];
+}
+
+/** Resolve an alias chain to its canonical apartment complex name. */
+export function resolveCanonicalApartment(name) {
+  return resolveCanonicalCompany(name, apartmentAliasMap);
 }

@@ -3,7 +3,13 @@
 // the Python app since both write to the same Atlas collections.
 
 import { MongoClient } from "mongodb";
-import { companyAliasesForName, normalizeAliases, resolveCanonicalCompany } from "./aliases.js";
+import {
+  apartmentAliasesForName,
+  companyAliasesForName,
+  normalizeAliases,
+  resolveCanonicalApartment,
+  resolveCanonicalCompany,
+} from "./aliases.js";
 
 export const SCHEDULER_JOB_NAME = "crawl_all_threads";
 
@@ -222,6 +228,117 @@ export async function syncOffersForPost(vozPostId, offerDocs) {
   return { upserted: upsertedCount, created: createdCount, deleted: staleOfferDocs.length };
 }
 
+// ============== apartments (chung cư complexes) ==============
+// Divergence note: the apartment collections have no Python counterpart;
+// indexes are created by the Worker itself (see ensureApartmentIndexes).
+
+/** Normalize the apartments list on an apartment review document. */
+export function normalizeApartmentReview(reviewDoc) {
+  const rawApartments = reviewDoc.apartments;
+  const apartments = Array.isArray(rawApartments)
+    ? rawApartments
+    : rawApartments == null
+      ? []
+      : [rawApartments];
+  const normalized = [];
+  const seen = new Set();
+  for (const rawApartment of apartments) {
+    const apartment = (rawApartment == null ? "" : String(rawApartment)).trim();
+    if (!apartment || apartment === "Unknown") continue;
+    const key = apartment.toLowerCase();
+    if (seen.has(key)) continue;
+    seen.add(key);
+    normalized.push(apartment);
+  }
+  reviewDoc.apartments = normalized;
+  return reviewDoc;
+}
+
+export async function ensureApartmentIndexes() {
+  await db.collection("apartments").createIndex({ name: 1 }, { unique: true });
+  const reviews = db.collection("apartment_reviews");
+  await reviews.createIndex(
+    { voz_post_id: 1 },
+    {
+      unique: true,
+      partialFilterExpression: { voz_post_id: { $exists: true, $type: "string" } },
+    },
+  );
+  await reviews.createIndex({ apartments: 1 });
+  await reviews.createIndex({ post_date: -1 });
+  await reviews.createIndex({ voz_thread_id: 1 });
+  await reviews.createIndex({ reply_post_id: 1 });
+}
+
+function normalizedApartmentAliasesForName(name) {
+  return normalizeAliases(apartmentAliasesForName(name), name);
+}
+
+export async function upsertApartment(name) {
+  const now = new Date();
+  const apartments = db.collection("apartments");
+  const existing = await apartments.findOne({ name });
+  if (existing) {
+    await apartments.updateOne(
+      { _id: existing._id },
+      { $set: { aliases: normalizedApartmentAliasesForName(name), updated_at: now } },
+    );
+    return { ...existing, aliases: normalizedApartmentAliasesForName(name), updated_at: now };
+  }
+
+  const payload = {
+    name,
+    aliases: normalizedApartmentAliasesForName(name),
+    created_at: now,
+    updated_at: now,
+  };
+  try {
+    await apartments.insertOne(payload);
+  } catch (error) {
+    if (!isDuplicateKeyError(error)) throw error;
+    const refetched = await apartments.findOne({ name });
+    if (refetched === null) throw error;
+    await apartments.updateOne(
+      { _id: refetched._id },
+      { $set: { aliases: normalizedApartmentAliasesForName(name), updated_at: now } },
+    );
+    return { ...refetched, aliases: normalizedApartmentAliasesForName(name), updated_at: now };
+  }
+  return payload;
+}
+
+export async function ensureApartmentsExist(apartmentNames) {
+  const normalizedNames = [];
+  const seen = new Set();
+  for (const rawName of apartmentNames || []) {
+    const name = (rawName || "").trim();
+    if (!name || name === "Unknown") continue;
+    const key = name.toLowerCase();
+    if (seen.has(key)) continue;
+    seen.add(key);
+    normalizedNames.push(name);
+  }
+  for (const apartmentName of normalizedNames) {
+    await upsertApartment(apartmentName);
+  }
+  return normalizedNames;
+}
+
+export async function insertApartmentReview(reviewData) {
+  const reviews = db.collection("apartment_reviews");
+  normalizeApartmentReview(reviewData);
+  await ensureApartmentsExist(reviewData.apartments || []);
+  reviewData.created_at = new Date();
+  reviewData.status = reviewData.status || "pending";
+  try {
+    const result = await reviews.insertOne(reviewData);
+    return { insertedId: result.insertedId, inserted: true };
+  } catch (error) {
+    if (isDuplicateKeyError(error)) return { insertedId: null, inserted: false };
+    throw error;
+  }
+}
+
 export async function getThreadState({ threadId = null, url = null } = {}) {
   const query = {};
   if (threadId) query.thread_id = threadId;
@@ -361,4 +478,4 @@ export async function completeSchedulerRun({ jobName, status, result = null, err
   );
 }
 
-export { resolveCanonicalCompany };
+export { resolveCanonicalApartment, resolveCanonicalCompany };

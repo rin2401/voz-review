@@ -1,0 +1,192 @@
+// Read query helpers for the apartment (chung cư) collections, mirroring
+// lib/db/queries.ts (company side) but reading `apartments`/`apartment_reviews`.
+// The apartment collections are written by the Cloudflare Worker crawler only.
+
+import { normalizeAliases as normalizeAliasesJs } from "../../workers/crawler/aliases.js";
+import { getDb } from "./client";
+
+export type Dict = Record<string, any>;
+
+const normalizeAliases = (rawAliases: any, canonicalName: string | null = null): string[] =>
+  normalizeAliasesJs(rawAliases, canonicalName as any);
+
+function coerceString(value: any): string {
+  if (value === null || value === undefined) return "";
+  return String(value).trim();
+}
+
+function coerceDatetime(value: any): Date | null {
+  if (value === null || value === undefined || value === "") return null;
+  if (value instanceof Date) return isNaN(value.getTime()) ? null : value;
+  if (typeof value === "string") {
+    const parsed = new Date(value.replace(/Z$/, "+00:00").replace(/Z$/, ""));
+    return isNaN(parsed.getTime()) ? null : parsed;
+  }
+  return null;
+}
+
+function escapeRegex(value: string): string {
+  return value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+}
+
+// ============== apartment match helpers ==============
+
+export function buildApartmentMatch(apartment: string): Dict {
+  const apartmentRegex = { $regex: `^${escapeRegex(apartment)}$`, $options: "i" };
+  return { apartments: apartmentRegex };
+}
+
+// ============== apartments ==============
+
+export async function getAllApartments(sortBy = "recent_review"): Promise<Dict[]> {
+  const db = await getDb();
+  const docs = (await db.collection("apartments").find({}).toArray()).map(
+    (doc) => ({ ...doc, _id: undefined }) as Dict,
+  );
+  if (!docs.length) return [];
+
+  const apartmentNames = docs.map((doc) => doc.name).filter(Boolean);
+  const aggregatesByApartment: Record<string, Dict> = {};
+  for (const name of apartmentNames) {
+    aggregatesByApartment[name] = { review_count: 0, latest_post_date: null };
+  }
+
+  const pipeline = [
+    {
+      $project: {
+        apartments: 1,
+        effective_post_date: {
+          $ifNull: [
+            { $convert: { input: "$post_date", to: "date", onError: null, onNull: null } },
+            { $convert: { input: "$created_at", to: "date", onError: null, onNull: null } },
+          ],
+        },
+      },
+    },
+    { $unwind: "$apartments" },
+    {
+      $group: {
+        _id: "$apartments",
+        review_count: { $sum: 1 },
+        latest_review: { $max: "$effective_post_date" },
+      },
+    },
+    { $match: { _id: { $in: apartmentNames } } },
+  ];
+  for (const row of await db.collection("apartment_reviews").aggregate(pipeline).toArray()) {
+    const name = coerceString(row._id);
+    if (!name) continue;
+    aggregatesByApartment[name] = {
+      review_count: Number(row.review_count || 0),
+      latest_post_date: coerceDatetime(row.latest_review),
+    };
+  }
+
+  const apartments: Dict[] = [];
+  for (const doc of docs) {
+    const apartmentName = doc.name;
+    const aggregate = aggregatesByApartment[apartmentName] || {};
+    doc.aliases = normalizeAliases(doc.aliases || [], apartmentName);
+    doc.review_count = Number(aggregate.review_count || 0);
+    doc.latest_post_date = aggregate.latest_post_date ?? null;
+    apartments.push(doc);
+  }
+
+  // Python sorts by tuple key with reverse=True, which reverses EVERY tuple
+  // component including the name tie-break. Replicate that exactly.
+  const nameLower = (a: Dict) => String(a.name || "").toLowerCase();
+  const cmpDesc = (a: string, b: string) => (a > b ? -1 : a < b ? 1 : 0);
+  const dateMs = (value: any) => {
+    const date = coerceDatetime(value);
+    return date ? date.getTime() : 0;
+  };
+  if (sortBy === "most_review") {
+    apartments.sort((a, b) => (b.review_count || 0) - (a.review_count || 0) || cmpDesc(nameLower(a), nameLower(b)));
+  } else if (sortBy === "recent_review") {
+    apartments.sort((a, b) => {
+      const aDate = dateMs(a.latest_post_date);
+      const bDate = dateMs(b.latest_post_date);
+      if (Boolean(aDate) !== Boolean(bDate)) return aDate ? -1 : 1;
+      if (aDate && bDate && aDate !== bDate) return bDate - aDate;
+      return cmpDesc(nameLower(a), nameLower(b));
+    });
+  } else {
+    apartments.sort((a, b) => (nameLower(a) < nameLower(b) ? -1 : nameLower(a) > nameLower(b) ? 1 : 0));
+  }
+
+  return apartments;
+}
+
+export async function resolveApartmentName(slugOrName: string): Promise<string> {
+  const apartments = await getAllApartments("az");
+  const names = apartments.map((apartment) => apartment.name || "");
+
+  if (names.includes(slugOrName)) return slugOrName;
+
+  const normalized = (slugOrName || "").replace(/-/g, " ");
+  if (names.includes(normalized)) return normalized;
+
+  const lowerMap = new Map(names.map((name) => [name.toLowerCase(), name]));
+  return lowerMap.get(normalized.toLowerCase()) ?? slugOrName;
+}
+
+// ============== apartment reviews ==============
+
+export async function getReviewsByApartment(
+  apartment: string,
+  options: { limit?: number; skip?: number; threadId?: string } = {},
+): Promise<Dict[]> {
+  const { limit = 50, skip = 0, threadId } = options;
+  const db = await getDb();
+  const query: Dict = buildApartmentMatch(apartment);
+  if (threadId) query.voz_thread_id = threadId;
+
+  return (await db
+    .collection("apartment_reviews")
+    .find(query)
+    .sort({ post_date: -1 })
+    .skip(skip)
+    .limit(limit)
+    .toArray()).map((doc) => ({ ...doc, _id: undefined }) as Dict);
+}
+
+export async function getApartmentReviewCount(
+  options: { apartment?: string; threadId?: string } = {},
+): Promise<number> {
+  const db = await getDb();
+  const query: Dict = options.apartment ? buildApartmentMatch(options.apartment) : {};
+  if (options.threadId) query.voz_thread_id = options.threadId;
+  return db.collection("apartment_reviews").countDocuments(query);
+}
+
+export async function getApartmentThreadIds(apartment: string): Promise<string[]> {
+  const db = await getDb();
+  const ids = await db
+    .collection("apartment_reviews")
+    .distinct("voz_thread_id", {
+      ...buildApartmentMatch(apartment),
+      voz_thread_id: { $exists: true, $nin: [null, ""] },
+    });
+  return ids.filter(Boolean).map(String).sort((a, b) => (a < b ? 1 : a > b ? -1 : 0));
+}
+
+// ============== reply tree ==============
+
+export async function getApartmentPostsByIds(postIds: string[]): Promise<Dict[]> {
+  if (!postIds.length) return [];
+  const db = await getDb();
+  return (await db
+    .collection("apartment_reviews")
+    .find({ voz_post_id: { $in: postIds } })
+    .toArray()).map((doc) => ({ ...doc, _id: undefined }) as Dict);
+}
+
+export async function getApartmentRepliesForPosts(postIds: string[]): Promise<Dict[]> {
+  if (!postIds.length) return [];
+  const db = await getDb();
+  return (await db
+    .collection("apartment_reviews")
+    .find({ reply_post_id: { $in: postIds } })
+    .sort({ created_at: 1 })
+    .toArray()).map((doc) => ({ ...doc, _id: undefined }) as Dict);
+}

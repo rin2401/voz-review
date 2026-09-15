@@ -2,16 +2,19 @@
 // (crawl_thread / process_thread_page / crawl_all_forums) and scheduler.py
 // (CrawlAllRunManager lock flow). Writes directly to MongoDB Atlas.
 
+import { defaultApartmentExtractor } from "./apartment-extract.js";
 import { defaultCompanyExtractor } from "./extract.js";
 import { extractThreadId, parseThreadPage, VOZ_USER_AGENT } from "./parser.js";
 import {
   close,
   completeSchedulerRun,
   connect,
+  ensureApartmentIndexes,
   ensureSchedulerState,
   getAllThreads,
   getThreadState,
   incrementCompanyReviewCount,
+  insertApartmentReview,
   insertReview,
   primaryReviewCompany,
   setThreadCrawlStatus,
@@ -22,6 +25,10 @@ import {
 } from "./mongo.js";
 
 const extractor = defaultCompanyExtractor;
+const apartmentExtractor = defaultApartmentExtractor;
+
+/** Thread kinds: "thread" (company reviews) or "apartment" (chung cư). */
+export const THREAD_KINDS = ["thread", "apartment"];
 
 export function loadConfig(env = {}) {
   return {
@@ -63,8 +70,40 @@ function detectTotalPages(firstHtml) {
   return pageNumbers.length ? Math.max(...pageNumbers) : 1;
 }
 
-/** Insert all reviews from one thread page, mirroring process_thread_page. */
-export async function processThreadPage(pageUrl, html) {
+/** Insert all apartment reviews from one thread page (kind: "apartment"). */
+export async function processApartmentThreadPage(pageUrl, html) {
+  const posts = parseThreadPage(html, pageUrl);
+  let insertedCount = 0;
+  let skippedCount = 0;
+
+  for (const postData of posts) {
+    try {
+      // The parser fills company-specific fields on every post; apartment
+      // reviews must not carry them.
+      delete postData.company;
+      delete postData.companies;
+      delete postData.monthly_salary_million;
+      postData.apartments = apartmentExtractor.extractApartments(postData.content || "");
+      const { inserted } = await insertApartmentReview(postData);
+      if (inserted) {
+        insertedCount += 1;
+      } else {
+        skippedCount += 1;
+      }
+    } catch (error) {
+      console.error("Error inserting apartment review:", error);
+    }
+  }
+  console.log(`  Page: ${insertedCount} inserted, ${skippedCount} skipped duplicates`);
+  return { inserted: insertedCount, skipped: skippedCount };
+}
+
+/** Insert all reviews from one thread page, dispatching on the thread kind. */
+export async function processThreadPage(pageUrl, html, { kind = "thread" } = {}) {
+  if (kind === "apartment") {
+    return processApartmentThreadPage(pageUrl, html);
+  }
+
   const posts = parseThreadPage(html, pageUrl);
   let insertedCount = 0;
   let skippedCount = 0;
@@ -100,7 +139,7 @@ export async function processThreadPage(pageUrl, html) {
 }
 
 /** Crawl a specific thread - resume from threads.last_page when available. */
-export async function crawlThread(url, maxPages, config, deadline = null) {
+export async function crawlThread(url, maxPages, config, deadline = null, { kind = null } = {}) {
   const threadId = extractThreadId(url) || null;
   let pagesCrawled = 0;
   try {
@@ -112,6 +151,8 @@ export async function crawlThread(url, maxPages, config, deadline = null) {
     const totalPages = detectTotalPages(firstHtml);
 
     const threadState = await getThreadState({ threadId, url });
+    // Threads not registered in DB default to the company-review flow.
+    const effectiveKind = kind ?? (threadState && threadState.kind) ?? "thread";
     let startPage = 1;
     if (threadState && threadState.last_page) {
       startPage = Math.max(1, parseInt(threadState.last_page, 10));
@@ -119,7 +160,7 @@ export async function crawlThread(url, maxPages, config, deadline = null) {
 
     const endPage = maxPages === 0 ? totalPages : Math.min(totalPages, startPage + maxPages - 1);
     console.log(
-      `Thread: ${totalPages} pages detected, resume from page ${startPage}, crawl until ${endPage}`,
+      `Thread: ${totalPages} pages detected, resume from page ${startPage}, crawl until ${endPage} (kind: ${effectiveKind})`,
     );
 
     let budgetStopped = false;
@@ -140,7 +181,7 @@ export async function crawlThread(url, maxPages, config, deadline = null) {
         html = await fetchPageHtml(pageUrl, { timeoutSeconds: config.fetchTimeoutSeconds });
       }
 
-      await processThreadPage(pageUrl, html);
+      await processThreadPage(pageUrl, html, { kind: effectiveKind });
       await updateThreadState({ threadId, url, lastPage: page });
       pagesCrawled += 1;
       await sleep(config.crawlDelaySeconds);
@@ -190,7 +231,7 @@ export async function crawlAllForums(maxPages, config, deadline = null, { skip =
 
     await setThreadCrawlStatus(url, "running");
     summary.threads_started += 1;
-    const result = await crawlThread(url, maxPages, config, deadline);
+    const result = await crawlThread(url, maxPages, config, deadline, { kind: threads[i].kind ?? null });
     if (result.status === "error") {
       summary.threads_failed += 1;
     }
@@ -268,6 +309,9 @@ export async function startCrawlRun(env, { reason = "scheduled-hourly", url = nu
   const leaseUntil = new Date(now.getTime() + leaseSeconds * 1000);
 
   await connect(config.mongoUri, config.mongoDb);
+  // The apartment collections have no Beanie/Python counterpart to sync
+  // indexes; the Worker owns their schema. createIndex is idempotent.
+  await ensureApartmentIndexes();
   await ensureSchedulerState({
     jobName: SCHEDULER_JOB_NAME,
     timezone: config.schedulerTimezone,

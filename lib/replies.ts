@@ -11,10 +11,19 @@ function replySortKey(item: Dict): number {
   return isNaN(date.getTime()) ? 0 : date.getTime();
 }
 
-export async function buildReplyContext(reviews: Dict[]): Promise<{
+export async function buildReplyContext(
+  reviews: Dict[],
+  fetchers: {
+    getPostsByIds?: typeof getPostsByIds;
+    getRepliesForPosts?: typeof getRepliesForPosts;
+  } = {},
+): Promise<{
   reviewByPostId: Record<string, Dict>;
   replyChildrenByPostId: Record<string, Dict[]>;
 }> {
+  const fetchPostsByIds = fetchers.getPostsByIds ?? getPostsByIds;
+  const fetchRepliesForPosts = fetchers.getRepliesForPosts ?? getRepliesForPosts;
+
   const reviewByPostId: Record<string, Dict> = {};
   for (const review of reviews) {
     if (review.voz_post_id) reviewByPostId[String(review.voz_post_id)] = review;
@@ -27,7 +36,7 @@ export async function buildReplyContext(reviews: Dict[]): Promise<{
         .map((review) => String(review.reply_post_id)),
     ),
   ].sort();
-  for (const parentReview of await getPostsByIds(missingParentIds)) {
+  for (const parentReview of await fetchPostsByIds(missingParentIds)) {
     if (parentReview.voz_post_id) {
       reviewByPostId[String(parentReview.voz_post_id)] = parentReview;
     }
@@ -49,7 +58,7 @@ export async function buildReplyContext(reviews: Dict[]): Promise<{
     const pendingParentIds = [...allReplyIdsToFetch].filter((id) => !fetchedPostIds.has(id));
     if (!pendingParentIds.length) break;
 
-    const replyChildren = await getRepliesForPosts(pendingParentIds);
+    const replyChildren = await fetchRepliesForPosts(pendingParentIds);
     for (const id of pendingParentIds) fetchedPostIds.add(id);
 
     for (const child of replyChildren) {
