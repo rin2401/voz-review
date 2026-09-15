@@ -10,7 +10,6 @@ vi.mock("../mongo.js", () => ({
   SCHEDULER_JOB_NAME: "crawl_all_threads",
   close: vi.fn(),
   connect: vi.fn(),
-  ensureApartmentIndexes: vi.fn(),
   ensureSchedulerState: vi.fn(),
   tryAcquireSchedulerLock: vi.fn(),
   completeSchedulerRun: vi.fn(),
@@ -22,9 +21,9 @@ vi.mock("../mongo.js", () => ({
     mongo.insertedReviews.push(doc);
     return { inserted: true, insertedId: "id" };
   }),
-  insertApartmentReview: vi.fn(async (doc) => {
-    mongo.insertedApartmentReviews.push(doc);
-    return { inserted: true, insertedId: "id" };
+  insertApartmentReviews: vi.fn(async (docs) => {
+    mongo.insertedApartmentReviews.push(...docs);
+    return { inserted: docs.length, skipped: 0 };
   }),
   incrementCompanyReviewCount: vi.fn(),
   syncOffersForPost: vi.fn(),

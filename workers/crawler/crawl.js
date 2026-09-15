@@ -9,12 +9,11 @@ import {
   close,
   completeSchedulerRun,
   connect,
-  ensureApartmentIndexes,
   ensureSchedulerState,
   getAllThreads,
   getThreadState,
   incrementCompanyReviewCount,
-  insertApartmentReview,
+  insertApartmentReviews,
   insertReview,
   primaryReviewCompany,
   setThreadCrawlStatus,
@@ -73,29 +72,20 @@ function detectTotalPages(firstHtml) {
 /** Insert all apartment reviews from one thread page (kind: "apartment"). */
 export async function processApartmentThreadPage(pageUrl, html) {
   const posts = parseThreadPage(html, pageUrl);
-  let insertedCount = 0;
-  let skippedCount = 0;
-
   for (const postData of posts) {
-    try {
-      // The parser fills company-specific fields on every post; apartment
-      // reviews must not carry them.
-      delete postData.company;
-      delete postData.companies;
-      delete postData.monthly_salary_million;
-      postData.apartments = apartmentExtractor.extractApartments(postData.content || "");
-      const { inserted } = await insertApartmentReview(postData);
-      if (inserted) {
-        insertedCount += 1;
-      } else {
-        skippedCount += 1;
-      }
-    } catch (error) {
-      console.error("Error inserting apartment review:", error);
-    }
+    // The parser fills company-specific fields on every post; apartment
+    // reviews must not carry them.
+    delete postData.company;
+    delete postData.companies;
+    delete postData.monthly_salary_million;
+    postData.apartments = apartmentExtractor.extractApartments(postData.content || "");
   }
-  console.log(`  Page: ${insertedCount} inserted, ${skippedCount} skipped duplicates`);
-  return { inserted: insertedCount, skipped: skippedCount };
+  // One batched insertMany per page: per-post roundtrips made slices exceed
+  // the Worker CPU/wall budget (dup re-crawls of the saved last_page alone
+  // cost ~18 Atlas roundtrips per slice).
+  const { inserted, skipped } = await insertApartmentReviews(posts);
+  console.log(`  Page: ${inserted} inserted, ${skipped} skipped duplicates`);
+  return { inserted, skipped };
 }
 
 /** Insert all reviews from one thread page, dispatching on the thread kind. */
@@ -309,9 +299,6 @@ export async function startCrawlRun(env, { reason = "scheduled-hourly", url = nu
   const leaseUntil = new Date(now.getTime() + leaseSeconds * 1000);
 
   await connect(config.mongoUri, config.mongoDb);
-  // The apartment collections have no Beanie/Python counterpart to sync
-  // indexes; the Worker owns their schema. createIndex is idempotent.
-  await ensureApartmentIndexes();
   await ensureSchedulerState({
     jobName: SCHEDULER_JOB_NAME,
     timezone: config.schedulerTimezone,

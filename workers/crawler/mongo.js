@@ -339,6 +339,40 @@ export async function insertApartmentReview(reviewData) {
   }
 }
 
+/**
+ * Batch-insert apartment reviews from one thread page. Duplicate voz_post_id
+ * keys are expected on re-crawls (unique partial index) and counted as
+ * skipped; unordered inserts let the fresh posts through anyway.
+ */
+export async function insertApartmentReviews(reviewDocs) {
+  const reviews = db.collection("apartment_reviews");
+  for (const reviewData of reviewDocs) {
+    normalizeApartmentReview(reviewData);
+    reviewData.created_at = new Date();
+    reviewData.status = reviewData.status || "pending";
+  }
+  const apartmentNames = [...new Set(reviewDocs.flatMap((doc) => doc.apartments || []))];
+  await ensureApartmentsExist(apartmentNames);
+  if (!reviewDocs.length) return { inserted: 0, skipped: 0 };
+
+  let inserted = 0;
+  try {
+    const result = await reviews.insertMany(reviewDocs, { ordered: false });
+    inserted = result.insertedCount ?? reviewDocs.length;
+  } catch (error) {
+    // Duplicate keys surface as MongoBulkWriteError; unordered inserts let the
+    // fresh posts through anyway.
+    const bulkResult = error && error.result ? error.result : null;
+    const writeErrors =
+      error && error.writeErrors ? error.writeErrors : bulkResult && bulkResult.writeErrors;
+    const isDuplicate =
+      isDuplicateKeyError(error) || (Array.isArray(writeErrors) && writeErrors.length > 0);
+    if (!isDuplicate) throw error;
+    inserted = Number(bulkResult && bulkResult.insertedCount ? bulkResult.insertedCount : 0);
+  }
+  return { inserted, skipped: reviewDocs.length - inserted };
+}
+
 export async function getThreadState({ threadId = null, url = null } = {}) {
   const query = {};
   if (threadId) query.thread_id = threadId;

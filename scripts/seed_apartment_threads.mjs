@@ -24,6 +24,23 @@ await client.connect();
 const db = client.db(dbName);
 const now = new Date();
 
+// The Worker no longer ensures these at run start (the createIndex roundtrips
+// blew the per-invocation CPU budget); indexes are created here instead.
+// Idempotent: no-ops when the indexes already exist.
+await db.collection("apartments").createIndex({ name: 1 }, { unique: true });
+const reviews = db.collection("apartment_reviews");
+await reviews.createIndex(
+  { voz_post_id: 1 },
+  {
+    unique: true,
+    partialFilterExpression: { voz_post_id: { $exists: true, $type: "string" } },
+  },
+);
+await reviews.createIndex({ apartments: 1 });
+await reviews.createIndex({ post_date: -1 });
+await reviews.createIndex({ voz_thread_id: 1 });
+await reviews.createIndex({ reply_post_id: 1 });
+
 for (const url of APARTMENT_THREAD_URLS) {
   const threadId = url.match(/\/t(?:\/[^/]*?)?\.(\d+)(?:\/|$)/)?.[1] ?? null;
   const existing = await db.collection("threads").findOne({ url });
