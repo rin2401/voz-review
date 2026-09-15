@@ -47,6 +47,19 @@ export function companyToSlug(name: string): string {
   return (name || "").replace(/ /g, "-");
 }
 
+/**
+ * Decode a dynamic-route slug. Next.js App Router delivers params values
+ * still percent-encoded (e.g. "Vin-L%C3%A0ng-V%C3%A2n"), which breaks
+ * resolving any name containing Vietnamese diacritics.
+ */
+export function decodeSlug(value: string): string {
+  try {
+    return decodeURIComponent(value);
+  } catch {
+    return value;
+  }
+}
+
 export function schedulerStatusLabel(state: Record<string, any> | null | undefined): string {
   if (!state) return "not_configured";
   if (state.enabled === false) return "disabled";

@@ -13,7 +13,7 @@ import {
   resolveApartmentName,
 } from "@/lib/db/apartment-queries";
 import { buildReplyContext } from "@/lib/replies";
-import { companyToSlug } from "@/lib/format";
+import { companyToSlug, decodeSlug } from "@/lib/format";
 import { cn } from "@/lib/utils";
 
 export const revalidate = 300;
@@ -39,7 +39,8 @@ export default async function ApartmentPage({
   params: Promise<{ slug: string }>;
   searchParams: Promise<SearchParams>;
 }) {
-  const { slug } = await params;
+  const { slug: rawSlug } = await params;
+  const slug = decodeSlug(rawSlug);
   const { page: rawPage, thread_id: threadIdParam } = await searchParams;
 
   const page = Math.max(1, Number(rawPage ?? 1) || 1);
