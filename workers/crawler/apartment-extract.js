@@ -39,6 +39,7 @@ export function cleanApartmentName(apartment) {
     const noteKeywords = [
       "review", "xin review", "cho em hỏi", "cho mình hỏi", "có nên",
       "thế nào", "the nao", "tư vấn", "tu van", "hỏi", "hoi", "đánh giá", "danh gia",
+      "tại", "đang", "nghe đâu", "ráp căn",
     ];
     if (rightSide && noteKeywords.some((token) => rightLower.includes(token))) {
       apartment = dashParts[0].trim();
@@ -119,10 +120,25 @@ export function createApartmentExtractor(map = apartmentAliasMap) {
       if (!content.toLowerCase().includes("said:")) return "Unknown";
     }
 
+    // Structured labels that end the value search: a "Dự án:" label with the
+    // value on the next line must not swallow the next label's value
+    // ("Vị trí: ...", "Đơn giá: ...").
+    const valueStopPrefixes = [
+      "vị trí", "vi tri", "đơn giá", "don gia", "diện tích", "dien tich", "giá",
+      "chủ đầu tư", "chu dau tu", "cđt", "cdt", "tiến độ", "tien do",
+      "bàn giao", "ban giao", "hướng", "huong",
+      "tên dự án", "ten du an", "dự án", "du an",
+    ];
+
     const nextNonEmptyLine = (startIndex) => {
       for (let i = startIndex + 1; i < lines.length; i++) {
         const candidate = lines[i].trim();
-        if (candidate) return candidate;
+        if (!candidate) continue;
+        const lowerCandidate = candidate.toLowerCase();
+        if (valueStopPrefixes.some((prefix) => lowerCandidate.startsWith(prefix))) {
+          return "";
+        }
+        return candidate;
       }
       return "";
     };
@@ -164,7 +180,12 @@ export function createApartmentExtractor(map = apartmentAliasMap) {
 
       // Skip if it's clearly not a complex name
       if (apartment.length < 3) return "Unknown";
-      if (["xin", "hỏi", "hoi", "cho em", "cho mình", "có nên", "thế nào", "the nao", "tư vấn", "tu van", "tên gì", "ten gi"].some((x) => apartment.toLowerCase().includes(x))) {
+      if ([
+        "xin", "hỏi", "hoi", "cho em", "cho mình", "có nên", "thế nào", "the nao",
+        "tư vấn", "tu van", "tên gì", "ten gi",
+        "nào", "ok ko", "ok không", "mua được", "thấy sao", "mấy bác", "mấy thím",
+        "thì ổn", "giờ ổn", "nhà bạn", "nha bạn",
+      ].some((x) => apartment.toLowerCase().includes(x))) {
         return "Unknown";
       }
 

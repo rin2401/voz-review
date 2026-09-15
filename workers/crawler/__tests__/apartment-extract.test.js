@@ -21,6 +21,11 @@ describe("cleanApartmentName", () => {
   it("drops question-style trailing notes after a dash", () => {
     expect(cleanApartmentName("Akari City - có nên mua không")).toBe("Akari City");
   });
+
+  it("drops location/status trailing notes after a dash", () => {
+    expect(cleanApartmentName("Ansana By Kita – tại phường An Lạc")).toBe("Ansana By Kita");
+    expect(cleanApartmentName("Seita Edenia - đang ráp căn đợt 1")).toBe("Seita Edenia");
+  });
 });
 
 describe("extractApartment", () => {
@@ -57,6 +62,19 @@ describe("extractApartment", () => {
 
   it("rejects lowercase prose as a label value", () => {
     expect(extractor.extractApartment("Tên dự án:\nđang trong giai đoạn bàn giao")).toBe(
+      "Unknown",
+    );
+  });
+
+  it("skips question-style label values that start uppercase", () => {
+    expect(extractor.extractApartment("Dự án: Bcons nào vậy bạn")).toBe("Unknown");
+    expect(extractor.extractApartment("Tên dự án: Citi Alto mua được không mọi người")).toBe(
+      "Unknown",
+    );
+  });
+
+  it("does not swallow the next structured label as the value", () => {
+    expect(extractor.extractApartment("Dự án:\nVị trí: Quận 2\nĐơn giá: 50tr/m2")).toBe(
       "Unknown",
     );
   });
