@@ -43,32 +43,6 @@ export default async function ApartmentsPage({
     <div className="space-y-4">
       <Card>
         <CardContent className="pt-6">
-          <form action="/apartments" method="get" className="flex flex-col gap-3 sm:flex-row sm:items-end">
-            <input type="hidden" name="sort" value={sortKey} />
-            <div className="flex-1 space-y-1.5">
-              <label htmlFor="q" className="text-sm text-muted-foreground">
-                Filter apartment
-              </label>
-              <Input id="q" name="q" placeholder="Ví dụ: Vinhomes, Akari, The Global City..." defaultValue={q} />
-            </div>
-            <div className="w-full space-y-1.5 sm:w-48">
-              <label htmlFor="sort" className="text-sm text-muted-foreground">
-                Sort by
-              </label>
-              <SortSelect
-                id="sort"
-                options={SORT_OPTIONS}
-                defaultValue="recent_review"
-                className="w-full"
-              />
-            </div>
-            <Button type="submit">Apply</Button>
-          </form>
-        </CardContent>
-      </Card>
-
-      <Card>
-        <CardContent className="pt-6">
           <form
             action="/apartments/search"
             method="get"
@@ -91,6 +65,32 @@ export default async function ApartmentsPage({
             <Button type="submit" className="h-10 px-6">
               Search
             </Button>
+          </form>
+        </CardContent>
+      </Card>
+
+      <Card>
+        <CardContent className="pt-6">
+          <form action="/apartments" method="get" className="flex flex-col gap-3 sm:flex-row sm:items-end">
+            <input type="hidden" name="sort" value={sortKey} />
+            <div className="flex-1 space-y-1.5">
+              <label htmlFor="q" className="text-sm text-muted-foreground">
+                Filter apartment
+              </label>
+              <Input id="q" name="q" placeholder="Ví dụ: Vinhomes, Akari, The Global City..." defaultValue={q} />
+            </div>
+            <div className="w-full space-y-1.5 sm:w-48">
+              <label htmlFor="sort" className="text-sm text-muted-foreground">
+                Sort by
+              </label>
+              <SortSelect
+                id="sort"
+                options={SORT_OPTIONS}
+                defaultValue="recent_review"
+                className="w-full"
+              />
+            </div>
+            <Button type="submit">Apply</Button>
           </form>
         </CardContent>
       </Card>
