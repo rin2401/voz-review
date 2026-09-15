@@ -130,5 +130,213 @@
       "Vị trí xa trung tâm (Bình Chánh), đi Q1 xa",
       "Tiềm năng tăng giá chưa được đánh giá cao, ít review"
     ]
+  },
+  "Mizuki Park": {
+    "summary": "Khu đô thị tích hợp lớn của Nam Long ở Bình Chánh (trục Nguyễn Văn Linh), nhiều mảng xanh và tiện ích đang xây tiếp (CCTM lõi trung tâm khởi công 2026). Giá NOXH (~2,8-4 tỷ/căn) hợp cho người ít vốn nhưng review chê đất yếu, đường vào ngập mùa mưa và kẹt QL51 khi đi vào Q1.",
+    "pros": [
+      "Khu đô thị tích hợp quy mô lớn, nhiều mảng xanh, tiện ích đang hoàn thiện dần",
+      "Giá NOXH hợp lý cho người ít vốn (~2,8-4 tỷ/căn), có căn cho thuê ổn",
+      "Bình Chánh đang được đẩy mạnh lộ trình đô thị hóa, hạ tầng nâng cấp"
+    ],
+    "cons": [
+      "Đường vào mùa mưa ngập, đi Q1 kẹt QL51",
+      "Review cư dân chê đất yếu ('sụp lún tùm lum'), cảnh báo ở lâu dài",
+      "Chất lượng xây dựng các dự án Nam Long bị chê nứt, thấm nước"
+    ]
+  },
+  "Celadon City": {
+    "summary": "Đại dự án của Gamuda cạnh AEON Mall Tân Phú, được khen mảng xanh lớn, tiện ích ngày càng đầy đủ và các phân khu dần ra sổ; giá không giảm mà tăng do khu Tây khan hiếm nguồn cung mới. Điểm trừ lớn nhất là phí quản lý cao và vài lần cư dân căng băng rôn phản đối.",
+    "pros": [
+      "Mảng xanh lớn, không khí trong lành; dân phi công/tiếp viên ở nhiều",
+      "Tiện ích đầy dần, các phân khu dần được hợp thức hóa ra sổ",
+      "Khu Tây khan hiếm nguồn cung mới nên giá tăng đều"
+    ],
+    "cons": [
+      "Phí quản lý cao, cư dân complain phí không xứng với dịch vụ",
+      "Từng bị căng băng rôn phản đối vài lần; một số phân khu xây sai giấy phép",
+      "Giai đoạn đầu cho thuê khó với giá rẻ"
+    ]
+  },
+  "Q7 Riverside": {
+    "summary": "Chung cư của Hưng Thịnh ở Đào Trí (Q7), giá mềm nhất khu (2PN ~3 tỷ net, 1PN ~3,2 tỷ) và đi làm Q7 siêu gần. Tuy nhiên review cảnh báo nặng về pháp lý (chưa có sổ) và chất lượng: tường nứt, gạch bung, hành lang nhỏ mật độ cao.",
+    "pros": [
+      "Giá mềm nhất khu Đào Trí: 2PN ~3 tỷ net, 1PN ~3,2 tỷ",
+      "Đi làm Q7 siêu gần, cho thuê dễ",
+      "Vị trí trong hẻm nên ít bụi hơn mặt tiền lớn"
+    ],
+    "cons": [
+      "Chưa có sổ (CĐT Hưng Thịnh), mua bán vướng pháp lý",
+      "Tường nứt, gạch bung — review chê CĐT/BQL kém",
+      "Hành lang nhỏ, mật độ cao; khu đường nhỏ, bụi và xe công"
+    ]
+  },
+  "Him Lam": {
+    "summary": "Him Lam Phú An (Q9) được khen gần metro, sạch đẹp, đi Q1/cầu Bình Lợi thuận và vừa ra sổ với giá ~3,8-4 tỷ/căn 2PN. Điểm trừ là cạnh cảng và bãi rác (ồn, mùi khi gió), tiện ích xung quanh ít và giá đã tăng nhanh (2,8 tỷ 2024 → ~5 tỷ 2026).",
+    "pros": [
+      "Gần metro, sạch đẹp, đi Q1/cầu Bình Lợi thuận tiện",
+      "Vừa ra sổ (2025-2026), giá ~3,8-4 tỷ/căn 2PN",
+      "Khu Tây (Him Lam Chợ Lớn) đơn giá mềm, đường xá đang nâng cấp"
+    ],
+    "cons": [
+      "Cạnh cảng và bãi rác: ồn, mùi khi gió; tiện ích xung quanh ít",
+      "Giá tăng nhanh (2,8 tỷ cuối 2024 → ~5 tỷ 2026)",
+      "Block D view xa lộ nắng, bụi; block B ồn cảng container"
+    ]
+  },
+  "Sunrise Riverside": {
+    "summary": "Chung cư Novaland ở Nhà Bè được cư dân 3 năm khen như 'ốc đảo': yên tĩnh, quy hoạch ổn, đường rộng nhiều mảng xanh, tiện ích đầy đủ và đã bắt đầu cấp sổ (2025). Nên chọn tháp bàn giao thô (E/G) chất lượng ổn hơn, tránh tháp B/C nội thất cơ bản bị bong gạch và view hướng Tây.",
+    "pros": [
+      "Yên tĩnh như ốc đảo, quy hoạch ổn, đường rộng nhiều mảng xanh",
+      "Đầy đủ tiện ích, ra Q1 không quá xa; 2PN ~4,8-5 tỷ",
+      "Bắt đầu cấp sổ (2025), tháp E/G bàn giao thô chất lượng ổn"
+    ],
+    "cons": [
+      "Nhà cũ (bàn giao 2017-2019), tháp B/C nội thất cơ bản bị bong, nổ gạch",
+      "View hướng Tây nắng nóng; giá đã tăng nhanh",
+      "Xa trung tâm hơn Q7, phụ thuộc cầu đường khu Nhà Bè"
+    ]
+  },
+  "Flora": {
+    "summary": "Dòng chung cư giá mềm của Nam Long (Flora Anh Đào/Fuji/Novia, khu Liên Phường Q9), có sổ nên vay được ngân hàng và hợp túi tiền 2-3 tỷ. Review khen hợp người ít tiền nhưng chê khu mưa to dễ ngập, đông và chất lượng thua Hausneo.",
+    "pros": [
+      "Giá mềm (1-2PN tầm 2-3 tỷ), có sổ nên vay được ngân hàng",
+      "Khu Liên Phường Q9 đang lên, gần Global City",
+      "Yên tĩnh, xung quanh là khu biệt thự, dân ở quây quần"
+    ],
+    "cons": [
+      "Khu mưa to dễ ngập; đông, thang máy chờ lâu",
+      "Chất lượng xây dựng thua Hausneo (ban công, vật liệu)",
+      "Flora Anh Đào gần đường dây cao thế + đường siêu bụi"
+    ]
+  },
+  "Lumiere Riverside": {
+    "summary": "Phân khúc cao của Masterise ở Q9, được khen nhiều mảng xanh, yên tĩnh và cho thuê được giá (2PN 30-40tr/tháng). Tuy nhiên review cảnh báo giá tăng nhanh hơn chất lượng ('ở tệ mà giá tăng ngáo'), có phốt vận hành clo bể bơi và rủi ro mua theo tiến độ của Masterise.",
+    "pros": [
+      "Nhiều mảng xanh, yên tĩnh hơn khu lân cận",
+      "Cho thuê được giá (2PN 30-40tr/tháng), khách Tây quan tâm",
+      "Bàn giao vật liệu tốt (bồn cầu Kohler), có vườn rau hữu cơ"
+    ],
+    "cons": [
+      "Giá tăng nhanh hơn chất lượng, review chê 'ở tệ mà giá tăng ngáo'",
+      "Có phốt clo bể bơi; phí vận hành cao",
+      "Mua theo tiến độ Masterise rủi ro (có ca mất nhà mất tiền)"
+    ]
+  },
+  "EHome": {
+    "summary": "Dòng NOXH giá rất mềm của Nam Long (EHome Q9/Bình Tân, trong khu Mizuki), lấp đầy và cho thuê ổn. Điểm trừ lớn: NOXH chưa có sổ nên mua bán vướng, khu đông và an toàn PCCC là nỗi lo (có vụ cháy Ehome Q9 2026).",
+    "pros": [
+      "Giá rất mềm (Ehome S ~1,3 tỷ/40m2, 2PN ~2 tỷ)",
+      "Lấp đầy và cho thuê ổn, trong khu đô thị Mizuki",
+      "Yên tĩnh, thanh toán tiến độ nhẹ tiền ban đầu"
+    ],
+    "cons": [
+      "NOXH chưa có sổ, mua bán/chuyển nhượng vướng pháp lý",
+      "Đông, bí; khu vực từng có vụ cháy (Ehome Q9 2026) gây lo PCCC",
+      "Xa trung tâm, phụ thuộc hạ tầng Bình Chánh/Q9"
+    ]
+  },
+  "Diamond Riverside": {
+    "summary": "Chung cư CĐT 577 trên trục Võ Văn Kiệt (Q8) giá mềm (2-3PN ~3-3,5 tỷ) nhưng review cảnh báo nặng: gần 300 căn nứt tường sau đợt động đất 2025, CĐT nợ thuế đất chưa ra sổ và vật tư bị chê lỏm.",
+    "pros": [
+      "Giá mềm trục Võ Văn Kiệt: 2-3PN ~3-3,5 tỷ",
+      "Vị trí trục lớn, đi Q5/Q7 thuận",
+      "Bàn giao từ 2020, đã ở được ngay"
+    ],
+    "cons": [
+      "Gần 300 căn nứt tường sau đợt động đất 2025 — review đùa 'nếu ko sợ sập thì cứ mua'",
+      "CĐT 577 nợ thuế đất, chưa thấy cửa ra sổ",
+      "Vật tư bị chê lỏm, mật độ cao; thiết kế bị chê cũ"
+    ]
+  },
+  "Precia": {
+    "summary": "Hiếm hoi chung cư Q2 có sổ hồng (Nguyễn Thị Định, gần cao tốc), mới và gần trung tâm, giá tăng đều (2PN từ ~4,2 tỷ 2024 lên 5-6 tỷ 2025-2026). Điểm trừ: layout bị chê, phí quản lý cao không xứng tiện ích và cạnh cao tốc hơi ồn.",
+    "pros": [
+      "Hiếm hoi chung cư Q2 CÓ SỔ HỒNG, mới, gần trung tâm",
+      "Giá tăng đều, thanh khoản thứ cấp tốt",
+      "1PN cũng có sổ — hiếm trong khu"
+    ],
+    "cons": [
+      "Layout bị chê ('thiết kế như shit'), phòng nhỏ",
+      "Phí quản lý mắc, không xứng với tiện ích",
+      "Cạnh cao tốc hơi ồn"
+    ]
+  },
+  "Gem Riverside": {
+    "summary": "Dự án Đất Xanh ở Q2 (Mai Chí Thọ) vị trí đẹp gần metro, nhà cao cấp — nhưng lịch sử pháp lý xấu: từng hủy hợp đồng hàng trăm khách 2018-2024 vì treo xây dựng, rồi mở bán lại giá gấp 3-4 lần (85-100tr/m2). Tỉ suất cho thuê kém so giá vốn.",
+    "pros": [
+      "Vị trí Q2 đẹp, gần metro, nhà cao cấp",
+      "Cho thuê tốt, khách nước ngoài quan tâm",
+      "Đang xây dựng lại, hạ tầng khu SOHO xung quanh đang hoàn thiện"
+    ],
+    "cons": [
+      "Lịch sử xấu: hủy hợp đồng hàng trăm khách 2018-2024, mở bán lại giá gấp 3-4 lần",
+      "Tỉ suất cho thuê kém (6 tỷ cho thuê 13-15tr/tháng)",
+      "Pháp lý từng vướng nhiều năm, rủi ro uy tín CĐT"
+    ]
+  },
+  "Vista Verde": {
+    "summary": "Chung cư Q2 (Phan Văn Đáng) yên tĩnh, gần sông, dân trí cao và đầy đủ tiện ích; 1PN có sổ. Tuy nhiên review chê 2PN ~6 tỷ là overrated — chất lượng xây dựng không tương xứng giá.",
+    "pros": [
+      "Yên tĩnh, gần sông, dân trí cao, đầy đủ tiện ích",
+      "1PN có sổ, cho thuê 15-18tr/tháng ổn",
+      "Gần XLHN, đi lại thuận"
+    ],
+    "cons": [
+      "2PN ~6 tỷ bị chê overrated",
+      "Chất lượng xây dựng không tương xứng giá (nhận xét cư dân)",
+      "Giá thuê từ 2023-2024 không tăng"
+    ]
+  },
+  "City Gate": {
+    "summary": "Chung cư CĐT 577 trên trục Võ Văn Kiệt (Q8) giá cực mềm (2PN 72m2 ~2,5 tỷ) — nhưng City Gate 1 bị review khẳng định 'mãi mãi không ra sổ' do CĐT không nộp thuế đất; City Gate 2 xây dựng ổn hơn nhưng cũng chưa sổ. Hợp thuê hơn hợp mua.",
+    "pros": [
+      "Giá cực mềm: 2PN 72m2 ~2,5 tỷ, vị trí trục Võ Văn Kiệt",
+      "City Gate 2 chất lượng xây dựng được khen ổn",
+      "Đã bàn giao ở được ngay, cho thuê dễ"
+    ],
+    "cons": [
+      "City Gate 1 'mãi mãi không ra sổ' — CĐT 577 không nộp thuế đất",
+      "Trần thấp, thiết kế cũ; Diamond Riverside kế bên nứt tường",
+      "Mua bán vướng pháp lý, chỉ hợp thuê"
+    ]
+  },
+  "Florita": {
+    "summary": "Chung cư Hưng Thịnh ở Q7 vị trí đẹp (gần cầu Nguyễn Khoái vào Q1 nhanh) nhưng rủi ro pháp lý nặng nhất khu: 2/4 block là đất tái định cư không thể ra sổ, có thể bị chuyển thành NOXH chờ thêm ~10 năm; BQT còn bị phốt tiền bạc. Review khuyên check cực kỹ trước khi mua.",
+    "pros": [
+      "Vị trí Q7 đẹp, gần cầu Nguyễn Khoái vào Q1 nhanh",
+      "Giá mềm so khu Q7",
+      "Đã ở được, xung quanh dân cư hiện hữu"
+    ],
+    "cons": [
+      "2/4 block đất tái định cư KHÔNG ra được sổ, có thể chuyển NOXH chờ ~10 năm",
+      "BQT bị phốt tiền bạc nhập nhằng; tường nứt nhiều",
+      "CĐT Hưng Thịnh bị review cảnh báo mập mờ quảng cáo sổ"
+    ]
+  },
+  "Sunrise City": {
+    "summary": "Chung cư Novaland ở Q7 dễ cho thuê được giá (93m2 ~3,7 tỷ) và vị trí trung tâm Q7 — nhưng chưa có sổ (đang làm sổ 2025) và vừa có bệnh viện tâm thần mở ngay bên dưới khiến dân lo ảnh hưởng giá về sau.",
+    "pros": [
+      "Trung tâm Q7, dễ cho thuê được giá",
+      "93m2 ~3,7 tỷ — giá hợp lý so khu",
+      "Đang có tiến triển làm sổ (2025)"
+    ],
+    "cons": [
+      "Chưa có sổ, mua bán vướng",
+      "Bệnh viện tâm thần mở ngay bên dưới — lo ảnh hưởng giá",
+      "Từng bị căng băng rôn phản đối; BQL khu Q7 có phốt thu chi"
+    ]
+  },
+  "Botanica": {
+    "summary": "Chung cư Novaland ở Tân Bình, cạnh công viên Gia Định: không khí trong lành, ít bụi, không ngập dù mưa to và giá vừa (2PN ~3,2 tỷ) — hợp người làm gần sân bay/Tân Phú. Điểm trừ: tường ngoài nứt nhiều, layout phòng ngủ bé và pháp lý chưa rõ.",
+    "pros": [
+      "Cạnh công viên Gia Định: không khí trong lành, ít bụi, không ngập",
+      "Giá vừa: 2PN 1vs ~3,2 tỷ, gần sân bay thuận đi làm",
+      "Khu dân cư hiện hữu, tiện ích xung quanh đầy đủ"
+    ],
+    "cons": [
+      "Tường ngoài nứt ác (review cư dân đi xem)",
+      "Layout phòng ngủ bé, bị chê 'hơi ngu'",
+      "Pháp lý chưa rõ ràng, chưa thấy thông tin ra sổ"
+    ]
   }
 }
