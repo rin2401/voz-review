@@ -11,8 +11,12 @@ binding = "SELF"
 service = "voz-review"
 
 # Hourly crawl at the top of every hour (UTC), matching the Python scheduler.
+# The 10-minute trigger retries broken slice chains quickly: a CPU-killed
+# chain link ghosts the lock only until the short lease expires, and the next
+# trigger resumes every thread from its saved last_page. Attempts while a run
+# holds the lock just skip.
 [triggers]
-crons = ["0 * * * *"]
+crons = ["0 * * * *", "*/10 * * * *"]
 
 [vars]
 ORIGIN_URL = "https://voz-review.vercel.app"
