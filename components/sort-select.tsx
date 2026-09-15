@@ -42,17 +42,23 @@ export function SortSelect({
   }
 
   return (
-    <Select value={current} onValueChange={handleChange}>
-      <SelectTrigger id={id} className={className}>
-        <SelectValue>{label}</SelectValue>
-      </SelectTrigger>
-      <SelectContent>
-        {options.map((option) => (
-          <SelectItem key={option.value} value={option.value}>
-            {option.label}
-          </SelectItem>
-        ))}
-      </SelectContent>
-    </Select>
+    // Wrapper div: Base UI appends a hidden fixed-position input after the
+    // trigger; without the wrapper that input makes the trigger a
+    // :not(:last-child) sibling, so the parent's space-y margin shifts the
+    // dropdown 6px out of line with adjacent inputs.
+    <div className={className}>
+      <Select value={current} onValueChange={handleChange}>
+        <SelectTrigger id={id} className="w-full">
+          <SelectValue>{label}</SelectValue>
+        </SelectTrigger>
+        <SelectContent>
+          {options.map((option) => (
+            <SelectItem key={option.value} value={option.value}>
+              {option.label}
+            </SelectItem>
+          ))}
+        </SelectContent>
+      </Select>
+    </div>
   );
 }
