@@ -20,9 +20,19 @@ export async function buildReplyContext(
 ): Promise<{
   reviewByPostId: Record<string, Dict>;
   replyChildrenByPostId: Record<string, Dict[]>;
+  topLevelReviews: Dict[];
 }> {
   const fetchPostsByIds = fetchers.getPostsByIds ?? getPostsByIds;
   const fetchRepliesForPosts = fetchers.getRepliesForPosts ?? getRepliesForPosts;
+
+  // A reply whose parent is also in the input list renders nested under the
+  // parent's reply tree; exclude it from the flat list to avoid duplicates.
+  const inputPostIds = new Set(
+    reviews.filter((review) => review.voz_post_id).map((review) => String(review.voz_post_id)),
+  );
+  const topLevelReviews = reviews.filter(
+    (review) => !(review.reply_post_id && inputPostIds.has(String(review.reply_post_id))),
+  );
 
   const reviewByPostId: Record<string, Dict> = {};
   for (const review of reviews) {
@@ -75,5 +85,5 @@ export async function buildReplyContext(
     children.sort((a, b) => replySortKey(a) - replySortKey(b));
   }
 
-  return { reviewByPostId, replyChildrenByPostId };
+  return { reviewByPostId, replyChildrenByPostId, topLevelReviews };
 }

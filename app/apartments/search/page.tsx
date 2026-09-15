@@ -23,6 +23,7 @@ export default async function ApartmentSearchPage({
   const activeSort = sort === "likes_desc" ? "likes_desc" : "recent_review";
 
   let results: Record<string, any>[] = [];
+  let topLevelResults: Record<string, any>[] = [];
   let replyChildrenByPostId: Record<string, any[]> = {};
 
   if (q) {
@@ -47,7 +48,7 @@ export default async function ApartmentSearchPage({
         return key(b) - key(a);
       });
     }
-    ({ replyChildrenByPostId } = await buildReplyContext(results, {
+    ({ replyChildrenByPostId, topLevelReviews: topLevelResults } = await buildReplyContext(results, {
       getPostsByIds: getApartmentPostsByIds,
       getRepliesForPosts: getApartmentRepliesForPosts,
     }));
@@ -132,7 +133,7 @@ export default async function ApartmentSearchPage({
       )}
 
       <div className="space-y-3">
-        {results.map((result) => (
+        {topLevelResults.map((result) => (
           <ReviewCard
             key={String(result.voz_post_id ?? result._id ?? Math.random())}
             review={result}

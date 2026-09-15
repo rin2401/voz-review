@@ -99,6 +99,7 @@ export default async function CompanyPage({
   let reviews: Record<string, any>[] = [];
   let offers: Record<string, any>[] = [];
   let replyChildrenByPostId: Record<string, any[]> = {};
+  let topLevelReviews: Record<string, any>[] = [];
   let total = 0;
 
   if (offerOnly) {
@@ -128,7 +129,7 @@ export default async function CompanyPage({
       salaryOnly,
       interviewOnly,
     });
-    ({ replyChildrenByPostId } = await buildReplyContext(reviews));
+    ({ replyChildrenByPostId, topLevelReviews } = await buildReplyContext(reviews));
   }
 
   const pages = Math.ceil(total / LIMIT);
@@ -302,9 +303,9 @@ export default async function CompanyPage({
             )}
           </Card>
         </>
-      ) : reviews.length > 0 ? (
+      ) : topLevelReviews.length > 0 ? (
         <div className="space-y-3">
-          {reviews.map((review) => (
+          {topLevelReviews.map((review) => (
             <ReviewCard key={String(review.voz_post_id ?? review._id ?? Math.random())} review={review} replyChildrenByPostId={replyChildrenByPostId} />
           ))}
         </div>

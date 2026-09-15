@@ -66,7 +66,7 @@ export default async function ApartmentPage({
     apartment: apartmentName,
     threadId: activeThreadId || undefined,
   });
-  const { replyChildrenByPostId } = await buildReplyContext(reviews, {
+  const { replyChildrenByPostId, topLevelReviews } = await buildReplyContext(reviews, {
     getPostsByIds: getApartmentPostsByIds,
     getRepliesForPosts: getApartmentRepliesForPosts,
   });
@@ -166,9 +166,9 @@ export default async function ApartmentPage({
         ))}
       </div>
 
-      {reviews.length > 0 ? (
+      {topLevelReviews.length > 0 ? (
         <div className="space-y-3">
-          {reviews.map((review) => (
+          {topLevelReviews.map((review) => (
             <ReviewCard key={String(review.voz_post_id ?? review._id ?? Math.random())} review={review} replyChildrenByPostId={replyChildrenByPostId} />
           ))}
         </div>
