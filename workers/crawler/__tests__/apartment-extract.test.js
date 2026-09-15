@@ -55,6 +55,12 @@ describe("extractApartment", () => {
     expect(extractor.extractApartment("Dự án: tên gì thế các thím")).toBe("Unknown");
   });
 
+  it("rejects lowercase prose as a label value", () => {
+    expect(extractor.extractApartment("Tên dự án:\nđang trong giai đoạn bàn giao")).toBe(
+      "Unknown",
+    );
+  });
+
   it("falls back to alias candidates found in content", () => {
     expect(extractor.extractApartment("Em đang ở Grand Park gần 2 năm rồi")).toBe(
       "Vinhomes Grand Park",

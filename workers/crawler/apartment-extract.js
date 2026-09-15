@@ -6,6 +6,7 @@ import { apartmentAliasMap, resolveCanonicalApartment } from "./aliases.js";
 import { buildCompanyCandidates } from "./extract.js";
 import {
   WORD_CHARS,
+  pyIsUpper,
   rstripChars,
   splitMax,
 } from "./py_compat.js";
@@ -129,7 +130,9 @@ export function createApartmentExtractor(map = apartmentAliasMap) {
     const normalizeExtractedApartment = (rawApartment) => {
       const apartment = cleanApartmentName(rawApartment);
       const words = apartment.split(/\s+/).filter((w) => w && !["-", "–", "—"].includes(w));
-      if (!apartment) return ["", false];
+      // Complex names are proper nouns; a lowercase start means the label
+      // value is a prose sentence, not a name.
+      if (!apartment || !pyIsUpper(apartment[0])) return ["", false];
       if (words.length > 8) return ["", false];
       if (apartment.length < 3 || apartment.length > 80) return ["", false];
       return [apartment, false];
