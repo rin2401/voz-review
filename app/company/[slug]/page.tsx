@@ -23,6 +23,7 @@ import {
   resolveCompanyName,
 } from "@/lib/db/queries";
 import { getEntityMap } from "@/lib/db/entity-map";
+import type { EntityMap } from "@/lib/entity-links";
 import { buildReplyContext } from "@/lib/replies";
 import { asciiSlug, decodeSlug, formatSalaryMillion } from "@/lib/format";
 import { cn } from "@/lib/utils";
@@ -101,7 +102,7 @@ export default async function CompanyPage({
   let offers: Record<string, any>[] = [];
   let replyChildrenByPostId: Record<string, any[]> = {};
   let topLevelReviews: Record<string, any>[] = [];
-  let entityMap: Record<string, string> = {};
+  let entityMap: EntityMap = {};
   let total = 0;
 
   if (offerOnly) {

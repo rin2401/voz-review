@@ -4,7 +4,7 @@
 
 import { normalizeAliases as normalizeAliasesJs } from "../../workers/crawler/aliases.js";
 import { asciiSlug } from "../format";
-import { buildApartmentEntityMap } from "../entity-links";
+import { buildApartmentEntityMap, type EntityMap } from "../entity-links";
 import { getDb } from "./client";
 
 export type Dict = Record<string, any>;
@@ -178,7 +178,7 @@ export async function getApartmentThreadIds(apartment: string): Promise<string[]
 }
 
 /** Entity-linking map (name/alias -> detail href) for all known apartments. */
-export async function getApartmentEntityMap(): Promise<Record<string, string>> {
+export async function getApartmentEntityMap(): Promise<EntityMap> {
   const db = await getDb();
   const docs = await db
     .collection("apartments")

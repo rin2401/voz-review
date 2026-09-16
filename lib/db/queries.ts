@@ -6,7 +6,7 @@
 import type { Db } from "mongodb";
 import { normalizeAliases as normalizeAliasesJs } from "../../workers/crawler/aliases.js";
 import { asciiSlug } from "../format";
-import { buildCompanyEntityMap } from "../entity-links";
+import { buildCompanyEntityMap, type EntityMap } from "../entity-links";
 import {
   normalizeReviewCompanies,
   prepareReviewDocument,
@@ -274,7 +274,7 @@ export async function resolveCompanyName(slugOrName: string): Promise<string> {
 }
 
 /** Clean company names + aliases mapped to their detail href, for entity linking. */
-export async function getCompanyEntityMap(): Promise<Record<string, string>> {
+export async function getCompanyEntityMap(): Promise<EntityMap> {
   const db = await getDb();
   const docs = await db
     .collection("companies")

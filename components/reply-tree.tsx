@@ -6,7 +6,7 @@ import Link from "next/link";
 import { buttonVariants } from "@/components/ui/button";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import type { Dict } from "@/lib/db/queries";
-import { createEntityLinker } from "@/lib/entity-links";
+import { createEntityLinker, type EntityMap } from "@/lib/entity-links";
 import { asciiSlug, formatDtVn } from "@/lib/format";
 import { cn } from "@/lib/utils";
 
@@ -21,7 +21,7 @@ function ReplyNode({
   childrenByPostId: Record<string, Dict[]>;
   defaultVisible: number;
   depth: number;
-  entityMap?: Record<string, string>;
+  entityMap?: EntityMap;
 }) {
   const [showAll, setShowAll] = useState(false);
   const children = childrenByPostId[String(node.voz_post_id)] || [];
@@ -54,6 +54,7 @@ function ReplyNode({
                   <Link
                     key={index}
                     href={segment.href}
+                    title={segment.title}
                     className="font-medium text-blue-600 underline underline-offset-2 dark:text-blue-400"
                   >
                     {segment.text}
@@ -103,7 +104,7 @@ export function ReplyTree({
   children: Dict[];
   childrenByPostId: Record<string, Dict[]>;
   defaultVisible?: number;
-  entityMap?: Record<string, string>;
+  entityMap?: EntityMap;
 }) {
   const [open, setOpen] = useState(false);
 

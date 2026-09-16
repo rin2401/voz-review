@@ -68,10 +68,10 @@ describe("buildCompanyMatch", () => {
 
 describe("entity links", () => {
   const entityMap = {
-    "vinhomes grand park": "/apartments/Vinhomes-Grand-Park",
-    "grand park": "/apartments/Vinhomes-Grand-Park",
-    "q7 riverside": "/apartments/Q7-Riverside",
-    "bcons miền đông": "/apartments/Bcons-Mien-Dong",
+    "vinhomes grand park": { href: "/apartments/Vinhomes-Grand-Park", name: "Vinhomes Grand Park" },
+    "grand park": { href: "/apartments/Vinhomes-Grand-Park", name: "Vinhomes Grand Park" },
+    "q7 riverside": { href: "/apartments/Q7-Riverside", name: "Q7 Riverside" },
+    "bcons miền đông": { href: "/apartments/Bcons-Mien-Dong", name: "Bcons Miền Đông" },
   };
 
   it("builds the map from names and aliases", () => {
@@ -79,10 +79,13 @@ describe("entity links", () => {
       { name: "Vinhomes Grand Park", aliases: ["Grand Park", "VGP"] },
       { name: "Q7 Riverside", aliases: [] },
     ]);
-    expect(map["vinhomes grand park"]).toBe("/apartments/Vinhomes-Grand-Park");
-    expect(map["grand park"]).toBe("/apartments/Vinhomes-Grand-Park");
-    expect(map["vgp"]).toBe("/apartments/Vinhomes-Grand-Park");
-    expect(map["q7 riverside"]).toBe("/apartments/Q7-Riverside");
+    expect(map["vinhomes grand park"]).toEqual({
+      href: "/apartments/Vinhomes-Grand-Park",
+      name: "Vinhomes Grand Park",
+    });
+    expect(map["grand park"]).toEqual(map["vinhomes grand park"]);
+    expect(map["vgp"]).toEqual(map["vinhomes grand park"]);
+    expect(map["q7 riverside"]).toEqual({ href: "/apartments/Q7-Riverside", name: "Q7 Riverside" });
   });
 
   it("links known entity mentions and keeps the rest as plain text", () => {
@@ -91,16 +94,24 @@ describe("entity links", () => {
     );
     expect(segments).toEqual([
       { text: "Mình đang ở " },
-      { text: "Q7 Riverside", href: "/apartments/Q7-Riverside" },
+      { text: "Q7 Riverside", href: "/apartments/Q7-Riverside", title: "Q7 Riverside" },
       { text: ", định chuyển sang " },
-      { text: "Vinhomes Grand Park", href: "/apartments/Vinhomes-Grand-Park" },
+      {
+        text: "Vinhomes Grand Park",
+        href: "/apartments/Vinhomes-Grand-Park",
+        title: "Vinhomes Grand Park",
+      },
       { text: "." },
     ]);
   });
 
-  it("prefers the longest match (canonical over alias)", () => {
+  it("carries the canonical name as tooltip for alias mentions", () => {
     const segments = createEntityLinker(entityMap).split("Grand Park gần Q7");
-    expect(segments[0]).toEqual({ text: "Grand Park", href: "/apartments/Vinhomes-Grand-Park" });
+    expect(segments[0]).toEqual({
+      text: "Grand Park",
+      href: "/apartments/Vinhomes-Grand-Park",
+      title: "Vinhomes Grand Park",
+    });
   });
 
   it("does not link partial words or mentions inside URLs", () => {
@@ -116,7 +127,11 @@ describe("entity links", () => {
 
   it("matches Vietnamese diacritics case-insensitively", () => {
     const segments = createEntityLinker(entityMap).split("bcons miền đông ở đâu");
-    expect(segments[0]).toEqual({ text: "bcons miền đông", href: "/apartments/Bcons-Mien-Dong" });
+    expect(segments[0]).toEqual({
+      text: "bcons miền đông",
+      href: "/apartments/Bcons-Mien-Dong",
+      title: "Bcons Miền Đông",
+    });
   });
 
   it("returns plain text when the map is empty", () => {
@@ -155,8 +170,8 @@ describe("company name filter", () => {
       { name: "A***s", aliases: ["Junk"] },
     ]);
     expect(map).toEqual({
-      "fpt software": "/company/FPT-Software",
-      fsoft: "/company/FPT-Software",
+      "fpt software": { href: "/company/FPT-Software", name: "FPT Software" },
+      fsoft: { href: "/company/FPT-Software", name: "FPT Software" },
     });
   });
 });

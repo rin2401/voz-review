@@ -2,6 +2,7 @@ import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { ReadMore } from "@/components/read-more";
 import { CompanyChips, ReplyTree } from "@/components/reply-tree";
 import type { Dict } from "@/lib/db/queries";
+import type { EntityMap } from "@/lib/entity-links";
 import { formatDtVn } from "@/lib/format";
 
 export function ReviewCard({
@@ -13,7 +14,7 @@ export function ReviewCard({
   review: Dict;
   replyChildrenByPostId: Record<string, Dict[]>;
   defaultVisibleReplies?: number;
-  entityMap?: Record<string, string>;
+  entityMap?: EntityMap;
 }) {
   const companies: string[] = review.companies || [];
   const parentReview = review.parent_review;

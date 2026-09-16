@@ -1,3 +1,4 @@
+import type { EntityMap } from "../entity-links";
 import { getApartmentEntityMap } from "./apartment-queries";
 import { getCompanyEntityMap } from "./queries";
 
@@ -7,7 +8,7 @@ import { getCompanyEntityMap } from "./queries";
  * current page's own entity stays linkable: comment threads read more
  * like discussions than encyclopedia articles.
  */
-export async function getEntityMap(): Promise<Record<string, string>> {
+export async function getEntityMap(): Promise<EntityMap> {
   const [apartmentMap, companyMap] = await Promise.all([
     getApartmentEntityMap(),
     getCompanyEntityMap(),

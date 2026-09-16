@@ -4,23 +4,27 @@
 
 import { asciiSlug } from "./format";
 
-export type EntitySegment = { text: string; href?: string };
+/** Entity map value: link target + canonical name for the hover tooltip. */
+export type EntityLink = { href: string; name: string };
+export type EntityMap = Record<string, EntityLink>;
+
+export type EntitySegment = { text: string; href?: string; title?: string };
 
 /** Map apartment names + aliases (lowercased) to their detail page href. */
 export function buildApartmentEntityMap(
   apartments: { name: string; aliases?: string[] | null }[],
-): Record<string, string> {
-  const map: Record<string, string> = {};
+): EntityMap {
+  const map: EntityMap = {};
   for (const apartment of apartments) {
     const name = (apartment.name || "").trim();
     if (!name) continue;
-    const href = `/apartments/${asciiSlug(name)}`;
-    map[name.toLowerCase()] = href;
+    const link: EntityLink = { href: `/apartments/${asciiSlug(name)}`, name };
+    map[name.toLowerCase()] = link;
     for (const rawAlias of apartment.aliases || []) {
       const alias = (rawAlias || "").trim();
       if (!alias) continue;
       const key = alias.toLowerCase();
-      if (!map[key]) map[key] = href;
+      if (!map[key]) map[key] = link;
     }
   }
   return map;
@@ -64,18 +68,18 @@ export function isCleanCompanyName(name: string): boolean {
 /** Map clean company names + aliases (lowercased) to their detail href. */
 export function buildCompanyEntityMap(
   companies: { name: string; aliases?: string[] | null }[],
-): Record<string, string> {
-  const map: Record<string, string> = {};
+): EntityMap {
+  const map: EntityMap = {};
   for (const company of companies) {
     const name = (company.name || "").trim();
     if (!name || !isCleanCompanyName(name)) continue;
-    const href = `/company/${asciiSlug(name)}`;
-    map[name.toLowerCase()] = href;
+    const link: EntityLink = { href: `/company/${asciiSlug(name)}`, name };
+    map[name.toLowerCase()] = link;
     for (const rawAlias of company.aliases || []) {
       const alias = (rawAlias || "").trim();
       if (!alias || !isCleanCompanyName(alias)) continue;
       const key = alias.toLowerCase();
-      if (!map[key]) map[key] = href;
+      if (!map[key]) map[key] = link;
     }
   }
   return map;
@@ -89,7 +93,7 @@ const URL_PATTERN = /https?:\/\/\S+|www\.\S+/gi;
  * "Grand Park"); URLs are masked out; boundaries use unicode letter/number
  * classes so Vietnamese diacritics behave (\b is ASCII-only).
  */
-export function createEntityLinker(entityMap: Record<string, string>) {
+export function createEntityLinker(entityMap: EntityMap) {
   const keys = Object.keys(entityMap)
     .filter((key) => key.length >= 3)
     .sort((a, b) => b.length - a.length)
@@ -108,7 +112,8 @@ export function createEntityLinker(entityMap: Record<string, string>) {
     for (const match of plain.matchAll(pattern)) {
       const index = match.index ?? 0;
       if (index > last) segments.push({ text: plain.slice(last, index) });
-      segments.push({ text: match[0], href: entityMap[match[0].toLowerCase()] });
+      const link = entityMap[match[0].toLowerCase()];
+      segments.push({ text: match[0], href: link.href, title: link.name });
       last = index + match[0].length;
     }
     if (last < plain.length) segments.push({ text: plain.slice(last) });

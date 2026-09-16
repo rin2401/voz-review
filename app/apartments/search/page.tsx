@@ -10,6 +10,7 @@ import {
 } from "@/lib/db/apartment-queries";
 import { getEntityMap } from "@/lib/db/entity-map";
 import { buildReplyContext } from "@/lib/replies";
+import type { EntityMap } from "@/lib/entity-links";
 
 export const dynamic = "force-dynamic";
 
@@ -26,7 +27,7 @@ export default async function ApartmentSearchPage({
   let results: Record<string, any>[] = [];
   let topLevelResults: Record<string, any>[] = [];
   let replyChildrenByPostId: Record<string, any[]> = {};
-  let entityMap: Record<string, string> = {};
+  let entityMap: EntityMap = {};
 
   if (q) {
     results = await searchApartmentReviews(q, 50);

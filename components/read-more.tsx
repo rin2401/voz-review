@@ -3,7 +3,7 @@
 import { useMemo, useState } from "react";
 import Link from "next/link";
 
-import { createEntityLinker } from "@/lib/entity-links";
+import { createEntityLinker, type EntityMap } from "@/lib/entity-links";
 import { cn } from "@/lib/utils";
 
 export function ReadMore({
@@ -13,7 +13,7 @@ export function ReadMore({
 }: {
   content: string;
   limit?: number;
-  entityMap?: Record<string, string>;
+  entityMap?: EntityMap;
 }) {
   const [expanded, setExpanded] = useState(false);
   const isLong = content.length > limit;
@@ -36,6 +36,7 @@ export function ReadMore({
                 <Link
                   key={index}
                   href={segment.href}
+                  title={segment.title}
                   className="font-medium text-blue-600 underline underline-offset-2 dark:text-blue-400"
                 >
                   {segment.text}
