@@ -31,11 +31,16 @@ function subtreeHasPost(
   return false;
 }
 
+// Cap branch indentation so deep threads stay readable on narrow screens;
+// beyond this many nested branch indents, subtrees render flat.
+const MAX_BRANCH_INDENT = 3;
+
 function ReplyNode({
   node,
   childrenByPostId,
   defaultVisible,
   depth,
+  indentLevel = 0,
   entityMap,
   convBasePath,
   highlightPostId,
@@ -44,6 +49,7 @@ function ReplyNode({
   childrenByPostId: Record<string, Dict[]>;
   defaultVisible: number;
   depth: number;
+  indentLevel?: number;
   entityMap?: EntityMap;
   convBasePath?: string;
   highlightPostId?: string;
@@ -61,6 +67,7 @@ function ReplyNode({
   // Linear chains (single child) stack flat instead of stair-casing on deep
   // threads; only real branches indent under a thread line.
   const branches = children.length > 1;
+  const indents = branches && indentLevel < MAX_BRANCH_INDENT;
   const containsHighlight = useMemo(
     () => subtreeHasPost(childrenByPostId, String(node.voz_post_id ?? ""), highlightPostId),
     [childrenByPostId, node.voz_post_id, highlightPostId],
@@ -126,14 +133,14 @@ function ReplyNode({
         <button
           type="button"
           onClick={() => setExpanded((value) => !value)}
-          className="ml-1 flex items-center gap-1 text-xs font-medium text-muted-foreground hover:text-foreground hover:underline"
+          className="ml-1 flex items-center gap-1 py-1 text-xs font-medium text-muted-foreground hover:text-foreground hover:underline"
         >
           <span className={cn("inline-block transition-transform", expanded && "rotate-90")}>▶</span>
           {expanded ? `Ẩn ${children.length} reply` : `${children.length} reply`}
         </button>
       )}
       {children.length > 0 && expanded && (
-        <div className={cn("space-y-1.5", branches && "ml-3 border-l pl-3")}>
+        <div className={cn("space-y-1.5", indents && "ml-2 border-l pl-2 sm:ml-3 sm:pl-3")}>
           {visibleChildren.map((child) => (
             <ReplyNode
               key={String(child.voz_post_id ?? child._id ?? Math.random())}
@@ -141,6 +148,7 @@ function ReplyNode({
               childrenByPostId={childrenByPostId}
               defaultVisible={defaultVisible}
               depth={depth + 1}
+              indentLevel={indents ? indentLevel + 1 : indentLevel}
               entityMap={entityMap}
               convBasePath={convBasePath}
               highlightPostId={highlightPostId}
@@ -205,7 +213,7 @@ export function ReplyTree({
         ) : null}
       </div>
       <CollapsibleContent className="mt-2">
-        <div className="ml-3 space-y-1.5 border-l pl-3">
+        <div className="ml-2 space-y-1.5 border-l pl-2 sm:ml-3 sm:pl-3">
           {children.map((child) => (
             <ReplyNode
               key={String(child.voz_post_id ?? Math.random())}
@@ -213,6 +221,7 @@ export function ReplyTree({
               childrenByPostId={childrenByPostId}
               defaultVisible={defaultVisible}
               depth={1}
+              indentLevel={1}
               entityMap={entityMap}
               convBasePath={convBasePath}
               highlightPostId={highlightPostId}
