@@ -1,5 +1,3 @@
-import { Card, CardContent, CardHeader } from "@/components/ui/card";
-
 import { ApartmentsTable } from "./apartments-table";
 import { getAllApartments } from "@/lib/db/apartment-queries";
 
@@ -36,21 +34,11 @@ export default async function ApartmentsPage({
   }));
 
   return (
-    <div className="space-y-4">
-      <Card>
-        <CardHeader className="flex flex-row items-center justify-between space-y-0">
-          <h2 className="text-lg font-semibold">🏘️ Apartments</h2>
-          <span className="text-sm text-muted-foreground">{apartments.length} results</span>
-        </CardHeader>
-        <CardContent className="p-0">
-          <ApartmentsTable
-            apartments={rows}
-            q={q}
-            initialSort={sortKey}
-            sortOptions={SORT_OPTIONS}
-          />
-        </CardContent>
-      </Card>
-    </div>
+    <ApartmentsTable
+      apartments={rows}
+      q={q}
+      initialSort={sortKey}
+      sortOptions={SORT_OPTIONS}
+    />
   );
 }

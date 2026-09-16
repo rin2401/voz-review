@@ -5,6 +5,7 @@ import { useMemo, useState } from "react";
 
 import { SortSelect } from "@/components/sort-select";
 import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import {
   Select,
@@ -191,8 +192,9 @@ export function ApartmentsTable({
   }
 
   return (
-    <div>
-      <div className="space-y-3 px-4 pt-4">
+    <div className="space-y-4">
+      <Card>
+        <CardContent className="space-y-3 pt-6">
         <form
           action="/apartments/search"
           method="get"
@@ -241,8 +243,7 @@ export function ApartmentsTable({
           </div>
           <Button type="submit">Apply</Button>
         </form>
-      </div>
-      <div className="flex flex-wrap items-end gap-3 px-4 pt-4">
+        <div className="flex flex-wrap items-end gap-3">
         <FilterSelect
           label="Quận"
           value={filters.district}
@@ -285,7 +286,15 @@ export function ApartmentsTable({
           </div>
         )}
       </div>
-      <Table>
+        </CardContent>
+      </Card>
+      <Card>
+        <CardHeader className="flex flex-row items-center justify-between space-y-0">
+          <h2 className="text-lg font-semibold">🏘️ Apartments</h2>
+          <span className="text-sm text-muted-foreground">{apartments.length} results</span>
+        </CardHeader>
+        <CardContent className="p-0">
+          <Table>
       <TableHeader>
         <TableRow>
           {COLUMNS.map((column) => (
@@ -371,7 +380,9 @@ export function ApartmentsTable({
           ))
         )}
       </TableBody>
-      </Table>
+          </Table>
+        </CardContent>
+      </Card>
     </div>
   );
 }

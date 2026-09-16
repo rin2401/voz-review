@@ -87,6 +87,9 @@ const PROVINCE_ABBR: Record<string, string> = {
   "Long An": "LA",
   "Đồng Nai": "ĐN",
   "Tây Ninh": "TN",
+  "Khánh Hòa": "KH",
+  "Bà Rịa Vũng Tàu": "BRVT",
+  "Bà Rịa - Vũng Tàu": "BRVT",
 };
 
 /**
@@ -96,13 +99,18 @@ const PROVINCE_ABBR: Record<string, string> = {
  */
 export function districtLabel(location: string | null | undefined): string {
   if (!location) return "";
-  const text = location.trim();
+  // bds addresses sometimes come NFD-decomposed ("quận Thủ Đức") — recompose.
+  const text = location.trim().normalize("NFC");
 
   const quan = text.match(/quận\s+([^,()]+)/i);
   if (quan) {
-    const name = quan[1].trim();
+    // "Quận 9 / Đồng Nai (Novaland)" → keep only the first part.
+    const name = quan[1].split("/")[0].trim();
     // Pre-2021 "quận Thủ Đức" — Thủ Đức is its own city-level unit now.
-    return /thủ đức/i.test(name) ? "Thủ Đức" : `Q.${name}`;
+    if (/thủ đức/i.test(name)) return "Thủ Đức";
+    // Named HCMC districts read better bare: "quận Bình Thạnh" → "Bình Thạnh".
+    if (HCMC_DISTRICTS.some((d) => d.toLowerCase() === name.toLowerCase())) return name;
+    return `Q.${name}`;
   }
 
   // Abbreviated "Q9" / "Q.9" style, e.g. "TP.HCM (Q9, Q7)".
@@ -110,7 +118,14 @@ export function districtLabel(location: string | null | undefined): string {
   if (qAbbr) return `Q.${qAbbr[1]}`;
 
   const huyen = text.match(/huyện\s+([^,()]+)/i);
-  if (huyen) return huyen[1].trim();
+  if (huyen) {
+    const name = huyen[1].trim();
+    // "Huyện Bến Lức, Long An" → "Bến Lức (LA)"; HCMC huyện stay bare.
+    const province = Object.entries(PROVINCE_ABBR).find(([p]) =>
+      new RegExp(`,\\s*(?:tỉnh\\s+)?${p}\\b`, "i").test(text),
+    );
+    return province ? `${name} (${province[1]})` : name;
+  }
 
   if (/thành phố\s+thủ đức/i.test(text)) return "Thủ Đức";
 
@@ -118,7 +133,10 @@ export function districtLabel(location: string | null | undefined): string {
   for (const [province, abbr] of Object.entries(PROVINCE_ABBR)) {
     const before = new RegExp(`([^,()]+),\\s*(?:tỉnh\\s+|TP\\.?\\s*)?${province}`, "i").exec(text);
     if (before) {
-      const name = before[1].replace(/^(?:thành phố|TP\\.?)\s+/i, "").trim();
+      const name = before[1]
+        .trim()
+        .replace(/^(?:thành phố|thị xã|TP\.?)\s+/i, "")
+        .trim();
       if (name) return `${name} (${abbr})`;
     }
   }
@@ -130,19 +148,99 @@ export function districtLabel(location: string | null | undefined): string {
   return district || "";
 }
 
+// Canonical brand names for developers that bds lists under different legal
+// entities per project (e.g. "Đầu tư Nam Long" vs "Tập đoàn Nam Long").
+// Keys match the shortDeveloper() output exactly.
+const DEVELOPER_CANON: Record<string, string> = {
+  "Tập đoàn Hưng Thịnh": "Hưng Thịnh",
+  "Novaland Group": "Novaland",
+  "Đầu tư Xây dựng BCONS": "Bcons",
+  "BẤT ĐỘNG SẢN BCONS PS": "Bcons",
+  "Song Hỷ Quốc Tế (thuộc Tập đoàn Bcons)": "Bcons",
+  "Phát Triển Phú Mỹ Hưng": "Phú Mỹ Hưng",
+  "CapitaLand Development (Việt Nam)": "CapitaLand",
+  "Tập đoàn Vingroup": "Vingroup",
+  "Đầu Tư và Kinh Doanh nhà Khang Điền": "Khang Điền",
+  "Địa ốc Sài Gòn Thương Tín (TTC Land)": "TTC Land",
+  "Tập đoàn Đất Xanh": "Đất Xanh",
+  "Đầu tư Nam Long": "Nam Long",
+  "Tập đoàn Nam Long": "Nam Long",
+  "Keppel Land Việt Nam": "Keppel Land",
+  "Đầu tư & Phát triển Bất động sản An Gia": "An Gia",
+  "Gamuda Land Việt Nam": "Gamuda Land",
+  "Đầu tư LDG": "LDG",
+  "Xây dựng và Kinh doanh Nhà Điền Phúc Thành": "Điền Phúc Thành",
+  "Địa ốc Phúc Yên": "Phúc Yên",
+  "Tập đoàn Phúc Yên": "Phúc Yên",
+  "Tecco Sài Gòn": "Tecco",
+  "Tập đoàn Tecco": "Tecco",
+  "DHA Corporation": "DHA",
+  "MTV Đầu tư DHA": "DHA",
+  "MTV Setia Lái Thiêu": "Setia",
+  "Thương mại Địa ốc Việt (Vietcomreal)": "Vietcomreal",
+  "Tập đoàn Đông Dương (Indochina Group)": "Indochina Group",
+  "TẬP ĐOÀN ĐỊA ỐC VẠN XUÂN": "Vạn Xuân",
+  "Đầu tư TBS Land": "TBS Land",
+  "Đầu tư Địa ốc Đại Quang Minh": "Đại Quang Minh",
+  "Phát triển Bất động sản Refico": "Refico",
+  "Đầu tư và Phát triển Nhà đất Cotec": "Cotec",
+  "Phát triển Bất động sản Phát Đạt": "Phát Đạt",
+  "Địa ốc Khải Hoàn Land": "Khải Hoàn",
+  "Địa ốc Sacom": "Sacom",
+  "Đầu tư và Xây dựng Xuân Mai": "Xuân Mai",
+  "Đầu Tư Xây Dựng và Phát Triển Đô Thị Sông Đà": "Sông Đà",
+  "Tập đoàn Sun Group": "Sun Group",
+  "Tập đoàn Sunshine": "Sunshine",
+  "Tập đoàn Ecopark": "Ecopark",
+  "Tập đoàn Trung Thủy": "Trung Thủy",
+  "Tập đoàn Hưng Thuận": "Hưng Thuận",
+  "Tập đoàn Pi Group": "Pi Group",
+  "tập đoàn S.S.G": "S.S.G",
+  "ĐẦU TƯ BẤT ĐỘNG SẢN HƯNG LỘC PHÁT": "Hưng Lộc Phát",
+  "ĐỊA ỐC PHÚ ĐÔNG": "Phú Đông",
+  "Đầu tư - Kinh Doanh Nhà (INTRESCO)": "Intresco",
+  "Tư vấn -Thương mại - Dịch vụ Địa ốc Hoàng Quân": "Hoàng Quân",
+  "Xây dựng - Kinh doanh nhà Gia Hòa": "Gia Hòa",
+  "Đầu tư Địa ốc Khang Nam": "Khang Nam",
+  "Đầu tư Địa ốc Khang Việt": "Khang Việt",
+  "Đầu tư Địa ốc Tiến Phát": "Tiến Phát",
+  "Đầu tư Bất Động Sản Rio Land": "Rio Land",
+  "Đầu tư Bất động sản Phúc An Gia": "Phúc An Gia",
+  "Đầu tư Phát triển Thịnh Hưng Holdings": "Thịnh Hưng",
+  "Gotec Việt Nam": "Gotec",
+  "EZLAND Việt Nam": "EZLAND",
+  "IDE Việt Nam": "IDE",
+  "DCT Partner Việt Nam": "DCT Partner",
+  "Kusto Home (Kusto Group)": "Kusto",
+  "Bất động sản Hiền Phúc (thuộc Tập đoàn Lê Phong)": "Hiền Phúc (Lê Phong)",
+  "Đầu tư Phát triển Đô thị A&T Bình Dương (thuộc A&T Group)": "A&T Group",
+  "Dịch vụ thương mại - Sản xuất - Xây dựng Đông Mê Kông": "Đông Mê Kông",
+  "Đầu tư Thương mại Dịch vụ Địa ôc Thái Dương": "Thái Dương",
+  "Thương mại - Dịch vụ - Xây dựng - Kinh doanh Nhà Vạn Thái": "Vạn Thái",
+  "Xây dựng - Giao thông - Thương mại Bảo Sơn": "Bảo Sơn",
+  "Sản xuất và Thương mại Phúc Đạt": "Phúc Đạt",
+  "Xây Dựng Thương mại Thuận Việt": "Thuận Việt",
+  "Đầu tư và Xây dựng Số 8 - CiC 8": "CiC 8",
+  "Đầu tư xây dựng Phú Sơn Thuận": "Phú Sơn Thuận",
+  "Đầu tư Năm Bảy Bảy": "577",
+  "PHÁT TRIỂN VSIP-SEMBCORP GATEWAY": "VSIP-SEMBCORP",
+};
+
 /**
  * Compact developer name for the apartments list table:
- * "Công ty Cổ phần Đầu tư Xây dựng BCONS" → "Đầu tư Xây dựng BCONS".
+ * "Công ty Cổ phần Đầu tư Xây dựng BCONS" → "Bcons".
  */
 export function shortDeveloper(developer: string | null | undefined): string {
   if (!developer) return "";
-  return developer
+  const short = developer
+    .normalize("NFC")
     .replace(/^Công ty\s+(?:CP|Cổ phần|TNHH|Trách nhiệm hữu hạn)\s+/i, "")
     .replace(/^Công ty\s+/i, "")
     .replace(/^CTCP\s+|^Cty\s+CP\s+/i, "")
     .replace(/\s+Cổ phần\b/gi, " CP")
     .replace(/\s+Trách nhiệm hữu hạn\b/gi, " TNHH")
     .trim();
+  return DEVELOPER_CANON[short] ?? short;
 }
 
 export function schedulerStatusLabel(state: Record<string, any> | null | undefined): string {
