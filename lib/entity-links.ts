@@ -10,6 +10,24 @@ export type EntityMap = Record<string, EntityLink>;
 
 export type EntitySegment = { text: string; href?: string; title?: string };
 
+/**
+ * Conversation context: the apartment whose page/conversation the text is
+ * rendered in. Short family aliases ("Topaz", "Lumiere", "Bcons"...) point at
+ * a corpus-dominant default project, but inside a conversation about a
+ * sibling of the same family they should link to that sibling instead.
+ */
+export type EntityLinkContext = { name: string };
+
+/** Lowercase, diacritic-folded word tokens for subset comparison. */
+function foldWords(value: string): string[] {
+  const folded = (value || "")
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .replace(/đ/g, "d");
+  return folded.split(/[^\p{L}\p{N}]+/u).filter(Boolean);
+}
+
 /** Map apartment names + aliases (lowercased) to their detail page href. */
 export function buildApartmentEntityMap(
   apartments: { name: string; aliases?: string[] | null }[],
@@ -93,7 +111,7 @@ const URL_PATTERN = /https?:\/\/\S+|www\.\S+/gi;
  * "Grand Park"); URLs are masked out; boundaries use unicode letter/number
  * classes so Vietnamese diacritics behave (\b is ASCII-only).
  */
-export function createEntityLinker(entityMap: EntityMap) {
+export function createEntityLinker(entityMap: EntityMap, context?: EntityLinkContext) {
   const keys = Object.keys(entityMap)
     .filter((key) => key.length >= 3)
     .sort((a, b) => b.length - a.length)
@@ -101,6 +119,30 @@ export function createEntityLinker(entityMap: EntityMap) {
   const pattern = keys.length
     ? new RegExp(`(?<![\\p{L}\\p{N}])(${keys.join("|")})(?![\\p{L}\\p{N}])`, "giu")
     : null;
+
+  // Same-conversation resolution: when every word of a matched short alias
+  // also appears in the context apartment's name ("Topaz" ⊂ "Topaz City",
+  // "Lumiere" ⊂ "Lumiere Riverside"), the mention almost surely refers to
+  // the context apartment, not the alias's default target. Full names of
+  // other projects are never overridden ("Bcons City" stays Bcons City even
+  // on the Bcons Center City page), so sibling comparisons keep their links.
+  const contextWords = context ? new Set(foldWords(context.name)) : null;
+  const contextLink: EntityLink | null = context
+    ? { href: `/apartments/${asciiSlug(context.name)}`, name: context.name }
+    : null;
+
+  function resolveLink(matched: string): EntityLink {
+    const key = matched.toLowerCase();
+    const link = entityMap[key];
+    if (!contextWords || !contextLink || !link) return link;
+    const isCanonicalName = link.name.toLowerCase() === key;
+    if (isCanonicalName || !link.href.startsWith("/apartments/")) return link;
+    const words = foldWords(matched);
+    if (words.length && words.every((word) => contextWords.has(word))) {
+      return contextLink;
+    }
+    return link;
+  }
 
   function pushPlain(segments: EntitySegment[], plain: string) {
     if (!plain) return;
@@ -112,7 +154,7 @@ export function createEntityLinker(entityMap: EntityMap) {
     for (const match of plain.matchAll(pattern)) {
       const index = match.index ?? 0;
       if (index > last) segments.push({ text: plain.slice(last, index) });
-      const link = entityMap[match[0].toLowerCase()];
+      const link = resolveLink(match[0]);
       segments.push({ text: match[0], href: link.href, title: link.name });
       last = index + match[0].length;
     }

@@ -138,6 +138,49 @@ describe("entity links", () => {
     const segments = createEntityLinker({}).split("Q7 Riverside ở đâu");
     expect(segments).toEqual([{ text: "Q7 Riverside ở đâu" }]);
   });
+
+  it("re-points short family aliases to the conversation's own apartment", () => {
+    const map = {
+      "bcons green topaz": { href: "/apartments/Bcons-Green-Topaz", name: "Bcons Green Topaz" },
+      topaz: { href: "/apartments/Bcons-Green-Topaz", name: "Bcons Green Topaz" },
+      "topaz city": { href: "/apartments/Topaz-City", name: "Topaz City" },
+    };
+    const inTopazCity = createEntityLinker(map, { name: "Topaz City" }).split("Topaz mình thấy ổn");
+    expect(inTopazCity[0]).toEqual({
+      text: "Topaz",
+      href: "/apartments/Topaz-City",
+      title: "Topaz City",
+    });
+    // Without context the alias keeps its corpus-dominant default target.
+    const noContext = createEntityLinker(map).split("Topaz mình thấy ổn");
+    expect(noContext[0].href).toBe("/apartments/Bcons-Green-Topaz");
+    // Short forms that are NOT a subset of the context keep their target:
+    // on the Bcons Center City page "Topaz" still means Bcons Green Topaz.
+    const inCenterCity = createEntityLinker(map, { name: "Bcons Center City" }).split(
+      "Topaz bên kia rẻ hơn",
+    );
+    expect(inCenterCity[0].href).toBe("/apartments/Bcons-Green-Topaz");
+  });
+
+  it("never overrides full names of sibling projects", () => {
+    const map = {
+      "bcons city": { href: "/apartments/Bcons-City", name: "Bcons City" },
+      "bcons center city": { href: "/apartments/Bcons-Center-City", name: "Bcons Center City" },
+    };
+    const segments = createEntityLinker(map, { name: "Bcons Center City" }).split(
+      "so Bcons City với Bcons Center City",
+    );
+    expect(segments[1]).toEqual({
+      text: "Bcons City",
+      href: "/apartments/Bcons-City",
+      title: "Bcons City",
+    });
+    expect(segments[3]).toEqual({
+      text: "Bcons Center City",
+      href: "/apartments/Bcons-Center-City",
+      title: "Bcons Center City",
+    });
+  });
 });
 
 describe("company name filter", () => {

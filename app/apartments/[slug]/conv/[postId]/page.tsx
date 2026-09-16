@@ -63,6 +63,7 @@ export default async function ConversationPage({
         defaultOpenReplies
         highlightPostId={postId}
         entityMap={entityMap}
+        contextName={apartmentName}
       />
       {replyCount === 0 && (
         <Card>

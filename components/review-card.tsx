@@ -14,6 +14,7 @@ export function ReviewCard({
   defaultVisibleReplies = 3,
   defaultOpenReplies = false,
   entityMap,
+  contextName,
   convBasePath,
   highlightPostId,
 }: {
@@ -22,6 +23,7 @@ export function ReviewCard({
   defaultVisibleReplies?: number;
   defaultOpenReplies?: boolean;
   entityMap?: EntityMap;
+  contextName?: string;
   convBasePath?: string;
   highlightPostId?: string;
 }) {
@@ -69,7 +71,7 @@ export function ReviewCard({
               ) : null}
             </div>
             <div className="mt-1 text-muted-foreground">
-              <ReadMore content={String(parentReview.content || "")} entityMap={entityMap} />
+              <ReadMore content={String(parentReview.content || "")} entityMap={entityMap} contextName={contextName} />
             </div>
           </div>
         ) : review.reply_post_id ? (
@@ -77,7 +79,7 @@ export function ReviewCard({
             ↳ Reply to post #{review.reply_post_id}
           </div>
         ) : null}
-        <ReadMore content={String(review.content || "")} entityMap={entityMap} />
+        <ReadMore content={String(review.content || "")} entityMap={entityMap} contextName={contextName} />
         {childReplies.length > 0 && (
           <ReplyTree
             postId={String(review.voz_post_id)}
@@ -86,6 +88,7 @@ export function ReviewCard({
             defaultVisible={defaultVisibleReplies}
             defaultOpen={defaultOpenReplies}
             entityMap={entityMap}
+            contextName={contextName}
             convBasePath={convBasePath}
             highlightPostId={highlightPostId}
           />

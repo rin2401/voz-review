@@ -10,10 +10,12 @@ export function ReadMore({
   content,
   limit = 500,
   entityMap,
+  contextName,
 }: {
   content: string;
   limit?: number;
   entityMap?: EntityMap;
+  contextName?: string;
 }) {
   const [expanded, setExpanded] = useState(false);
   // Only show the toggle when the line-clamp actually hides content:
@@ -23,8 +25,11 @@ export function ReadMore({
   const contentRef = useRef<HTMLDivElement>(null);
   const isLong = content.length > limit;
   const segments = useMemo(
-    () => (entityMap ? createEntityLinker(entityMap).split(content) : null),
-    [entityMap, content],
+    () =>
+      entityMap
+        ? createEntityLinker(entityMap, contextName ? { name: contextName } : undefined).split(content)
+        : null,
+    [entityMap, content, contextName],
   );
 
   useEffect(() => {

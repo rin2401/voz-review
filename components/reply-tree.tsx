@@ -42,6 +42,7 @@ function ReplyNode({
   depth,
   indentLevel = 0,
   entityMap,
+  contextName,
   convBasePath,
   highlightPostId,
 }: {
@@ -51,6 +52,7 @@ function ReplyNode({
   depth: number;
   indentLevel?: number;
   entityMap?: EntityMap;
+  contextName?: string;
   convBasePath?: string;
   highlightPostId?: string;
 }) {
@@ -60,8 +62,13 @@ function ReplyNode({
     depth > 1 && children.length > defaultVisible && !showAll ? children.slice(0, defaultVisible) : children;
   const hiddenCount = children.length - defaultVisible;
   const segments = useMemo(
-    () => (entityMap ? createEntityLinker(entityMap).split(String(node.content || "")) : null),
-    [entityMap, node.content],
+    () =>
+      entityMap
+        ? createEntityLinker(entityMap, contextName ? { name: contextName } : undefined).split(
+            String(node.content || ""),
+          )
+        : null,
+    [entityMap, node.content, contextName],
   );
   const highlighted = highlightPostId && String(node.voz_post_id) === highlightPostId;
   // Linear chains (single child) stack flat instead of stair-casing on deep
@@ -150,6 +157,7 @@ function ReplyNode({
               depth={depth + 1}
               indentLevel={indents ? indentLevel + 1 : indentLevel}
               entityMap={entityMap}
+              contextName={contextName}
               convBasePath={convBasePath}
               highlightPostId={highlightPostId}
             />
@@ -176,6 +184,7 @@ export function ReplyTree({
   defaultVisible = 3,
   defaultOpen = false,
   entityMap,
+  contextName,
   convBasePath,
   highlightPostId,
 }: {
@@ -185,6 +194,7 @@ export function ReplyTree({
   defaultVisible?: number;
   defaultOpen?: boolean;
   entityMap?: EntityMap;
+  contextName?: string;
   convBasePath?: string;
   highlightPostId?: string;
 }) {
@@ -223,6 +233,7 @@ export function ReplyTree({
               depth={1}
               indentLevel={1}
               entityMap={entityMap}
+              contextName={contextName}
               convBasePath={convBasePath}
               highlightPostId={highlightPostId}
             />
