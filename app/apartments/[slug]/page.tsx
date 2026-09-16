@@ -118,6 +118,11 @@ export default async function ApartmentPage({
                 💰 {info.price_per_m2}
               </span>
             )}
+            {info.developer && (
+              <span className="rounded-full border bg-muted/50 px-3 py-1 text-sm text-foreground/90">
+                🏢 CĐT: {info.developer}
+              </span>
+            )}
             {info.bds_url && (
               <a
                 href={info.bds_url}
@@ -125,7 +130,7 @@ export default async function ApartmentPage({
                 rel="noopener noreferrer"
                 className="rounded-full border bg-muted/50 px-3 py-1 text-sm text-blue-500 underline hover:bg-muted"
               >
-                🔗 Trang dự án trên batdongsan.com.vn ↗
+                🔗 batdongsan.com.vn ↗
               </a>
             )}
           </div>

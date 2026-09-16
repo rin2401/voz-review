@@ -130,6 +130,21 @@ export function districtLabel(location: string | null | undefined): string {
   return district || "";
 }
 
+/**
+ * Compact developer name for the apartments list table:
+ * "Công ty Cổ phần Đầu tư Xây dựng BCONS" → "Đầu tư Xây dựng BCONS".
+ */
+export function shortDeveloper(developer: string | null | undefined): string {
+  if (!developer) return "";
+  return developer
+    .replace(/^Công ty\s+(?:CP|Cổ phần|TNHH|Trách nhiệm hữu hạn)\s+/i, "")
+    .replace(/^Công ty\s+/i, "")
+    .replace(/^CTCP\s+|^Cty\s+CP\s+/i, "")
+    .replace(/\s+Cổ phần\b/gi, " CP")
+    .replace(/\s+Trách nhiệm hữu hạn\b/gi, " TNHH")
+    .trim();
+}
+
 export function schedulerStatusLabel(state: Record<string, any> | null | undefined): string {
   if (!state) return "not_configured";
   if (state.enabled === false) return "disabled";
