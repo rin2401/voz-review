@@ -133,6 +133,11 @@ export default async function ApartmentPage({
                 💰 {info.price_per_m2}
               </span>
             )}
+            {info.price_2pn && (
+              <span className="rounded-full border bg-muted/50 px-3 py-1 text-sm text-foreground/90">
+                🛏️ {info.price_2pn}
+              </span>
+            )}
             {info.developer && (
               <span className="rounded-full border bg-muted/50 px-3 py-1 text-sm text-foreground/90">
                 🏢 CĐT: {info.developer}
@@ -156,7 +161,8 @@ export default async function ApartmentPage({
             )}
           </div>
           <p className="text-xs text-muted-foreground">
-            Vị trí &amp; giá tổng hợp từ review của cư dân — mang tính tham khảo.
+            Vị trí tổng hợp từ review của cư dân; giá tham khảo từ tin đăng (housenow.com.vn,
+            batdongsan.com.vn).
           </p>
         </div>
       )}
