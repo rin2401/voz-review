@@ -3,6 +3,14 @@
 import Link from "next/link";
 import { useMemo, useState } from "react";
 
+import { Button } from "@/components/ui/button";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import {
   Table,
   TableBody,
@@ -67,13 +75,82 @@ function sortValue(apartment: ApartmentRow, key: SortKey): string | number | nul
   }
 }
 
+type Filters = { district: string; price: string; developer: string; status: string };
+
+const PRICE_BUCKETS: { value: string; label: string; test: (min: number) => boolean }[] = [
+  { value: "lt40", label: "< 40 triệu/m2", test: (min) => min < 40 },
+  { value: "40-60", label: "40 - 60 triệu/m2", test: (min) => min >= 40 && min < 60 },
+  { value: "60-80", label: "60 - 80 triệu/m2", test: (min) => min >= 60 && min < 80 },
+  { value: "80-100", label: "80 - 100 triệu/m2", test: (min) => min >= 80 && min < 100 },
+  { value: "gt100", label: "> 100 triệu/m2", test: (min) => min >= 100 },
+];
+
+function minPricePerM2(apartment: ApartmentRow): number | null {
+  const match = (apartment.info?.price_per_m2 || "").match(/(\d+(?:[.,]\d+)?)/);
+  return match ? Number(match[1].replace(",", ".")) : null;
+}
+
 export function ApartmentsTable({ apartments }: { apartments: ApartmentRow[] }) {
   const [sort, setSort] = useState<{ key: SortKey; dir: "asc" | "desc" } | null>(null);
+  const [filters, setFilters] = useState<Filters>({
+    district: "all",
+    price: "all",
+    developer: "all",
+    status: "all",
+  });
+
+  const districts = useMemo(() => {
+    const set = new Set<string>();
+    for (const apartment of apartments) {
+      const label = districtLabel(apartment.info?.location);
+      if (label) set.add(label);
+    }
+    return [...set].sort((a, b) => a.localeCompare(b, "vi"));
+  }, [apartments]);
+
+  const developers = useMemo(() => {
+    const set = new Set<string>();
+    for (const apartment of apartments) {
+      const label = shortDeveloper(apartment.info?.developer);
+      if (label) set.add(label);
+    }
+    return [...set].sort((a, b) => a.localeCompare(b, "vi"));
+  }, [apartments]);
+
+  const statuses = useMemo(() => {
+    const set = new Set<string>();
+    for (const apartment of apartments) {
+      if (apartment.info?.status) set.add(apartment.info.status);
+    }
+    return [...set].sort((a, b) => a.localeCompare(b, "vi"));
+  }, [apartments]);
+
+  const filtered = useMemo(() => {
+    return apartments.filter((apartment) => {
+      if (filters.district !== "all") {
+        if ((districtLabel(apartment.info?.location) || "-") !== filters.district) return false;
+      }
+      if (filters.price !== "all") {
+        const min = minPricePerM2(apartment);
+        const bucket = PRICE_BUCKETS.find((b) => b.value === filters.price);
+        if (!bucket || min == null || !bucket.test(min)) return false;
+      }
+      if (filters.developer !== "all") {
+        if ((shortDeveloper(apartment.info?.developer) || "-") !== filters.developer) return false;
+      }
+      if (filters.status !== "all") {
+        if ((apartment.info?.status || "-") !== filters.status) return false;
+      }
+      return true;
+    });
+  }, [apartments, filters]);
+
+  const hasFilters = Object.values(filters).some((value) => value !== "all");
 
   const sorted = useMemo(() => {
-    if (!sort) return apartments;
+    if (!sort) return filtered;
     const { key, dir } = sort;
-    return [...apartments].sort((a, b) => {
+    return [...filtered].sort((a, b) => {
       const va = sortValue(a, key);
       const vb = sortValue(b, key);
       // missing values always sink to the bottom
@@ -86,7 +163,7 @@ export function ApartmentsTable({ apartments }: { apartments: ApartmentRow[] }) 
           : String(va).localeCompare(String(vb), "vi");
       return dir === "asc" ? cmp : -cmp;
     });
-  }, [apartments, sort]);
+  }, [filtered, sort]);
 
   function toggleSort(key: SortKey) {
     setSort((prev) =>
@@ -96,8 +173,57 @@ export function ApartmentsTable({ apartments }: { apartments: ApartmentRow[] }) 
     );
   }
 
+  function setFilter(key: keyof Filters, value: string | null) {
+    if (value == null) return;
+    setFilters((prev) => ({ ...prev, [key]: value }));
+  }
+
   return (
-    <Table>
+    <div>
+      <div className="flex flex-wrap items-end gap-3 px-4 pt-4">
+        <FilterSelect
+          label="Quận"
+          value={filters.district}
+          options={districts.map((d) => ({ value: d, label: d }))}
+          onChange={(value) => setFilter("district", value)}
+        />
+        <FilterSelect
+          label="Mức giá"
+          value={filters.price}
+          options={PRICE_BUCKETS.map((b) => ({ value: b.value, label: b.label }))}
+          onChange={(value) => setFilter("price", value)}
+        />
+        <FilterSelect
+          label="CĐT"
+          value={filters.developer}
+          options={developers.map((d) => ({ value: d, label: d }))}
+          onChange={(value) => setFilter("developer", value)}
+        />
+        <FilterSelect
+          label="Trạng thái"
+          value={filters.status}
+          options={statuses.map((s) => ({ value: s, label: s }))}
+          onChange={(value) => setFilter("status", value)}
+        />
+        {hasFilters && (
+          <div className="flex items-center gap-2 pb-0.5">
+            <span className="text-xs text-muted-foreground">
+              {sorted.length}/{apartments.length}
+            </span>
+            <Button
+              type="button"
+              variant="ghost"
+              size="sm"
+              onClick={() =>
+                setFilters({ district: "all", price: "all", developer: "all", status: "all" })
+              }
+            >
+              Xóa lọc
+            </Button>
+          </div>
+        )}
+      </div>
+      <Table>
       <TableHeader>
         <TableRow>
           {COLUMNS.map((column) => (
@@ -121,8 +247,9 @@ export function ApartmentsTable({ apartments }: { apartments: ApartmentRow[] }) 
         {sorted.length === 0 ? (
           <TableRow>
             <TableCell colSpan={7} className="py-8 text-center text-muted-foreground">
-              Chưa có chung cư nào. Vào tab Threads để thêm thread kind &quot;apartment&quot; và bắt đầu
-              crawl!
+              {hasFilters
+                ? "Không có chung cư nào khớp bộ lọc."
+                : 'Chưa có chung cư nào. Vào tab Threads để thêm thread kind "apartment" và bắt đầu crawl!'}
             </TableCell>
           </TableRow>
         ) : (
@@ -182,6 +309,42 @@ export function ApartmentsTable({ apartments }: { apartments: ApartmentRow[] }) 
           ))
         )}
       </TableBody>
-    </Table>
+      </Table>
+    </div>
+  );
+}
+
+function FilterSelect({
+  label,
+  value,
+  options,
+  onChange,
+}: {
+  label: string;
+  value: string;
+  options: { value: string; label: string }[];
+  onChange: (value: string | null) => void;
+}) {
+  const current = options.find((option) => option.value === value);
+  return (
+    <div className="w-full space-y-1.5 sm:w-44">
+      <label className="text-sm text-muted-foreground">{label}</label>
+      {/* Wrapper div: Base UI appends a hidden input after the trigger (see SortSelect) */}
+      <div>
+        <Select value={value} onValueChange={onChange}>
+          <SelectTrigger className="w-full">
+            <SelectValue>{value === "all" ? "Tất cả" : (current?.label ?? value)}</SelectValue>
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="all">Tất cả</SelectItem>
+            {options.map((option) => (
+              <SelectItem key={option.value} value={option.value}>
+                {option.label}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+      </div>
+    </div>
   );
 }
