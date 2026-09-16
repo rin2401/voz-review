@@ -97,7 +97,22 @@ export default async function ApartmentPage({
     <div className="space-y-4">
       <div className="flex flex-wrap items-center justify-between gap-2">
         <div className="flex items-center gap-2">
-          <h1 className="text-2xl font-bold">🏘️ {apartmentName}</h1>
+          <h1 className="text-2xl font-bold">
+            🏘️{" "}
+            {info?.bds_url ? (
+              <a
+                href={info.bds_url}
+                target="_blank"
+                rel="noopener noreferrer"
+                title="Trang dự án trên batdongsan.com.vn"
+                className="underline decoration-foreground/30 hover:decoration-foreground"
+              >
+                {apartmentName}
+              </a>
+            ) : (
+              apartmentName
+            )}
+          </h1>
           <Badge variant="secondary">{total} reviews</Badge>
         </div>
         <Link href="/apartments" className={cn(buttonVariants({ variant: "secondary" }))}>
@@ -122,16 +137,6 @@ export default async function ApartmentPage({
               <span className="rounded-full border bg-muted/50 px-3 py-1 text-sm text-foreground/90">
                 🏢 CĐT: {info.developer}
               </span>
-            )}
-            {info.bds_url && (
-              <a
-                href={info.bds_url}
-                target="_blank"
-                rel="noopener noreferrer"
-                className={cn(buttonVariants({ variant: "outline", size: "sm" }))}
-              >
-                Link
-              </a>
             )}
           </div>
           <p className="text-xs text-muted-foreground">
