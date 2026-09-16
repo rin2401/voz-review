@@ -338,5 +338,264 @@
       "Layout phòng ngủ bé, bị chê 'hơi ngu'",
       "Pháp lý chưa rõ ràng, chưa thấy thông tin ra sổ"
     ]
+  },
+  "The Elysian": {
+    "summary": "Dự án của Gamuda Land trên trục Lò Lu (Thủ Đức, quận 9 cũ), mở bán từ 2023 nhưng tiến độ chậm, dự kiến bàn giao Quý IV/2027. Giá ~68-72tr/m2 (2PN ~4,3-4,5 tỷ) thuộc hàng cao nhất khu, review chê 'ngáo giá' khi Vin Q9 chỉ ~50tr/m2; điểm cộng là layout đẹp hơn (85m2 2PN) và định vị phân khúc cao của Gamuda.",
+    "pros": [
+      "Layout đẹp hơn đối thủ cùng khu (85m2 vẫn 2PN, Vin nhét 3PN), Gamuda định vị bàn giao xịn",
+      "Đường Lò Lu đang mở rộng, cầu Tăng Long hoàn thiện giúp khu êm và kết nối tốt dần",
+      "Gần vành đai 3, đi lại sang VGP/quận 9 tiện khi hạ tầng Lò Lu xong"
+    ],
+    "cons": [
+      "Giá cao nhất khu (~68-72tr/m2) trong khi Vin Q9 chỉ ~50tr — review cảnh báo khó tăng giá, hàng cắt lỗ quanh khu nhiều",
+      "Phí quản lý 27k/m2 rất cao, 4 tòa dùng chung tiện ích",
+      "Mở bán 2023 nhưng chậm tiến độ ('đắp chiếu 2 năm'), đường Lò Lu thi công xấu, phụ thuộc Lã Xuân Oai/Võ Chí Công"
+    ]
+  },
+  "Jamila": {
+    "summary": "Chung cư của Khang Điền ở Liên Phường (quận 9), vị trí được review đánh giá đẹp nhất khu khi có đường Song Hành kết nối thẳng Nguyễn Duy Trinh/Mai Chí Thọ. Giá tăng mạnh ~20%/năm: 2PN 70-75m2 từ ~4,2 lên ~5 tỷ, đắt hơn Safira cùng CĐT 400-500tr vì vị trí ngon hơn. Cư dân ở thực đánh giá chất lượng xây ổn sau 5 năm nhận nhà.",
+    "pros": [
+      "Vị trí đẹp nhất khu Liên Phường: Song Hành đi thẳng Q2/Q7, gần vòng xoay An Phú, hầm Thủ Thiêm vào Q1 nhanh",
+      "Tăng giá mạnh nhất khu (~20%/năm), review cư dân ở thực hài lòng chất lượng xây dựng sau 5 năm",
+      "Cửa chống ồn khá tốt (block A sát cao tốc vẫn ổn), quy hoạch metro 5 qua Liên Phường, ga tàu nhẹ An Phú ~400m"
+    ],
+    "cons": [
+      "Sát cao tốc + đường điện cao thế (cột cao áp gần block D), view nội khu bị cộng hưởng tiếng ù",
+      "Ít chỗ đậu ô tô, kẹt vòng xoay Liên Phường giờ tan",
+      "Logia nhỏ, giá đã cao nên đầu tư ngắn hạn khó, cho thuê tỷ suất thấp"
+    ]
+  },
+  "Moonlight Residence": {
+    "summary": "Series chung cư Hưng Thịnh ở khu Tên Lửa, Bình Tân (~10km trung tâm): Moonlight Parkview hiếm hoi của Hưng Thịnh có sổ hồng, còn Moonlight Boulevard chưa sổ nhưng giá mềm hơn 100-300tr. Giá 2PN 2WC 67m2 ~3,4-3,7 tỷ full nội thất, tăng mạnh từ ~3,1 tỷ giữa 2025.",
+    "pros": [
+      "Parkview đã có sổ — hiếm hoi ở Hưng Thịnh, vay ngân hàng được",
+      "Gần Aeon Mall Tên Lửa và tiện ích khu Tây, thoáng mát, dân trí được review đánh giá tốt",
+      "Cho thuê ổn (~9-10tr/tháng căn 2PN), tăng giá mạnh trong 2025"
+    ],
+    "cons": [
+      "Hưng Thịnh phốt pháp lý chung: Boulevard chưa sổ, ngân hàng không cho vay",
+      "Nhiều layout chán, không đồng nhất; căn nhỏ không ban công, view tây nóng",
+      "Giá rao trên web nhiều khoản ảo, cần đi xem thực tế"
+    ]
+  },
+  "Citigrand": {
+    "summary": "Chung cư Kiến Á trong KDT Cát Lái (~152ha, Q2), duy nhất hoạch định cao cấp trong khu nên nguồn cung ít, dễ đẩy giá. Giá 2PN ~50m2 thông thủy từ ~2,9-3,4 tỷ (60-70tr/m2), bàn giao Q4/2026-Q1/2027. Điểm trừ lớn là giáp cảng Cát Lái, xe container ra vào nhiều.",
+    "pros": [
+      "Duy nhất dự án hoạch định cao cấp trong KDT Cát Lái → hàng ít, dễ đẩy giá, thanh khoản tốt",
+      "Cả 2PN đều hướng thoáng lấy sáng tự nhiên, 2 WC thông gió; có sổ (Kiến Á làm sổ nhanh)",
+      "Gần Thủ Thiêm, trường học; nằm trong khu phức hợp nên tiện ích sẽ nhiều"
+    ],
+    "cons": [
+      "Giáp cảng Cát Lái: xe container ra vào, 3 đường đều đổ vòng xoay Mỹ Thủy",
+      "Không có ban công thật (ban công giả), 50m2 thông thủy khá tù túng",
+      "Giá cao nhất khu, CĐT từng dừng dự án một thời gian"
+    ]
+  },
+  "Sky 9": {
+    "summary": "Chung cư giá mềm trên trục Liên Phường (Phú Hữu, Q9) của CĐT NHO. Giá 2PN 1WC 50m2 ~1,8-2,2 tỷ, 2PN 2WC 63m2 ~2,4-2,9 tỷ, tăng liên tục theo hạ tầng Liên Phường đang thông ra Xa lộ Hà Nội. Nhiều block đã có sổ.",
+    "pros": [
+      "Giá vừa ví nhất trục Liên Phường (2PN từ ~2 tỷ), đã có sổ ở nhiều block (nên chọn CT2)",
+      "Tăng giá liên tục, ăn theo quy hoạch Nam Rạch Chiếc và đường Liên Phường thông",
+      "Gần cao tốc, đi Thảo Điền/Q2 tiện, cho thuê ổn"
+    ],
+    "cons": [
+      "Chất lượng xây trung bình: review cư dân chê thấm tường, trần thấp, layout chán",
+      "CT1 cũ mật độ cao, CT3 sát mặt Võ Chí Công ồn xe suốt ngày",
+      "Tiện ích nội khu ít (Winmart, hồ bơi nhỏ); cổng ra Liên Phường chưa được cấp phép, phải vòng qua Võ Chí Công"
+    ]
+  },
+  "Ricca": {
+    "summary": "Chung cư Phú Hữu (Q9) bàn giao 2021 đã có sổ, giá rẻ hơn hẳn khu lân cận: 1PN+ 56m2 ~2,4-2,5 tỷ, 2PN 2WC ~2,2-2,6 tỷ. Phí quản lý chỉ 9k/m2, hồ bơi trong nhà, căn có ban công và 1PN+ cải tạo được thành 2PN. Rào cản lớn nhất là xe container của cảng Phú Hữu chạy ngày đêm trên Nguyễn Duy Trinh.",
+    "pros": [
+      "Giá rẻ nhất khu Phú Hữu, đã có sổ, vay ngân hàng dễ",
+      "Phí quản lý thấp (9k/m2 chưa VAT), hồ bơi trong nhà, 1PN+ ngăn thêm phòng được",
+      "Đường Lã Xuân Oai sắp mở rộng sẽ thêm lựa chọn di chuyển"
+    ],
+    "cons": [
+      "Xe container/xi măng cảng Phú Hữu chạy ngày đêm trên Nguyễn Duy Trinh — review cảnh báo nguy hiểm cho xe máy",
+      "Nguyễn Duy Trinh là 'đường tử thần', mở rộng chậm do giải tỏa tốn kém",
+      "Tiện ích nội khu/ngoại khu nghèo (chỉ Winmart), nội khu không rào chắn, hay mất nước"
+    ]
+  },
+  "Gia Hòa": {
+    "summary": "Khu dân cư + chung cư (The Art Gia Hòa) ở Q9 gần trục Liên Phường, vị trí được review đánh giá ngon hơn Ricca/Thủ Thiêm Garden với tiện ích xung quanh đầy đủ, đã có sổ. Giá 2PN 2WC 66m2 ~3,1-3,8 tỷ, tăng nhẹ từ ~2 tỷ năm 2021.",
+    "pros": [
+      "Vị trí tốt nhất nhóm Phú Hữu/Liên Phường tầm giá: gần công viên, tiện ích xung quanh không thiếu gì",
+      "Đã có sổ, cư dân ở thực đánh giá tốt, không gian thoáng",
+      "Giá tăng đều từ 2021, giữ giá tốt"
+    ],
+    "cons": [
+      "Dính đường Đỗ Xuân Hợp: mưa to ngập nặng ngay đầu cổng, thoát nước kém",
+      "Bể bơi cho người ngoài vào như chợ, ban quản lý không tốt bằng Sky 9, hàng vỉa hè xô bồ",
+      "Hệ số xây cao, khu đông và bí, giá đã vượt 3 tỷ cho 2PN"
+    ]
+  },
+  "Sala": {
+    "summary": "Khu đô thị đầu tiên của Thủ Thiêm (An Khánh, Q2) của Daewoo E&C, hạ tầng nội khu được review đánh giá đẹp nhất khu, dân trí cao với nhiều dân remote/freelance và công ty công nghệ chuyển tới. Giá rất cao (căn ~12,5-13 tỷ, hàng mới 140-150tr/m2), tăng gấp đôi từ 2023.",
+    "pros": [
+      "Hạ tầng nội khu đẹp nhất Thủ Thiêm: rộng, yên tĩnh, hồ bơi sân bóng công viên đầy đủ",
+      "Dân trí cao, an ninh tốt, công ty công nghệ đang chuyển tới, gần Q1 qua hầm Thủ Thiêm",
+      "Khu đô thị hoàn chỉnh sớm nhất khu (trước Empire, Zeit...), giữ giá tốt"
+    ],
+    "cons": [
+      "Giá chát: căn ~12,5-13 tỷ, hàng mới 140-150tr/m2, tăng x2 từ 2023",
+      "Mùa gió tây nam (tháng 6-7) nghe mùi bãi rác/kênh rạch theo gió — cư dân phàn nàn lên báo",
+      "Buổi tối vắng người, mall ít khách; xa trung tâm cũ (Q1) hơn Phú Mỹ Hưng"
+    ]
+  },
+  "MT Eastmark": {
+    "summary": "Chung cư của Điền Phúc Thành ngay chợ Long Trường (Q9), bàn giao 1/2025 đã có sổ, giá vạch xuất phát ~36-42tr/m2 (1PN+ 63m2 ~2,7 tỷ, 2PN ~3-3,5 tỷ) — rẻ nhất nhóm dự án mới Q9. Điểm trừ là layout bị chê, xe container cảng Phú Hữu trên Nguyễn Duy Trinh và tỷ lệ cho thuê thấp.",
+    "pros": [
+      "Giá rẻ nhất nhóm dự án mới Q9 (~36-42tr/m2), đã có sổ hồng, nhà mới bàn giao 1/2025",
+      "Mặt tiền vành đai 3 + đường song hành đang thi công sẽ hưởng lợi kết nối",
+      "Tiện ích nội khu ổn: hồ bơi 300m2, khu BBQ, công viên, gần chợ Long Trường"
+    ],
+    "cons": [
+      "Layout bị chê: PN master bị kẹt, WC không cửa sổ, vách sát PN2 cách âm kém",
+      "Xe container vào cảng Phú Hữu chạy chung Nguyễn Duy Trinh, mở rộng còn 3-5 năm",
+      "Cho thuê chỉ 6-7tr/căn 2PN — đầu tư cho thuê kém hấp dẫn"
+    ]
+  },
+  "Vinhomes Cần Giờ": {
+    "summary": "Siêu dự án tỷ đô của Vingroup ở Cần Giờ, mới chính thức khởi công — review trên voz chủ yếu bàn về chiến lược đẩy sóng (tin 510 giao dịch/tuần bị nghi là tạo sóng) và metro Bến Thành - Cần Giờ (khởi công 12/2025, dự kiến 2028). Chưa có giá bán chính thức, đa số dân thread xem là 'xa bờ hơn cả Vin Q9'.",
+    "pros": [
+      "Vingroup vốn mạnh, hậu nghĩa cảng biển cho du lịch VN, phối cảnh được khen đẹp",
+      "Metro Bến Thành - Cần Giờ đã khởi công (dự kiến khai thác 2028)",
+      "Đất nền các xã quanh Cần Giờ nóng lên sau tin khởi công, nhà đầu tư phía Bắc vào mua"
+    ],
+    "cons": [
+      "Xa trung tâm (~20km+), đi lại bất tiện cho đến khi hạ tầng xong",
+      "Metro bị nghi 'lùa gà': chưa rõ giải phóng mặt bằng qua Q4/Q7, hẹn 3 năm",
+      "Chưa có giá chính thức, tin giao dịch tạo sóng nhiều — rủi ro mua đỉnh sóng"
+    ]
+  },
+  "Victoria Village": {
+    "summary": "Chung cư Novaland ở Thạnh Mỹ Lợi (Q2), vị trí đẹp trong khu đã có sẵn base cư dân chi trả cao, sắp bàn giao, giá ~5-6 tỷ (săn được căn ~6,2 tỷ). Novaland từng dời deadline ký HĐMB nhiều lần (hẹn 3/2026) nhưng sau bàn giao làm sổ nhanh.",
+    "pros": [
+      "Vị trí đẹp Thạnh Mỹ Lợi, khu đã hoàn thiện, ít bị ảnh hưởng đại công trường",
+      "Sắp bàn giao, thông báo làm sổ ngay sau bàn giao — nhanh so với chuẩn Novaland",
+      "Chất lượng bàn giao được cư dân nhận nhà đánh giá ổn, giá không bị ảnh hưởng chung"
+    ],
+    "cons": [
+      "Novaland dời deadline ký HĐMB nhiều lần (hẹn 3/2026) — rủi ro pháp lý kéo dài",
+      "Giá 5-6 tỷ cao so với khu, cạnh tranh trực tiếp các dự án đang bàn giao",
+      "Xung quanh còn đại công trường, hầm xe ít chỗ, TTTM/trường còn trên giấy"
+    ]
+  },
+  "Citi Alto": {
+    "summary": "Chung cư Kiến Á trong khu Cát Lái (Q2), block B bàn giao cuối 2024, block D 6/2025, đang làm sổ. Giá tăng nhanh: 50m2 2PN từ ~1,8 tỷ (cọc) lên 2,5-2,8 tỷ. Điểm trừ là 53m2 nhét 2PN 2WC không ban công, khá tù.",
+    "pros": [
+      "Giá vùng trũng Cát Lái (block B ~1,68 tỷ), tăng mạnh (1t8 → 2t5 → 2t8)",
+      "Nội khu đầy đủ: siêu thị, trường học, quán ăn, hồ bơi, sân bóng",
+      "Nhiều catalyst: vòng xoay Mỹ Thủy, đường nội khu ra Võ Chí Công, đường Liên Cảng"
+    ],
+    "cons": [
+      "53m2 nhét 2PN 2WC không ban công — diện tích sinh hoạt rất nhỏ",
+      "Xe container cảng Cát Lái ra vào, đi ra vòng xoay Mỹ Thủy",
+      "Hàng cắt lỗ nhiều do xây chậm tiến độ, người vay không đóng nổi tiền tiếp"
+    ]
+  },
+  "Flora Kikyo": {
+    "summary": "Chung cư trên trục Liên Phường (Q9), biệt lập giữa khu dân cư cây xanh và biệt thự, siêu yên tĩnh, dân đa số trung niên/về hưu. Giá 1PN ~2,2-2,3 tỷ, 2PN ~3,5-3,9 tỷ, tăng mạnh theo trục Liên Phường. Đã có sổ.",
+    "pros": [
+      "Biệt lập yên tĩnh nhất nhóm: giữa khu cây xanh/biệt thự, hồ đẹp, không có sông nhưng mát",
+      "Đã có sổ, 1PN+ view sáng hơn Fuji cùng tầm giá",
+      "Tăng giá mạnh theo trục Liên Phường đang thông ra Xa lộ Hà Nội"
+    ],
+    "cons": [
+      "Tường hay nứt (gạch không nung), cảm giác ẩm cũ theo một số cư dân",
+      "Ít thang máy, giờ cao điểm chờ lâu; dân già, buổi tối buồn vắng",
+      "Đường tắt về Q1 phải đi đoạn xi măng nối qua khu biệt thự"
+    ]
+  },
+  "Grand Marina": {
+    "summary": "Chung cư cao cấp Masterise ở Bến Vân Đồn (Q4), sát cầu bắc qua Thủ Thiêm nên đi Q1 thuận tiện nhất nhóm cao cấp. Giá giao dịch đã giảm ~20% so với giá chào, có căn cắt hơn 15 tỷ so với giá mua từ CĐT.",
+    "pros": [
+      "Vị trí sát cầu Thủ Thiêm, vào Q1 nhanh, khu + TTTM hoàn thiện",
+      "Sự kiện cộng đồng đều đặn, môi trường sống sầm uất",
+      "Hàng sang hiếm, CĐT Masterise chuẩn mực"
+    ],
+    "cons": [
+      "Giá giao dịch giảm ~20% so với đỉnh, có căn cắt lỗ hơn 15 tỷ",
+      "Giá chào cao, thanh khoản kém, giao dịch mới rất ít",
+      "Đầu tư hiệu suất thấp — review khuyên mua ở chứ đừng đầu tư khu này"
+    ]
+  },
+  "Cantavil": {
+    "summary": "Chung cư An Phú (Q2) gần Song Hành/Trần Não, hệ thống tiện ích chuẩn: TTTM, hồ bơi, cafe, siêu thị; hàng sang nhượng rất ít. Giá 3PN tầm ~6 tỷ. So với khu BCA lân cận thì tiện ích nội khu chuẩn hơn nhưng nhà cũ cần tút lại 100-150tr.",
+    "pros": [
+      "Tiện ích nội khu chuẩn: TTTM, hồ bơi, siêu thị, cafe",
+      "Gần Song Hành/Trần Não, qua cầu vào Q1 thuận tiện, xung quanh chợ búa hàng quán đầy",
+      "Hàng sang nhượng rất ít, giữ giá tốt"
+    ],
+    "cons": [
+      "Nhà cũ, vào ở xác định tốn 100-150tr tút lại",
+      "Khu ồn, style chợ búa truyền thống, xài tiện ích ké của Nguyễn Thị Định/Nguyễn Duy Trinh",
+      "Giá cao so với tuổi đời, 3PN ~6 tỷ vượt ví đa số"
+    ]
+  },
+  "Sky Garden 3": {
+    "summary": "Chung cư Phú Mỹ Hưng (Q7), cách trung tâm 7,5km (~20-30p). Giá 2PN 1WC ~3,4-3,5 tỷ (2024), tăng từ ~2,1-2,2 tỷ năm 2020 — đắt hơn VGP cùng loại dù cũ hơn, vì vị trí PMH. Quỹ bảo trì ~150 tỷ, thang máy/hành lang/hầm xe được thay mới.",
+    "pros": [
+      "Vị trí trung tâm PMH: 7,5km vào Q1 (~20-30p), tiện ích 10/10",
+      "Quỹ bảo trì lớn (~150 tỷ), thang máy/hành lang/hầm xe đã được thay mới",
+      "Khuôn viên ổn, căn mặt ngoài thoáng"
+    ],
+    "cons": [
+      "Nhà cũ: căn giữa nhìn ra rất khó chịu, không có logia",
+      "Giá mắc hơn VGP cùng loại dù cũ hơn (3,4 tỷ vs 2,2 tỷ 2PN)",
+      "Cần chọn kỹ căn: chỉ căn mặt ngoài là đáng ở"
+    ]
+  },
+  "The Beverly": {
+    "summary": "Phân khu chung cư trong Vinhomes Grand Park (Q9), dân về ở nhiều nhưng shophouse dưới tòa còn vắng. Căn 3PN Beverly Solari rao ~5 tỷ; review dự đoán khi hết ân hạn trả gốc + lãi 20-30tr/tháng sẽ có làn sóng chủ trẻ cắt lỗ.",
+    "pros": [
+      "Dân về ở nhiều, tỷ lệ lấp đầy cao hơn các phân khu VGP khác",
+      "Dùng chung tiện ích VGP: sân pickleball, công viên, trường học",
+      "Giá 3PN ~5 tỷ mềm hơn nhiều phân khu trong VGP"
+    ],
+    "cons": [
+      "Shophouse dưới tòa ít, thương mại chưa sầm uất",
+      "Sắp đến kỳ trả gốc + lãi 20-30tr/tháng — nguy cơ sóng cắt lỗ từ chủ vay trẻ",
+      "Nguồn cung chuyển nhượng VGP dồn dập sẽ ép giá hàng cũ"
+    ]
+  },
+  "Phước Thiện": {
+    "summary": "Khu đô thị cạnh Vinhomes Grand Park (Q9), đất giá chát >100tr/m2 (nhà phố 85m2 nội khu Vin rao 12-13 tỷ). Hưởng lợi khi vành đai 3 thông nhưng lối lên xuống vành đai ở Phước Thiện chưa rõ có được làm không.",
+    "pros": [
+      "Sát VGP — hưởng trọn tiện ích, lấp dân nhanh theo VGP",
+      "Giá đất tăng mạnh (>100tr/m2), nhà phố nội khu Vin rao 12-13 tỷ",
+      "Vành đai 3 + song hành sắp thông (cuối năm thông tới cầu Đồng Tròn)"
+    ],
+    "cons": [
+      "Lối lên xuống vành đai 3 ở Phước Thiện chưa rõ có làm không (lý thuyết chỉ 4 cầu lên xuống)",
+      "Nút giao Gò Công 2028 mới bắt đầu thi công",
+      "Đường song hành không leo lên vành đai được, đi xa phải vòng"
+    ]
+  },
+  "Sunshine City": {
+    "summary": "Dự án Sunshine City trên đường Phú Thuận (Q7) — pháp lý không ổn: chỉ block S1 có sổ, các block khác dừng xây nhiều năm vì CĐT vướng tài chính. Xây dựng cảm quan ổn, officetel 50 năm ~3 tỷ.",
+    "pros": [
+      "Giá vừa ví (officetel ~3 tỷ), xây dựng cảm quan ổn",
+      "Vị trí Q7 gần Phú Mỹ Hưng, đi lại thuận tiện"
+    ],
+    "cons": [
+      "Pháp lý rủi ro: chỉ S1 có sổ, CĐT vướng tài chính 'drama căng'",
+      "Các tòa dừng xây nhiều năm không xử lý",
+      "Đường Phú Thuận ngập nhiều mùa mưa"
+    ]
+  },
+  "Waterpoint": {
+    "summary": "Khu đô thị Nam Long ở Bến Lức (Long An), căn hộ mở bán ~40tr/m2 (1PN 50m2 ~2 tỷ trả theo tiến độ, 2PN 64m2 hàng cũ cò rao ~1,5 tỷ). Sáng đi Q7 mất ~30-40 phút. Sắp mở Aeon.",
+    "pros": [
+      "Khu Nam Long dân vào ở nhiều (Ehome + nhà phố), hạ tầng nội khu chuẩn",
+      "Giá trả tiến độ nhẹ (~40tr/m2), sắp mở Aeon",
+      "Vào Q7 ~30-40' qua đại lộ Võ Văn Kiệt/Tân Vạn"
+    ],
+    "cons": [
+      "Xa trung tâm (Bến Lức, Long An), đi làm Q7 30-40 phút",
+      "Tiềm năng tăng giá mơ hồ: thiếu văn phòng lớn/khu đại học lân cận",
+      "Quản lý cho thuê kiểm tra hỏng hóc mỗi lần đổi khách, bất tiện"
+    ]
   }
 }
