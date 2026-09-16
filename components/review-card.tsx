@@ -45,9 +45,8 @@ export function ReviewCard({
         {parentReview ? (
           <div className="rounded-md border border-dashed bg-muted/40 p-2 text-sm">
             <div className="text-xs font-medium text-muted-foreground">↳ Reply to {parentReview.author}</div>
-            <div className="mt-1 line-clamp-3 text-muted-foreground">
-              {String(parentReview.content || "").slice(0, 220)}
-              {String(parentReview.content || "").length > 220 ? "..." : ""}
+            <div className="mt-1 text-muted-foreground">
+              <ReadMore content={String(parentReview.content || "")} entityMap={entityMap} />
             </div>
           </div>
         ) : review.reply_post_id ? (
