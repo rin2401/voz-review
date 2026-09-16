@@ -10,6 +10,27 @@ import { createEntityLinker, type EntityMap } from "@/lib/entity-links";
 import { asciiSlug, formatDtVn } from "@/lib/format";
 import { cn } from "@/lib/utils";
 
+/** Whether the subtree under parentId contains the target post (incl. self). */
+function subtreeHasPost(
+  childrenByPostId: Record<string, Dict[]>,
+  parentId: string,
+  targetId?: string,
+): boolean {
+  if (!targetId) return false;
+  const stack = [parentId];
+  const visited = new Set<string>();
+  while (stack.length) {
+    const id = stack.pop() as string;
+    if (id === targetId) return true;
+    if (visited.has(id)) continue;
+    visited.add(id);
+    for (const child of childrenByPostId[id] || []) {
+      if (child.voz_post_id) stack.push(String(child.voz_post_id));
+    }
+  }
+  return false;
+}
+
 function ReplyNode({
   node,
   childrenByPostId,
@@ -40,6 +61,13 @@ function ReplyNode({
   // Linear chains (single child) stack flat instead of stair-casing on deep
   // threads; only real branches indent under a thread line.
   const branches = children.length > 1;
+  const containsHighlight = useMemo(
+    () => subtreeHasPost(childrenByPostId, String(node.voz_post_id ?? ""), highlightPostId),
+    [childrenByPostId, node.voz_post_id, highlightPostId],
+  );
+  // Show ~3 reply levels by default; deeper subtrees stay collapsed behind the
+  // triangle toggle unless they contain the highlighted post.
+  const [expanded, setExpanded] = useState(depth < 3 || containsHighlight);
 
   return (
     <div className="space-y-1.5">
@@ -95,6 +123,16 @@ function ReplyNode({
         </div>
       </div>
       {children.length > 0 && (
+        <button
+          type="button"
+          onClick={() => setExpanded((value) => !value)}
+          className="ml-1 flex items-center gap-1 text-xs font-medium text-muted-foreground hover:text-foreground hover:underline"
+        >
+          <span className={cn("inline-block transition-transform", expanded && "rotate-90")}>▶</span>
+          {expanded ? `Ẩn ${children.length} reply` : `${children.length} reply`}
+        </button>
+      )}
+      {children.length > 0 && expanded && (
         <div className={cn("space-y-1.5", branches && "ml-3 border-l pl-3")}>
           {visibleChildren.map((child) => (
             <ReplyNode
