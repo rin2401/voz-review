@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { useTheme } from "next-themes";
 import { Menu, Moon, Sun, X } from "lucide-react";
 import { useState } from "react";
@@ -37,12 +38,15 @@ export function ThemeToggle() {
 
 export function SiteNavbar() {
   const [open, setOpen] = useState(false);
+  // In apartment mode the brand logo acts as that mode's home.
+  const pathname = usePathname();
+  const brandHref = pathname?.startsWith("/apartments") ? "/apartments" : "/";
 
   return (
     <header className="sticky top-0 z-40 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/75">
       <Collapsible open={open} onOpenChange={setOpen}>
         <nav className="mx-auto flex h-14 w-full max-w-6xl items-center gap-4 px-4">
-          <Link href="/" className="flex items-center gap-2 font-semibold tracking-tight">
+          <Link href={brandHref} className="flex items-center gap-2 font-semibold tracking-tight">
             <span className="text-lg">V⭕Z</span>
             <span className="text-muted-foreground">Review</span>
           </Link>
