@@ -3,7 +3,9 @@
 import Link from "next/link";
 import { useMemo, useState } from "react";
 
+import { SortSelect } from "@/components/sort-select";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import {
   Select,
   SelectContent,
@@ -90,7 +92,17 @@ function minPricePerM2(apartment: ApartmentRow): number | null {
   return match ? Number(match[1].replace(",", ".")) : null;
 }
 
-export function ApartmentsTable({ apartments }: { apartments: ApartmentRow[] }) {
+export function ApartmentsTable({
+  apartments,
+  q,
+  initialSort,
+  sortOptions,
+}: {
+  apartments: ApartmentRow[];
+  q: string;
+  initialSort: string;
+  sortOptions: { value: string; label: string }[];
+}) {
   const [sort, setSort] = useState<{ key: SortKey; dir: "asc" | "desc" } | null>(null);
   const [filters, setFilters] = useState<Filters>({
     district: "all",
@@ -180,6 +192,56 @@ export function ApartmentsTable({ apartments }: { apartments: ApartmentRow[] }) 
 
   return (
     <div>
+      <div className="space-y-3 px-4 pt-4">
+        <form
+          action="/apartments/search"
+          method="get"
+          className="flex flex-col gap-3 sm:flex-row sm:items-end"
+        >
+          <div className="flex-1 space-y-1.5">
+            <label htmlFor="search-q" className="text-sm text-muted-foreground">
+              Search apartment reviews
+            </label>
+            <Input
+              id="search-q"
+              name="q"
+              required
+              pattern=".*\S.*"
+              title="Query không được để trống"
+              className="h-10"
+              placeholder="Ví dụ: bàn giao, giá, Q2, Vinhomes, chung cư..."
+            />
+          </div>
+          <Button type="submit" className="h-10 px-6">
+            Search
+          </Button>
+        </form>
+        <form
+          action="/apartments"
+          method="get"
+          className="flex flex-col gap-3 sm:flex-row sm:items-end"
+        >
+          <input type="hidden" name="sort" value={initialSort} />
+          <div className="flex-1 space-y-1.5">
+            <label htmlFor="q" className="text-sm text-muted-foreground">
+              Filter apartment
+            </label>
+            <Input
+              id="q"
+              name="q"
+              placeholder="Ví dụ: Vinhomes, Akari, The Global City..."
+              defaultValue={q}
+            />
+          </div>
+          <div className="w-full space-y-1.5 sm:w-48">
+            <label htmlFor="sort" className="text-sm text-muted-foreground">
+              Sort by
+            </label>
+            <SortSelect id="sort" options={sortOptions} defaultValue={initialSort} className="w-full" />
+          </div>
+          <Button type="submit">Apply</Button>
+        </form>
+      </div>
       <div className="flex flex-wrap items-end gap-3 px-4 pt-4">
         <FilterSelect
           label="Quận"
