@@ -156,7 +156,11 @@ export default async function ApartmentPage({
                 title={info.status_note || undefined}
               >
                 🏗️ {info.status}
-                {info.status_note ? ` — ${info.status_note}` : ""}
+                {info.handover
+                  ? ` — Bàn giao ${info.handover}`
+                  : info.status_note
+                    ? ` — ${info.status_note}`
+                    : ""}
               </span>
             )}
           </div>
@@ -234,6 +238,7 @@ export default async function ApartmentPage({
               review={review}
               replyChildrenByPostId={replyChildrenByPostId}
               entityMap={entityMap}
+              contextName={apartmentName}
               convBasePath={`/apartments/${apartmentSlug}`}
             />
           ))}

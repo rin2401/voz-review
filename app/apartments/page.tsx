@@ -107,7 +107,6 @@ export default async function ApartmentsPage({
                 <TableHead>Name</TableHead>
                 <TableHead>Quận</TableHead>
                 <TableHead>Giá/m2</TableHead>
-                <TableHead>2PN</TableHead>
                 <TableHead>CĐT</TableHead>
                 <TableHead>Trạng thái</TableHead>
                 <TableHead>Reviews</TableHead>
@@ -117,7 +116,7 @@ export default async function ApartmentsPage({
             <TableBody>
               {apartments.length === 0 ? (
                 <TableRow>
-                  <TableCell colSpan={8} className="py-8 text-center text-muted-foreground">
+                  <TableCell colSpan={7} className="py-8 text-center text-muted-foreground">
                     Chưa có chung cư nào. Vào tab Threads để thêm thread kind &quot;apartment&quot; và bắt đầu crawl!
                   </TableCell>
                 </TableRow>
@@ -144,14 +143,6 @@ export default async function ApartmentsPage({
                     </TableCell>
                     <TableCell>
                       <span
-                        className="block max-w-28 truncate text-sm text-foreground/80"
-                        title={apartment.info?.price_2pn || undefined}
-                      >
-                        {apartment.info?.price_2pn || "-"}
-                      </span>
-                    </TableCell>
-                    <TableCell>
-                      <span
                         className="block max-w-44 truncate text-sm text-foreground/80"
                         title={apartment.info?.developer || undefined}
                       >
@@ -171,6 +162,7 @@ export default async function ApartmentsPage({
                         title={apartment.info?.status_note || apartment.info?.status || undefined}
                       >
                         {apartment.info?.status || "-"}
+                        {apartment.info?.handover ? ` · ${apartment.info.handover}` : ""}
                       </span>
                     </TableCell>
                     <TableCell>

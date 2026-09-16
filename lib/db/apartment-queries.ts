@@ -146,6 +146,7 @@ export type ApartmentInfo = {
   developer: string | null;
   status: string | null;
   status_note: string | null;
+  handover: string | null;
   bds_url: string | null;
 };
 
@@ -179,6 +180,7 @@ export async function getApartmentMetadata(apartment: string): Promise<Apartment
           developer: coerceString(rawInfo.developer) || null,
           status: coerceString(rawInfo.status) || null,
           status_note: coerceString(rawInfo.status_note) || null,
+          handover: coerceString(rawInfo.handover) || null,
           bds_url: coerceString(rawInfo.bds_url) || null,
         }
       : null;
