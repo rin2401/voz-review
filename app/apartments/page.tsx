@@ -108,6 +108,7 @@ export default async function ApartmentsPage({
                 <TableHead>Quận</TableHead>
                 <TableHead>Giá/m2</TableHead>
                 <TableHead>CĐT</TableHead>
+                <TableHead>Trạng thái</TableHead>
                 <TableHead>Reviews</TableHead>
                 <TableHead>Last</TableHead>
               </TableRow>
@@ -115,7 +116,7 @@ export default async function ApartmentsPage({
             <TableBody>
               {apartments.length === 0 ? (
                 <TableRow>
-                  <TableCell colSpan={6} className="py-8 text-center text-muted-foreground">
+                  <TableCell colSpan={7} className="py-8 text-center text-muted-foreground">
                     Chưa có chung cư nào. Vào tab Threads để thêm thread kind &quot;apartment&quot; và bắt đầu crawl!
                   </TableCell>
                 </TableRow>
@@ -146,6 +147,21 @@ export default async function ApartmentsPage({
                         title={apartment.info?.developer || undefined}
                       >
                         {shortDeveloper(apartment.info?.developer) || "-"}
+                      </span>
+                    </TableCell>
+                    <TableCell>
+                      <span
+                        className={
+                          "inline-block rounded-full px-2 py-0.5 text-xs font-medium " +
+                          (apartment.info?.status === "Đã bàn giao"
+                            ? "bg-emerald-500/15 text-emerald-600 dark:text-emerald-400"
+                            : apartment.info?.status === "Đang mở bán"
+                              ? "bg-amber-500/15 text-amber-600 dark:text-amber-400"
+                              : "bg-muted text-foreground/80")
+                        }
+                        title={apartment.info?.status_note || apartment.info?.status || undefined}
+                      >
+                        {apartment.info?.status || "-"}
                       </span>
                     </TableCell>
                     <TableCell>

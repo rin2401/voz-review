@@ -143,6 +143,8 @@ export type ApartmentInfo = {
   location: string | null;
   price_per_m2: string | null;
   developer: string | null;
+  status: string | null;
+  status_note: string | null;
   bds_url: string | null;
 };
 
@@ -173,6 +175,8 @@ export async function getApartmentMetadata(apartment: string): Promise<Apartment
           location: coerceString(rawInfo.location) || null,
           price_per_m2: coerceString(rawInfo.price_per_m2) || null,
           developer: coerceString(rawInfo.developer) || null,
+          status: coerceString(rawInfo.status) || null,
+          status_note: coerceString(rawInfo.status_note) || null,
           bds_url: coerceString(rawInfo.bds_url) || null,
         }
       : null;

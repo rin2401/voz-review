@@ -138,6 +138,22 @@ export default async function ApartmentPage({
                 🏢 CĐT: {info.developer}
               </span>
             )}
+            {info.status && (
+              <span
+                className={
+                  "rounded-full border bg-muted/50 px-3 py-1 text-sm " +
+                  (info.status === "Đã bàn giao"
+                    ? "text-emerald-600 dark:text-emerald-400"
+                    : info.status === "Đang mở bán"
+                      ? "text-amber-600 dark:text-amber-400"
+                      : "text-foreground/90")
+                }
+                title={info.status_note || undefined}
+              >
+                🏗️ {info.status}
+                {info.status_note ? ` — ${info.status_note}` : ""}
+              </span>
+            )}
           </div>
           <p className="text-xs text-muted-foreground">
             Vị trí &amp; giá tổng hợp từ review của cư dân — mang tính tham khảo.
