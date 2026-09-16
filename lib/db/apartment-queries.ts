@@ -137,6 +137,55 @@ export async function resolveApartmentName(slugOrName: string): Promise<string> 
   return asciiMap.get(asciiSlug(slugOrName).toLowerCase()) ?? slugOrName;
 }
 
+// ============== apartment metadata (info + summary) ==============
+
+export type ApartmentInfo = {
+  location: string | null;
+  price_per_m2: string | null;
+};
+
+export type ApartmentSummary = {
+  summary: string;
+  pros: string[];
+  cons: string[];
+};
+
+export type ApartmentMetadata = {
+  info: ApartmentInfo | null;
+  summary: ApartmentSummary | null;
+};
+
+/** Location/price + review summary for one apartment, synced from data/*.json. */
+export async function getApartmentMetadata(apartment: string): Promise<ApartmentMetadata> {
+  const db = await getDb();
+  const doc = await db.collection("apartments").findOne(
+    { name: apartment },
+    { projection: { info: 1, summary: 1 } },
+  );
+  if (!doc) return { info: null, summary: null };
+
+  const rawInfo = doc.info;
+  const info: ApartmentInfo | null =
+    rawInfo && (rawInfo.location != null || rawInfo.price_per_m2 != null)
+      ? {
+          location: coerceString(rawInfo.location) || null,
+          price_per_m2: coerceString(rawInfo.price_per_m2) || null,
+        }
+      : null;
+
+  const rawSummary = doc.summary;
+  const summary: ApartmentSummary | null =
+    rawSummary && typeof rawSummary.summary === "string" && rawSummary.summary.trim()
+      ? {
+          summary: String(rawSummary.summary),
+          pros: Array.isArray(rawSummary.pros) ? rawSummary.pros.map(String) : [],
+          cons: Array.isArray(rawSummary.cons) ? rawSummary.cons.map(String) : [],
+        }
+      : null;
+
+  return { info, summary };
+}
+
 // ============== apartment reviews ==============
 
 export async function getReviewsByApartment(

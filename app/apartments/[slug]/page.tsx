@@ -1,13 +1,11 @@
 import Link from "next/link";
 
-import apartmentInfoJson from "../../../data/apartment_info.json";
-import summaries from "../../../data/apartment_summaries.json";
-
 import { ReviewCard } from "@/components/review-card";
 import { Badge } from "@/components/ui/badge";
 import { Button, buttonVariants } from "@/components/ui/button";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import {
+  getApartmentMetadata,
   getApartmentPostsByIds,
   getApartmentRepliesForPosts,
   getApartmentReviewCount,
@@ -19,11 +17,6 @@ import { getEntityMap } from "@/lib/db/entity-map";
 import { buildReplyContext } from "@/lib/replies";
 import { asciiSlug, decodeSlug } from "@/lib/format";
 import { cn } from "@/lib/utils";
-
-type ApartmentSummary = { summary: string; pros: string[]; cons: string[] };
-const apartmentSummaries = summaries as Record<string, ApartmentSummary>;
-type ApartmentInfo = { location: string | null; price_per_m2: string | null };
-const apartmentInfo = apartmentInfoJson as Record<string, ApartmentInfo>;
 
 export const revalidate = 300;
 
@@ -98,8 +91,7 @@ export default async function ApartmentPage({
         : "border-border bg-muted/50 text-foreground hover:bg-accent",
     );
 
-  const summary = apartmentSummaries[apartmentName];
-  const info = apartmentInfo[apartmentName];
+  const { info, summary } = await getApartmentMetadata(apartmentName);
 
   return (
     <div className="space-y-4">
