@@ -12,6 +12,7 @@ export function ReviewCard({
   review,
   replyChildrenByPostId,
   defaultVisibleReplies = 3,
+  defaultOpenReplies = false,
   entityMap,
   convBasePath,
   highlightPostId,
@@ -19,6 +20,7 @@ export function ReviewCard({
   review: Dict;
   replyChildrenByPostId: Record<string, Dict[]>;
   defaultVisibleReplies?: number;
+  defaultOpenReplies?: boolean;
   entityMap?: EntityMap;
   convBasePath?: string;
   highlightPostId?: string;
@@ -82,6 +84,7 @@ export function ReviewCard({
             children={childReplies}
             childrenByPostId={replyChildrenByPostId}
             defaultVisible={defaultVisibleReplies}
+            defaultOpen={defaultOpenReplies}
             entityMap={entityMap}
             convBasePath={convBasePath}
             highlightPostId={highlightPostId}

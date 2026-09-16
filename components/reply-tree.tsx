@@ -122,6 +122,7 @@ export function ReplyTree({
   children,
   childrenByPostId,
   defaultVisible = 3,
+  defaultOpen = false,
   entityMap,
   convBasePath,
   highlightPostId,
@@ -130,11 +131,12 @@ export function ReplyTree({
   children: Dict[];
   childrenByPostId: Record<string, Dict[]>;
   defaultVisible?: number;
+  defaultOpen?: boolean;
   entityMap?: EntityMap;
   convBasePath?: string;
   highlightPostId?: string;
 }) {
-  const [open, setOpen] = useState(false);
+  const [open, setOpen] = useState(defaultOpen);
 
   return (
     <Collapsible open={open} onOpenChange={setOpen} className="mt-3">

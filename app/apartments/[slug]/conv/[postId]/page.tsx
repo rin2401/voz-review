@@ -60,6 +60,7 @@ export default async function ConversationPage({
         review={root}
         replyChildrenByPostId={childrenByPostId}
         defaultVisibleReplies={1000}
+        defaultOpenReplies
         highlightPostId={postId}
         entityMap={entityMap}
       />
