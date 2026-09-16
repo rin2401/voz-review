@@ -37,39 +37,45 @@ function ReplyNode({
     [entityMap, node.content],
   );
   const highlighted = highlightPostId && String(node.voz_post_id) === highlightPostId;
+  // Linear chains (single child) stack flat instead of stair-casing on deep
+  // threads; only real branches indent under a thread line.
+  const branches = children.length > 1;
 
   return (
-    <div className="space-y-2">
+    <div className="space-y-1.5">
       <div
         className={cn(
-          "rounded-lg border bg-muted/40 p-3",
-          highlighted && "ring-2 ring-primary/60 border-primary/40",
+          "rounded-lg p-2 -mx-2",
+          highlighted ? "bg-primary/5 ring-1 ring-primary/40" : "hover:bg-muted/40",
         )}
       >
-        <div className="flex flex-wrap items-center justify-between gap-2 text-sm">
-          <span className="font-medium text-orange-500">{node.author}</span>
-          <span className="text-muted-foreground">
-            {node.post_date ? formatDtVn(node.post_date) : ""} | ❤️ {node.likes ?? 0} |{" "}
-            {node.url ? (
-              <a href={node.url} target="_blank" rel="noreferrer" className="hover:underline">
-                View on Voz
-              </a>
-            ) : null}
-            {convBasePath && node.voz_post_id ? (
-              <>
-                {" | "}
-                <Link
-                  href={`${convBasePath}/conv/${node.voz_post_id}`}
-                  title="Xem full conversation"
-                  className="font-medium text-primary hover:underline"
-                >
-                  🧵 Conv
-                </Link>
-              </>
-            ) : null}
-          </span>
+        <div className="flex flex-wrap items-center gap-x-2 gap-y-0.5 text-xs">
+          <span className="text-sm font-medium text-orange-500">{node.author}</span>
+          {node.post_date ? (
+            <span className="text-muted-foreground">{formatDtVn(node.post_date)}</span>
+          ) : null}
+          <span className="text-muted-foreground">❤️ {node.likes ?? 0}</span>
+          {node.url ? (
+            <a
+              href={node.url}
+              target="_blank"
+              rel="noreferrer"
+              className="text-muted-foreground hover:underline"
+            >
+              Voz
+            </a>
+          ) : null}
+          {convBasePath && node.voz_post_id ? (
+            <Link
+              href={`${convBasePath}/conv/${node.voz_post_id}`}
+              title="Xem full conversation"
+              className="font-medium text-primary hover:underline"
+            >
+              🧵
+            </Link>
+          ) : null}
         </div>
-        <div className="mt-2 text-sm leading-relaxed whitespace-pre-wrap break-words">
+        <div className="mt-1 text-sm leading-relaxed whitespace-pre-wrap break-words">
           {segments
             ? segments.map((segment, index) =>
                 segment.href ? (
@@ -89,7 +95,7 @@ function ReplyNode({
         </div>
       </div>
       {children.length > 0 && (
-        <div className="ml-4 space-y-2 border-l pl-3">
+        <div className={cn("space-y-1.5", branches && "ml-3 border-l pl-3")}>
           {visibleChildren.map((child) => (
             <ReplyNode
               key={String(child.voz_post_id ?? child._id ?? Math.random())}
@@ -161,7 +167,7 @@ export function ReplyTree({
         ) : null}
       </div>
       <CollapsibleContent className="mt-2">
-        <div className="space-y-2">
+        <div className="ml-3 space-y-1.5 border-l pl-3">
           {children.map((child) => (
             <ReplyNode
               key={String(child.voz_post_id ?? Math.random())}
