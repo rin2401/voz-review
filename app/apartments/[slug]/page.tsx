@@ -75,6 +75,10 @@ export default async function ApartmentPage({
     getRepliesForPosts: getApartmentRepliesForPosts,
   });
   const entityMap = await getApartmentEntityMap();
+  // Wikipedia-style: never link the current page's own entity.
+  for (const key of Object.keys(entityMap)) {
+    if (entityMap[key] === `/apartments/${apartmentSlug}`) delete entityMap[key];
+  }
 
   const pages = Math.ceil(total / LIMIT);
   const startPage = Math.max(1, page - 2);
