@@ -1,12 +1,26 @@
 "use client";
 
-import { useState } from "react";
+import { useMemo, useState } from "react";
+import Link from "next/link";
 
+import { createEntityLinker } from "@/lib/entity-links";
 import { cn } from "@/lib/utils";
 
-export function ReadMore({ content, limit = 500 }: { content: string; limit?: number }) {
+export function ReadMore({
+  content,
+  limit = 500,
+  entityMap,
+}: {
+  content: string;
+  limit?: number;
+  entityMap?: Record<string, string>;
+}) {
   const [expanded, setExpanded] = useState(false);
   const isLong = content.length > limit;
+  const segments = useMemo(
+    () => (entityMap ? createEntityLinker(entityMap).split(content) : null),
+    [entityMap, content],
+  );
 
   return (
     <div className="space-y-1">
@@ -16,7 +30,21 @@ export function ReadMore({ content, limit = 500 }: { content: string; limit?: nu
           isLong && !expanded && "line-clamp-[10]",
         )}
       >
-        {content}
+        {segments
+          ? segments.map((segment, index) =>
+              segment.href ? (
+                <Link
+                  key={index}
+                  href={segment.href}
+                  className="font-medium text-primary hover:underline"
+                >
+                  {segment.text}
+                </Link>
+              ) : (
+                <span key={index}>{segment.text}</span>
+              ),
+            )
+          : content}
       </div>
       {isLong && (
         <button

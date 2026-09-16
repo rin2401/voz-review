@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import {
+  getApartmentEntityMap,
   getApartmentPostsByIds,
   getApartmentRepliesForPosts,
   searchApartmentReviews,
@@ -25,6 +26,7 @@ export default async function ApartmentSearchPage({
   let results: Record<string, any>[] = [];
   let topLevelResults: Record<string, any>[] = [];
   let replyChildrenByPostId: Record<string, any[]> = {};
+  let entityMap: Record<string, string> = {};
 
   if (q) {
     results = await searchApartmentReviews(q, 50);
@@ -52,6 +54,7 @@ export default async function ApartmentSearchPage({
       getPostsByIds: getApartmentPostsByIds,
       getRepliesForPosts: getApartmentRepliesForPosts,
     }));
+    entityMap = await getApartmentEntityMap();
   }
 
   return (
@@ -138,6 +141,7 @@ export default async function ApartmentSearchPage({
             key={String(result.voz_post_id ?? result._id ?? Math.random())}
             review={result}
             replyChildrenByPostId={replyChildrenByPostId}
+            entityMap={entityMap}
           />
         ))}
       </div>

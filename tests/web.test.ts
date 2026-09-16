@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 
 import { buildCompanyMatch, escapeRegex } from "../lib/db/queries";
+import { buildApartmentEntityMap, createEntityLinker } from "../lib/entity-links";
 import { companyToSlug, formatDtVn, formatSalaryMillion, schedulerStatusLabel } from "../lib/format";
 
 describe("formatSalaryMillion", () => {
@@ -62,5 +63,64 @@ describe("buildCompanyMatch", () => {
     expect(companyRegex.$options).toBe("i");
     const legacyBranch = query.$or[1];
     expect(legacyBranch.$and[1].company.$regex).toBe("^CMC Global$");
+  });
+});
+
+describe("entity links", () => {
+  const entityMap = {
+    "vinhomes grand park": "/apartments/Vinhomes-Grand-Park",
+    "grand park": "/apartments/Vinhomes-Grand-Park",
+    "q7 riverside": "/apartments/Q7-Riverside",
+    "bcons miền đông": "/apartments/Bcons-Mien-Dong",
+  };
+
+  it("builds the map from names and aliases", () => {
+    const map = buildApartmentEntityMap([
+      { name: "Vinhomes Grand Park", aliases: ["Grand Park", "VGP"] },
+      { name: "Q7 Riverside", aliases: [] },
+    ]);
+    expect(map["vinhomes grand park"]).toBe("/apartments/Vinhomes-Grand-Park");
+    expect(map["grand park"]).toBe("/apartments/Vinhomes-Grand-Park");
+    expect(map["vgp"]).toBe("/apartments/Vinhomes-Grand-Park");
+    expect(map["q7 riverside"]).toBe("/apartments/Q7-Riverside");
+  });
+
+  it("links known entity mentions and keeps the rest as plain text", () => {
+    const segments = createEntityLinker(entityMap).split(
+      "Mình đang ở Q7 Riverside, định chuyển sang Vinhomes Grand Park.",
+    );
+    expect(segments).toEqual([
+      { text: "Mình đang ở " },
+      { text: "Q7 Riverside", href: "/apartments/Q7-Riverside" },
+      { text: ", định chuyển sang " },
+      { text: "Vinhomes Grand Park", href: "/apartments/Vinhomes-Grand-Park" },
+      { text: "." },
+    ]);
+  });
+
+  it("prefers the longest match (canonical over alias)", () => {
+    const segments = createEntityLinker(entityMap).split("Grand Park gần Q7");
+    expect(segments[0]).toEqual({ text: "Grand Park", href: "/apartments/Vinhomes-Grand-Park" });
+  });
+
+  it("does not link partial words or mentions inside URLs", () => {
+    const segments = createEntityLinker(entityMap).split(
+      "Xem https://voz.vn/t/q7-riverside-abc và q7riverside nhé",
+    );
+    expect(segments).toEqual([
+      { text: "Xem " },
+      { text: "https://voz.vn/t/q7-riverside-abc" },
+      { text: " và q7riverside nhé" },
+    ]);
+  });
+
+  it("matches Vietnamese diacritics case-insensitively", () => {
+    const segments = createEntityLinker(entityMap).split("bcons miền đông ở đâu");
+    expect(segments[0]).toEqual({ text: "bcons miền đông", href: "/apartments/Bcons-Mien-Dong" });
+  });
+
+  it("returns plain text when the map is empty", () => {
+    const segments = createEntityLinker({}).split("Q7 Riverside ở đâu");
+    expect(segments).toEqual([{ text: "Q7 Riverside ở đâu" }]);
   });
 });

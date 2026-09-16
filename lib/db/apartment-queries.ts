@@ -4,6 +4,7 @@
 
 import { normalizeAliases as normalizeAliasesJs } from "../../workers/crawler/aliases.js";
 import { asciiSlug } from "../format";
+import { buildApartmentEntityMap } from "../entity-links";
 import { getDb } from "./client";
 
 export type Dict = Record<string, any>;
@@ -174,6 +175,21 @@ export async function getApartmentThreadIds(apartment: string): Promise<string[]
       voz_thread_id: { $exists: true, $nin: [null, ""] },
     });
   return ids.filter(Boolean).map(String).sort((a, b) => (a < b ? 1 : a > b ? -1 : 0));
+}
+
+/** Entity-linking map (name/alias -> detail href) for all known apartments. */
+export async function getApartmentEntityMap(): Promise<Record<string, string>> {
+  const db = await getDb();
+  const docs = await db
+    .collection("apartments")
+    .find({}, { projection: { name: 1, aliases: 1 } })
+    .toArray();
+  return buildApartmentEntityMap(
+    docs.map((doc) => ({
+      name: String(doc.name || ""),
+      aliases: (doc.aliases || []) as string[],
+    })),
+  );
 }
 
 // ============== search ==============

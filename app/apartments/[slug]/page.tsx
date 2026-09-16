@@ -8,6 +8,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button, buttonVariants } from "@/components/ui/button";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import {
+  getApartmentEntityMap,
   getApartmentPostsByIds,
   getApartmentRepliesForPosts,
   getApartmentReviewCount,
@@ -73,6 +74,7 @@ export default async function ApartmentPage({
     getPostsByIds: getApartmentPostsByIds,
     getRepliesForPosts: getApartmentRepliesForPosts,
   });
+  const entityMap = await getApartmentEntityMap();
 
   const pages = Math.ceil(total / LIMIT);
   const startPage = Math.max(1, page - 2);
@@ -193,7 +195,7 @@ export default async function ApartmentPage({
       {topLevelReviews.length > 0 ? (
         <div className="space-y-3">
           {topLevelReviews.map((review) => (
-            <ReviewCard key={String(review.voz_post_id ?? review._id ?? Math.random())} review={review} replyChildrenByPostId={replyChildrenByPostId} />
+            <ReviewCard key={String(review.voz_post_id ?? review._id ?? Math.random())} review={review} replyChildrenByPostId={replyChildrenByPostId} entityMap={entityMap} />
           ))}
         </div>
       ) : (

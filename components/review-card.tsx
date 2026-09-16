@@ -8,10 +8,12 @@ export function ReviewCard({
   review,
   replyChildrenByPostId,
   defaultVisibleReplies = 3,
+  entityMap,
 }: {
   review: Dict;
   replyChildrenByPostId: Record<string, Dict[]>;
   defaultVisibleReplies?: number;
+  entityMap?: Record<string, string>;
 }) {
   const companies: string[] = review.companies || [];
   const parentReview = review.parent_review;
@@ -52,13 +54,14 @@ export function ReviewCard({
             ↳ Reply to post #{review.reply_post_id}
           </div>
         ) : null}
-        <ReadMore content={String(review.content || "")} />
+        <ReadMore content={String(review.content || "")} entityMap={entityMap} />
         {childReplies.length > 0 && (
           <ReplyTree
             postId={String(review.voz_post_id)}
             children={childReplies}
             childrenByPostId={replyChildrenByPostId}
             defaultVisible={defaultVisibleReplies}
+            entityMap={entityMap}
           />
         )}
       </CardContent>

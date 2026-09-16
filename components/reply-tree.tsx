@@ -1,11 +1,12 @@
 "use client";
 
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import Link from "next/link";
 
 import { buttonVariants } from "@/components/ui/button";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import type { Dict } from "@/lib/db/queries";
+import { createEntityLinker } from "@/lib/entity-links";
 import { asciiSlug, formatDtVn } from "@/lib/format";
 import { cn } from "@/lib/utils";
 
@@ -14,17 +15,23 @@ function ReplyNode({
   childrenByPostId,
   defaultVisible,
   depth,
+  entityMap,
 }: {
   node: Dict;
   childrenByPostId: Record<string, Dict[]>;
   defaultVisible: number;
   depth: number;
+  entityMap?: Record<string, string>;
 }) {
   const [showAll, setShowAll] = useState(false);
   const children = childrenByPostId[String(node.voz_post_id)] || [];
   const visibleChildren =
     depth > 1 && children.length > defaultVisible && !showAll ? children.slice(0, defaultVisible) : children;
   const hiddenCount = children.length - defaultVisible;
+  const segments = useMemo(
+    () => (entityMap ? createEntityLinker(entityMap).split(String(node.content || "")) : null),
+    [entityMap, node.content],
+  );
 
   return (
     <div className="space-y-2">
@@ -40,7 +47,23 @@ function ReplyNode({
             ) : null}
           </span>
         </div>
-        <div className="mt-2 text-sm leading-relaxed whitespace-pre-wrap break-words">{node.content}</div>
+        <div className="mt-2 text-sm leading-relaxed whitespace-pre-wrap break-words">
+          {segments
+            ? segments.map((segment, index) =>
+                segment.href ? (
+                  <Link
+                    key={index}
+                    href={segment.href}
+                    className="font-medium text-primary hover:underline"
+                  >
+                    {segment.text}
+                  </Link>
+                ) : (
+                  <span key={index}>{segment.text}</span>
+                ),
+              )
+            : node.content}
+        </div>
       </div>
       {children.length > 0 && (
         <div className="ml-4 space-y-2 border-l pl-3">
@@ -51,6 +74,7 @@ function ReplyNode({
               childrenByPostId={childrenByPostId}
               defaultVisible={defaultVisible}
               depth={depth + 1}
+              entityMap={entityMap}
             />
           ))}
           {depth > 1 && children.length > defaultVisible && !showAll && (
@@ -73,11 +97,13 @@ export function ReplyTree({
   children,
   childrenByPostId,
   defaultVisible = 3,
+  entityMap,
 }: {
   postId: string;
   children: Dict[];
   childrenByPostId: Record<string, Dict[]>;
   defaultVisible?: number;
+  entityMap?: Record<string, string>;
 }) {
   const [open, setOpen] = useState(false);
 
@@ -101,6 +127,7 @@ export function ReplyTree({
               childrenByPostId={childrenByPostId}
               defaultVisible={defaultVisible}
               depth={1}
+              entityMap={entityMap}
             />
           ))}
         </div>
