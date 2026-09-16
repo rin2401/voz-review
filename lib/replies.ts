@@ -88,8 +88,9 @@ export async function buildReplyContext(
   return { reviewByPostId, replyChildrenByPostId, topLevelReviews };
 }
 
-const MAX_ANCESTOR_HOPS = 10;
-const MAX_CONVERSATION_DEPTH = 10;
+const MAX_ANCESTOR_HOPS = 20;
+const MAX_CONVERSATION_DEPTH = 20;
+const MAX_CONVERSATION_NODES = 1000;
 
 /**
  * Full conversation for a post: walk up the reply chain to the root ancestor,
@@ -124,6 +125,7 @@ export async function buildFullConversation(
 
   const childrenByPostId: Record<string, Dict[]> = {};
   let frontier = [String(root.voz_post_id ?? postId)];
+  let total = 0;
   for (let level = 0; level < MAX_CONVERSATION_DEPTH && frontier.length; level++) {
     const replies = await fetchRepliesForPosts(frontier);
     const next: string[] = [];
@@ -135,9 +137,11 @@ export async function buildFullConversation(
         continue;
       }
       childrenByPostId[parentId].push(child);
+      total += 1;
       if (child.voz_post_id) next.push(String(child.voz_post_id));
     }
     frontier = next;
+    if (total >= MAX_CONVERSATION_NODES) break;
   }
 
   for (const children of Object.values(childrenByPostId)) {
