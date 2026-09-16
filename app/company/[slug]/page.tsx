@@ -22,6 +22,7 @@ import {
   getReviewsByCompany,
   resolveCompanyName,
 } from "@/lib/db/queries";
+import { getEntityMap } from "@/lib/db/entity-map";
 import { buildReplyContext } from "@/lib/replies";
 import { asciiSlug, decodeSlug, formatSalaryMillion } from "@/lib/format";
 import { cn } from "@/lib/utils";
@@ -100,6 +101,7 @@ export default async function CompanyPage({
   let offers: Record<string, any>[] = [];
   let replyChildrenByPostId: Record<string, any[]> = {};
   let topLevelReviews: Record<string, any>[] = [];
+  let entityMap: Record<string, string> = {};
   let total = 0;
 
   if (offerOnly) {
@@ -130,6 +132,7 @@ export default async function CompanyPage({
       interviewOnly,
     });
     ({ replyChildrenByPostId, topLevelReviews } = await buildReplyContext(reviews));
+    entityMap = await getEntityMap({ companySlug });
   }
 
   const pages = Math.ceil(total / LIMIT);
@@ -306,7 +309,7 @@ export default async function CompanyPage({
       ) : topLevelReviews.length > 0 ? (
         <div className="space-y-3">
           {topLevelReviews.map((review) => (
-            <ReviewCard key={String(review.voz_post_id ?? review._id ?? Math.random())} review={review} replyChildrenByPostId={replyChildrenByPostId} />
+            <ReviewCard key={String(review.voz_post_id ?? review._id ?? Math.random())} review={review} replyChildrenByPostId={replyChildrenByPostId} entityMap={entityMap} />
           ))}
         </div>
       ) : (

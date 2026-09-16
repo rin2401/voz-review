@@ -6,6 +6,7 @@
 import type { Db } from "mongodb";
 import { normalizeAliases as normalizeAliasesJs } from "../../workers/crawler/aliases.js";
 import { asciiSlug } from "../format";
+import { buildCompanyEntityMap } from "../entity-links";
 import {
   normalizeReviewCompanies,
   prepareReviewDocument,
@@ -270,6 +271,16 @@ export async function resolveCompanyName(slugOrName: string): Promise<string> {
 
   const asciiMap = new Map(names.map((name) => [asciiSlug(name).toLowerCase(), name]));
   return asciiMap.get(asciiSlug(slugOrName).toLowerCase()) ?? slugOrName;
+}
+
+/** Clean company names + aliases mapped to their detail href, for entity linking. */
+export async function getCompanyEntityMap(): Promise<Record<string, string>> {
+  const db = await getDb();
+  const docs = await db
+    .collection("companies")
+    .find({}, { projection: { name: 1, aliases: 1 } })
+    .toArray();
+  return buildCompanyEntityMap(docs.map((doc) => ({ name: doc.name, aliases: doc.aliases })));
 }
 
 // ============== reviews ==============

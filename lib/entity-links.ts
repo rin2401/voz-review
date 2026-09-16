@@ -30,6 +30,57 @@ function escapeRegExp(value: string): string {
   return value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 }
 
+// Company-name quality filter: the companies collection carries many junk
+// names from review extraction (censored names, leetspeak, common words and
+// whole descriptive sentences). Linking those would produce nonsense links.
+
+const COMPANY_BLOCKLIST = new Set([
+  "bank", "green", "cake", "zoom", "grab", "stripe", "amazon", "netflix",
+  "masteri", "shiba inu", "amigo", "autonomous", "aspire", "ascend", "manta",
+  "spartan", "fossil", "meld", "movi", "opes", "tulpo", "multiplier", "ft",
+  "mỹ", "ấn",
+]);
+
+const COMPANY_GENERIC_PATTERNS = [
+  "công ty", "cty", "outsource", "như", "một brand", "của", "màu",
+  "giao hàng", "cá nhỏ", "trực thuộc", "làm về", "tnhh", "private", "hedge",
+  "remote", "vi ti ai", "nát têc", "đỏ", "sàn crypto", "product base",
+];
+
+/** True when a company name is brand-like enough to be worth linking. */
+export function isCleanCompanyName(name: string): boolean {
+  const value = (name || "").trim();
+  const lower = value.toLowerCase();
+  if (value.length < 2) return false;
+  // Censored by voz posters ("A***", "M*crosoft") — "Sun* Asterisk" is real.
+  if (value.includes("*") && lower !== "sun* asterisk") return false;
+  // Leetspeak junk of real brands ("D3K", "H1tachi", "T3chnologi3s").
+  if (/[a-z]\d[a-z]/i.test(value)) return false;
+  if (COMPANY_BLOCKLIST.has(lower)) return false;
+  if (COMPANY_GENERIC_PATTERNS.some((pattern) => lower.includes(pattern))) return false;
+  return true;
+}
+
+/** Map clean company names + aliases (lowercased) to their detail href. */
+export function buildCompanyEntityMap(
+  companies: { name: string; aliases?: string[] | null }[],
+): Record<string, string> {
+  const map: Record<string, string> = {};
+  for (const company of companies) {
+    const name = (company.name || "").trim();
+    if (!name || !isCleanCompanyName(name)) continue;
+    const href = `/company/${asciiSlug(name)}`;
+    map[name.toLowerCase()] = href;
+    for (const rawAlias of company.aliases || []) {
+      const alias = (rawAlias || "").trim();
+      if (!alias || !isCleanCompanyName(alias)) continue;
+      const key = alias.toLowerCase();
+      if (!map[key]) map[key] = href;
+    }
+  }
+  return map;
+}
+
 const URL_PATTERN = /https?:\/\/\S+|www\.\S+/gi;
 
 /**

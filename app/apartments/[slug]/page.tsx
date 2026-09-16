@@ -8,7 +8,6 @@ import { Badge } from "@/components/ui/badge";
 import { Button, buttonVariants } from "@/components/ui/button";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import {
-  getApartmentEntityMap,
   getApartmentPostsByIds,
   getApartmentRepliesForPosts,
   getApartmentReviewCount,
@@ -16,6 +15,7 @@ import {
   getReviewsByApartment,
   resolveApartmentName,
 } from "@/lib/db/apartment-queries";
+import { getEntityMap } from "@/lib/db/entity-map";
 import { buildReplyContext } from "@/lib/replies";
 import { asciiSlug, decodeSlug } from "@/lib/format";
 import { cn } from "@/lib/utils";
@@ -74,11 +74,7 @@ export default async function ApartmentPage({
     getPostsByIds: getApartmentPostsByIds,
     getRepliesForPosts: getApartmentRepliesForPosts,
   });
-  const entityMap = await getApartmentEntityMap();
-  // Wikipedia-style: never link the current page's own entity.
-  for (const key of Object.keys(entityMap)) {
-    if (entityMap[key] === `/apartments/${apartmentSlug}`) delete entityMap[key];
-  }
+  const entityMap = await getEntityMap({ apartmentSlug });
 
   const pages = Math.ceil(total / LIMIT);
   const startPage = Math.max(1, page - 2);

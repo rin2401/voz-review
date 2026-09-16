@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { searchReviews } from "@/lib/db/queries";
+import { getEntityMap } from "@/lib/db/entity-map";
 import { buildReplyContext } from "@/lib/replies";
 import { normalizeReviewCompanies } from "../../workers/crawler/mongo.js";
 
@@ -24,6 +25,7 @@ export default async function SearchPage({
   let results: Record<string, any>[] = [];
   let topLevelResults: Record<string, any>[] = [];
   let replyChildrenByPostId: Record<string, any[]> = {};
+  let entityMap: Record<string, string> = {};
 
   if (q) {
     results = await searchReviews(q, 50);
@@ -46,6 +48,7 @@ export default async function SearchPage({
       });
     }
     ({ replyChildrenByPostId, topLevelReviews: topLevelResults } = await buildReplyContext(results));
+    entityMap = await getEntityMap();
   }
 
   return (
@@ -119,6 +122,7 @@ export default async function SearchPage({
             key={String(result.voz_post_id ?? result._id ?? Math.random())}
             review={result}
             replyChildrenByPostId={replyChildrenByPostId}
+            entityMap={entityMap}
           />
         ))}
       </div>

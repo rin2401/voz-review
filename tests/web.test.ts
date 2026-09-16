@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 
 import { buildCompanyMatch, escapeRegex } from "../lib/db/queries";
-import { buildApartmentEntityMap, createEntityLinker } from "../lib/entity-links";
+import { buildApartmentEntityMap, buildCompanyEntityMap, createEntityLinker, isCleanCompanyName } from "../lib/entity-links";
 import { companyToSlug, formatDtVn, formatSalaryMillion, schedulerStatusLabel } from "../lib/format";
 
 describe("formatSalaryMillion", () => {
@@ -122,5 +122,41 @@ describe("entity links", () => {
   it("returns plain text when the map is empty", () => {
     const segments = createEntityLinker({}).split("Q7 Riverside ở đâu");
     expect(segments).toEqual([{ text: "Q7 Riverside ở đâu" }]);
+  });
+});
+
+describe("company name filter", () => {
+  it("keeps brand-like names", () => {
+    for (const name of ["FPT Software", "VNG", "Zalo", "Techcombank", "S3 Corp", "Sun* Asterisk", "LG"]) {
+      expect(isCleanCompanyName(name)).toBe(true);
+    }
+  });
+
+  it("rejects censored, leetspeak and too-short names", () => {
+    for (const name of ["A***s", "M*crosoft", "D3K Technologi3s", "H1tachi DS", "Vin3S", "A", "X", "FT", "Mỹ"]) {
+      expect(isCleanCompanyName(name)).toBe(false);
+    }
+  });
+
+  it("rejects common words and descriptive phrases", () => {
+    for (const name of [
+      "Bank", "Green", "Cake", "Grab", "Zoom", "Amazon", "Masteri",
+      "Công ty Việt", "Outsource ở Bình Thạnh", "Như trên", "Giao hàng tiết kiệm",
+      "Product của Mỹ", "Cá Nhỏ", "Google remote", "Singapore private hedge fund",
+    ]) {
+      expect(isCleanCompanyName(name)).toBe(false);
+    }
+  });
+
+  it("builds the company map from clean names only", () => {
+    const map = buildCompanyEntityMap([
+      { name: "FPT Software", aliases: ["Fsoft"] },
+      { name: "Bank", aliases: [] },
+      { name: "A***s", aliases: ["Junk"] },
+    ]);
+    expect(map).toEqual({
+      "fpt software": "/company/FPT-Software",
+      fsoft: "/company/FPT-Software",
+    });
   });
 });

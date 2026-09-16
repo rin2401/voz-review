@@ -4,11 +4,11 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import {
-  getApartmentEntityMap,
   getApartmentPostsByIds,
   getApartmentRepliesForPosts,
   searchApartmentReviews,
 } from "@/lib/db/apartment-queries";
+import { getEntityMap } from "@/lib/db/entity-map";
 import { buildReplyContext } from "@/lib/replies";
 
 export const dynamic = "force-dynamic";
@@ -54,7 +54,7 @@ export default async function ApartmentSearchPage({
       getPostsByIds: getApartmentPostsByIds,
       getRepliesForPosts: getApartmentRepliesForPosts,
     }));
-    entityMap = await getApartmentEntityMap();
+    entityMap = await getEntityMap();
   }
 
   return (
