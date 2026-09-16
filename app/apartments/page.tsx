@@ -1,19 +1,10 @@
-import Link from "next/link";
-
 import { SortSelect } from "@/components/sort-select";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
+
+import { ApartmentsTable } from "./apartments-table";
 import { getAllApartments } from "@/lib/db/apartment-queries";
-import { asciiSlug, districtLabel, formatDtVn, shortDeveloper } from "@/lib/format";
 
 export const revalidate = 300;
 
@@ -38,6 +29,14 @@ export default async function ApartmentsPage({
       String(apartment.name || "").toLowerCase().includes(keyword),
     );
   }
+  const rows = apartments.map((apartment) => ({
+    name: String(apartment.name || ""),
+    info: apartment.info ?? null,
+    review_count: Number(apartment.review_count || 0),
+    latest_post_date: apartment.latest_post_date
+      ? new Date(apartment.latest_post_date).toISOString()
+      : null,
+  }));
 
   return (
     <div className="space-y-4">
@@ -101,83 +100,7 @@ export default async function ApartmentsPage({
           <span className="text-sm text-muted-foreground">{apartments.length} results</span>
         </CardHeader>
         <CardContent className="p-0">
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>Name</TableHead>
-                <TableHead>Quận</TableHead>
-                <TableHead>Giá/m2</TableHead>
-                <TableHead>CĐT</TableHead>
-                <TableHead>Trạng thái</TableHead>
-                <TableHead>Reviews</TableHead>
-                <TableHead>Last</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {apartments.length === 0 ? (
-                <TableRow>
-                  <TableCell colSpan={7} className="py-8 text-center text-muted-foreground">
-                    Chưa có chung cư nào. Vào tab Threads để thêm thread kind &quot;apartment&quot; và bắt đầu crawl!
-                  </TableCell>
-                </TableRow>
-              ) : (
-                apartments.map((apartment) => (
-                  <TableRow key={String(apartment.name)}>
-                    <TableCell>
-                      <Link
-                        href={`/apartments/${asciiSlug(String(apartment.name))}`}
-                        className="font-semibold text-orange-500 hover:underline"
-                      >
-                        {apartment.name}
-                      </Link>
-                    </TableCell>
-                    <TableCell>
-                      <span className="text-sm text-foreground/80">
-                        {districtLabel(apartment.info?.location) || "-"}
-                      </span>
-                    </TableCell>
-                    <TableCell>
-                      <span className="text-sm text-foreground/80">
-                        {apartment.info?.price_per_m2 || "-"}
-                      </span>
-                    </TableCell>
-                    <TableCell>
-                      <span
-                        className="block max-w-44 truncate text-sm text-foreground/80"
-                        title={apartment.info?.developer || undefined}
-                      >
-                        {shortDeveloper(apartment.info?.developer) || "-"}
-                      </span>
-                    </TableCell>
-                    <TableCell>
-                      <span
-                        className={
-                          "inline-block rounded-full px-2 py-0.5 text-xs font-medium " +
-                          (apartment.info?.status === "Đã bàn giao"
-                            ? "bg-emerald-500/15 text-emerald-600 dark:text-emerald-400"
-                            : apartment.info?.status === "Đang mở bán"
-                              ? "bg-amber-500/15 text-amber-600 dark:text-amber-400"
-                              : "bg-muted text-foreground/80")
-                        }
-                        title={apartment.info?.status_note || apartment.info?.status || undefined}
-                      >
-                        {apartment.info?.status || "-"}
-                        {apartment.info?.handover ? ` · ${apartment.info.handover}` : ""}
-                      </span>
-                    </TableCell>
-                    <TableCell>
-                      <span className="inline-flex min-w-6 items-center justify-center rounded-full bg-primary/90 px-2 py-0.5 text-xs font-medium text-primary-foreground">
-                        {apartment.review_count}
-                      </span>
-                    </TableCell>
-                    <TableCell>
-                      {apartment.latest_post_date ? formatDtVn(apartment.latest_post_date) : "-"}
-                    </TableCell>
-                  </TableRow>
-                ))
-              )}
-            </TableBody>
-          </Table>
+          <ApartmentsTable apartments={rows} />
         </CardContent>
       </Card>
     </div>
