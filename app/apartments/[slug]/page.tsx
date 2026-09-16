@@ -130,7 +130,7 @@ export default async function ApartmentPage({
                 rel="noopener noreferrer"
                 className="rounded-full border bg-muted/50 px-3 py-1 text-sm text-blue-500 underline hover:bg-muted"
               >
-                🔗 batdongsan.com.vn ↗
+                🔗 Link ↗
               </a>
             )}
           </div>
