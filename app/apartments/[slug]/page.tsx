@@ -74,7 +74,7 @@ export default async function ApartmentPage({
     getPostsByIds: getApartmentPostsByIds,
     getRepliesForPosts: getApartmentRepliesForPosts,
   });
-  const entityMap = await getEntityMap({ apartmentSlug });
+  const entityMap = await getEntityMap();
 
   const pages = Math.ceil(total / LIMIT);
   const startPage = Math.max(1, page - 2);

@@ -132,7 +132,7 @@ export default async function CompanyPage({
       interviewOnly,
     });
     ({ replyChildrenByPostId, topLevelReviews } = await buildReplyContext(reviews));
-    entityMap = await getEntityMap({ companySlug });
+    entityMap = await getEntityMap();
   }
 
   const pages = Math.ceil(total / LIMIT);

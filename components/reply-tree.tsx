@@ -54,7 +54,7 @@ function ReplyNode({
                   <Link
                     key={index}
                     href={segment.href}
-                    className="font-medium text-primary underline underline-offset-2"
+                    className="font-medium text-blue-600 underline underline-offset-2 dark:text-blue-400"
                   >
                     {segment.text}
                   </Link>

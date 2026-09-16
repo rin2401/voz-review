@@ -3,25 +3,14 @@ import { getCompanyEntityMap } from "./queries";
 
 /**
  * Merged apartment + company entity map for in-content entity linking.
- * Apartment names win on key collisions. `exclude` drops the current
- * page's own entity — Wikipedia-style: never link a page to itself.
+ * Apartment names win on key collisions. Unlike wiki-style linking, the
+ * current page's own entity stays linkable: comment threads read more
+ * like discussions than encyclopedia articles.
  */
-export async function getEntityMap(
-  exclude: { apartmentSlug?: string; companySlug?: string } = {},
-): Promise<Record<string, string>> {
+export async function getEntityMap(): Promise<Record<string, string>> {
   const [apartmentMap, companyMap] = await Promise.all([
     getApartmentEntityMap(),
     getCompanyEntityMap(),
   ]);
-  const entityMap: Record<string, string> = { ...companyMap, ...apartmentMap };
-  for (const key of Object.keys(entityMap)) {
-    const href = entityMap[key];
-    if (
-      (exclude.apartmentSlug && href === `/apartments/${exclude.apartmentSlug}`) ||
-      (exclude.companySlug && href === `/company/${exclude.companySlug}`)
-    ) {
-      delete entityMap[key];
-    }
-  }
-  return entityMap;
+  return { ...companyMap, ...apartmentMap };
 }
