@@ -610,5 +610,60 @@
       "Cho thuê thấp (6-11,5tr/tháng), khó đầu tư dòng tiền",
       "Vị trí xa hơn MCP, xa Vincom, ít người ở"
     ]
+  },
+  "Him Lam Phú An": {
+    "summary": "Chung cư Q9 gần metro và cầu Bình Lợi, đường Song Hành mới mở. Giá tăng nhanh từ ~2,6-2,9 tỷ (2024) lên ~4 tỷ (2025) sau khi ra sổ và metro chạy. Vướng cảng và bãi rác; block B né ồn tốt hơn, block D view xa lộ bị nắng bụi.",
+    "pros": [
+      "Gần metro, đi Q1 thuận tiện nhất khu",
+      "Đường Song Hành mới mở, di chuyển thoáng",
+      "Đã ra sổ đợt đầu (2025), mua bán rõ ràng hơn",
+      "Sạch đẹp, để xe thoáng hơn khu lân cận"
+    ],
+    "cons": [
+      "Cạnh cảng và bãi rác — ồn, mùi khi gió",
+      "Giá tăng nhanh: ~2,6 tỷ 2024 -> ~4 tỷ 2025",
+      "Block D view xa lộ bị nắng, bụi từ nhà máy giấy cũ",
+      "Tiện ích xung quanh ít so với The Art Gia Hòa"
+    ]
+  },
+  "Him Lam Riverside": {
+    "summary": "Chung cư Q7 khu Him Lam, 2PN 68m2 ~2,9 tỷ, đã có sổ hồng. Thuận tiện đi Q5 15-20 phút, dân trí cao, phí quản lý thấp (8k/m2). Block A, D pháp lý ổn; block B, C tào lao. Layout phòng khách kín, thang máy chậm. 2025 có vụ đồng loạt dừng bán.",
+    "pros": [
+      "Đã có sổ hồng, pháp lý rõ",
+      "Dân trí cao, BQL/bảo vệ thân thiện",
+      "Phí quản lý thấp (~8k/m2)",
+      "Đi Q5 thuận tiện 15-20 phút, ít kẹt xe"
+    ],
+    "cons": [
+      "Layout phòng khách kín, không có ban công shot",
+      "Thang máy siêu chậm",
+      "Block B, C pháp lý tào lao (chỉ A, D ổn)",
+      "2025 có vụ đồng loạt dừng bán không rõ lý do"
+    ]
+  },
+  "Bcons Suối Tiên": {
+    "summary": "Chung cư Bcons ở Dĩ An gần ga Metro Suối Tiên và làng đại học, phù hợp tài chính dưới 3 tỷ. Review so sánh thua An Gia về thẩm mỹ/chất lượng xây dựng. Ít review trực tiếp về chất lượng ở thực tế.",
+    "pros": [
+      "Giá mềm (dưới 3 tỷ), phù hợp người thu nhập không cao",
+      "Gần ga Metro Suối Tiên, làng đại học, khu CNC",
+      "Đi làm bằng metro thuận tiện"
+    ],
+    "cons": [
+      "Bị so sánh thua An Gia về thẩm mỹ và chất lượng xây dựng",
+      "Một review chê giá không tốt lắm so với khu",
+      "Ít review trực tiếp về chất lượng ở thực tế"
+    ]
+  },
+  "Lumiere Midtown": {
+    "summary": "Dự án Masterise ở khu An Phú/An Khánh (Q2), được nhắc là phân khúc cao với giá 2PN 75m2 ~10,8 tỷ (~144tr/m2). Review cảnh báo giá trên cung trăng so với dự án lân cận. Chỉ có 2 review nên thông tin còn ít.",
+    "pros": [
+      "Vị trí khu An Phú/An Khánh gần Q1",
+      "Được khen đẹp nhất trong 1 review"
+    ],
+    "cons": [
+      "Giá rất cao: 2PN 75m2 ~10,8 tỷ (~144tr/m2)",
+      "Bị cảnh báo giá trên cung trăng so với khu",
+      "Chỉ 2 review — thông tin còn ít để đánh giá"
+    ]
   }
 }
