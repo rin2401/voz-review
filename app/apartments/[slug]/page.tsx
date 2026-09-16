@@ -128,9 +128,9 @@ export default async function ApartmentPage({
                 href={info.bds_url}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="rounded-full border bg-muted/50 px-3 py-1 text-sm text-blue-500 underline hover:bg-muted"
+                className={cn(buttonVariants({ variant: "outline", size: "sm" }))}
               >
-                🔗 Link ↗
+                Link
               </a>
             )}
           </div>
