@@ -74,6 +74,62 @@ export function decodeSlug(value: string): string {
   }
 }
 
+// HCMC district names that appear bare (without a "Quận" prefix) in
+// apartment info locations, e.g. "Bình Tân (Nam Long, đường Tên Lửa)".
+const HCMC_DISTRICTS = [
+  "Bình Thạnh", "Bình Tân", "Tân Phú", "Tân Bình", "Phú Nhuận", "Gò Vấp",
+  "Bình Chánh", "Nhà Bè", "Hóc Môn", "Củ Chi", "Cần Giờ", "Thủ Đức",
+];
+
+// Province abbreviations for the non-HCMC belt (Bình Dương, Long An...).
+const PROVINCE_ABBR: Record<string, string> = {
+  "Bình Dương": "BD",
+  "Long An": "LA",
+  "Đồng Nai": "ĐN",
+  "Tây Ninh": "TN",
+};
+
+/**
+ * Short district label for the apartments list table, extracted from the
+ * full info location string. "…, Quận 12, Hồ Chí Minh" → "Q.12",
+ * "Thành phố Dĩ An, Bình Dương" → "Dĩ An (BD)", bare "Bình Tân" → "Bình Tân".
+ */
+export function districtLabel(location: string | null | undefined): string {
+  if (!location) return "";
+  const text = location.trim();
+
+  const quan = text.match(/quận\s+([^,()]+)/i);
+  if (quan) {
+    const name = quan[1].trim();
+    // Pre-2021 "quận Thủ Đức" — Thủ Đức is its own city-level unit now.
+    return /thủ đức/i.test(name) ? "Thủ Đức" : `Q.${name}`;
+  }
+
+  // Abbreviated "Q9" / "Q.9" style, e.g. "TP.HCM (Q9, Q7)".
+  const qAbbr = text.match(/\bQ\.?\s*(\d+)\b/);
+  if (qAbbr) return `Q.${qAbbr[1]}`;
+
+  const huyen = text.match(/huyện\s+([^,()]+)/i);
+  if (huyen) return huyen[1].trim();
+
+  if (/thành phố\s+thủ đức/i.test(text)) return "Thủ Đức";
+
+  // "…, TP. Dĩ An, tỉnh Bình Dương" → the segment right before the province.
+  for (const [province, abbr] of Object.entries(PROVINCE_ABBR)) {
+    const before = new RegExp(`([^,()]+),\\s*(?:tỉnh\\s+|TP\\.?\\s*)?${province}`, "i").exec(text);
+    if (before) {
+      const name = before[1].replace(/^(?:thành phố|TP\\.?)\s+/i, "").trim();
+      if (name) return `${name} (${abbr})`;
+    }
+  }
+
+  const segments = text.split(/[,()/]/).map((part) => part.trim());
+  const district = HCMC_DISTRICTS.find((name) =>
+    segments.some((part) => part.toLowerCase() === name.toLowerCase()),
+  );
+  return district || "";
+}
+
 export function schedulerStatusLabel(state: Record<string, any> | null | undefined): string {
   if (!state) return "not_configured";
   if (state.enabled === false) return "disabled";

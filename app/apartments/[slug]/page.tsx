@@ -118,6 +118,16 @@ export default async function ApartmentPage({
                 💰 {info.price_per_m2}
               </span>
             )}
+            {info.bds_url && (
+              <a
+                href={info.bds_url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="rounded-full border bg-muted/50 px-3 py-1 text-sm text-blue-500 underline hover:bg-muted"
+              >
+                🔗 Trang dự án trên batdongsan.com.vn ↗
+              </a>
+            )}
           </div>
           <p className="text-xs text-muted-foreground">
             Vị trí &amp; giá tổng hợp từ review của cư dân — mang tính tham khảo.

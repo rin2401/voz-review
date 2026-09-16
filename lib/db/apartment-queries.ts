@@ -142,6 +142,7 @@ export async function resolveApartmentName(slugOrName: string): Promise<string> 
 export type ApartmentInfo = {
   location: string | null;
   price_per_m2: string | null;
+  bds_url: string | null;
 };
 
 export type ApartmentSummary = {
@@ -170,6 +171,7 @@ export async function getApartmentMetadata(apartment: string): Promise<Apartment
       ? {
           location: coerceString(rawInfo.location) || null,
           price_per_m2: coerceString(rawInfo.price_per_m2) || null,
+          bds_url: coerceString(rawInfo.bds_url) || null,
         }
       : null;
 

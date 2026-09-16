@@ -13,7 +13,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { getAllApartments } from "@/lib/db/apartment-queries";
-import { asciiSlug, formatDtVn } from "@/lib/format";
+import { asciiSlug, districtLabel, formatDtVn } from "@/lib/format";
 
 export const revalidate = 300;
 
@@ -105,6 +105,8 @@ export default async function ApartmentsPage({
             <TableHeader>
               <TableRow>
                 <TableHead>Name</TableHead>
+                <TableHead>Quận</TableHead>
+                <TableHead>Giá/m2</TableHead>
                 <TableHead>Reviews</TableHead>
                 <TableHead>Last</TableHead>
               </TableRow>
@@ -112,7 +114,7 @@ export default async function ApartmentsPage({
             <TableBody>
               {apartments.length === 0 ? (
                 <TableRow>
-                  <TableCell colSpan={3} className="py-8 text-center text-muted-foreground">
+                  <TableCell colSpan={5} className="py-8 text-center text-muted-foreground">
                     Chưa có chung cư nào. Vào tab Threads để thêm thread kind &quot;apartment&quot; và bắt đầu crawl!
                   </TableCell>
                 </TableRow>
@@ -126,6 +128,16 @@ export default async function ApartmentsPage({
                       >
                         {apartment.name}
                       </Link>
+                    </TableCell>
+                    <TableCell>
+                      <span className="text-sm text-foreground/80">
+                        {districtLabel(apartment.info?.location) || "-"}
+                      </span>
+                    </TableCell>
+                    <TableCell>
+                      <span className="text-sm text-foreground/80">
+                        {apartment.info?.price_per_m2 || "-"}
+                      </span>
                     </TableCell>
                     <TableCell>
                       <span className="inline-flex min-w-6 items-center justify-center rounded-full bg-primary/90 px-2 py-0.5 text-xs font-medium text-primary-foreground">
