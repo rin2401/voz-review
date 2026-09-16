@@ -1,0 +1,3230 @@
+{
+ "A/K Tower": [
+  {
+   "pjId": "6399",
+   "href": "/du-an-can-ho-chung-cu-thuan-an-bd/a-k-tower-pj6399",
+   "name": "A&K Tower",
+   "status": "",
+   "statusNote": "",
+   "config": [
+    {
+     "value": "1,01 ha",
+     "label": null
+    },
+    {
+     "value": "1.155",
+     "label": "1155 căn hộ"
+    },
+    {
+     "value": "2",
+     "label": "2 tòa nhà"
+    }
+   ],
+   "location": "Đường An Phú 17, Phường An Phú, Thành phố Thuận An, Bình Dương",
+   "summary": "A&K Tower (Cao ốc An Khang) là dự án chung cư cao tầng kết hợp thương mại dịch vụ tọa lạc tại phường An Phú, thành phố Thuận An, tỉnh Bình Dương (Nay là phường An Phú, thành phố Hồ Chí Minh), do Công ty Cổ phần OBC Thuận An làm chủ đầu tư.",
+   "images": [
+    "https://file4.batdongsan.com.vn/crop/240x180/2025/07/30/20250730111122-7e0f_wm.jpg",
+    "https://file4.batdongsan.com.vn/crop/240x180/2025/07/30/20250730111113-c1c7_wm.jpg",
+    "https://file4.batdongsan.com.vn/crop/240x180/2025/07/30/20250730111054-c25b_wm.jpg"
+   ],
+   "imageCount": "7",
+   "trackingLabel": "ipos=3,pgno=3,prid=6399",
+   "provinceCode": "BD",
+   "cateId": 155
+  }
+ ],
+ "Akari City": [
+  {
+   "pjId": "3561",
+   "href": "/du-an-can-ho-chung-cu-binh-tan/akari-city-nam-long-pj3561",
+   "name": "Akari City Nam Long",
+   "status": "",
+   "statusNote": "",
+   "config": [
+    {
+     "value": "45 triệu/m²",
+     "label": null
+    },
+    {
+     "value": "8,8 ha",
+     "label": null
+    },
+    {
+     "value": "5.000",
+     "label": "5000 căn hộ"
+    },
+    {
+     "value": "16",
+     "label": "16 tòa nhà"
+    }
+   ],
+   "location": "Đường Võ Văn Kiệt, Phường An Lạc, Bình Tân, Hồ Chí Minh",
+   "summary": "Dự án Akari City của Nam Long hiện đang là điểm sáng đáng chú ý trên thị trường bất động sản khu Tây. Sau đây là những thông tin về dự án này mà bạn nên biết.",
+   "images": [
+    "https://file4.batdongsan.com.vn/crop/240x180/2022/07/21/20220721124957-8e00_wm.jpg",
+    "https://file4.batdongsan.com.vn/crop/240x180/2018/06/11/hmcVYWuR/20180611111939-53f0.jpg",
+    "https://file4.batdongsan.com.vn/crop/240x180/2018/06/11/hmcVYWuR/20180611111946-435a.jpg"
+   ],
+   "imageCount": "15",
+   "trackingLabel": "ipos=8,pgno=13,prid=3561",
+   "provinceCode": "SG",
+   "cateId": 155
+  }
+ ],
+ "Ansana By Kita": [
+  {
+   "pjId": "5216",
+   "href": "/du-an-khu-phuc-hop-binh-tan/ansana-by-kita-pj5216",
+   "name": "Ansana By Kita",
+   "status": "Đang cập nhật",
+   "statusNote": "",
+   "config": [
+    {
+     "value": "3 ha",
+     "label": null
+    }
+   ],
+   "location": "Đường Võ Văn Kiệt, Phường An Lạc, Bình Tân, Hồ Chí Minh",
+   "summary": "Ansana By Kita là dự án Khu phức hợp Thương mại - Dịch vụ và Căn hộ Stella (Stella 69, Stella 79, Stella 89), tọa lạc ngay mặt tiền đường Võ Văn Kiệt, phường An Lạc, Thành phố Hồ Chí Minh, do Kita Group làm chủ đầu tư. Stella 69 là dự án đầu tiên trong cụm quy hoạch được cấp phép triển khai.",
+   "images": [
+    "https://file4.batdongsan.com.vn/crop/240x180/2022/09/07/20220907163401-0014_wm.jpg",
+    "https://file4.batdongsan.com.vn/crop/240x180/2021/02/01/hmcVYWuR/20210201114725-afe0.jpg",
+    "https://file4.batdongsan.com.vn/crop/240x180/2021/02/01/hmcVYWuR/20210201114725-bd72.jpg"
+   ],
+   "imageCount": "12",
+   "trackingLabel": "ipos=2,pgno=6,prid=5216",
+   "provinceCode": "SG",
+   "cateId": 160
+  }
+ ],
+ "Bcons Miền Đông": [
+  {
+   "pjId": "4546",
+   "href": "/du-an-can-ho-chung-cu-di-an-bd/bcons-mien-dong-pj4546",
+   "name": "Bcons Miền Đông",
+   "status": "",
+   "statusNote": "",
+   "config": [
+    {
+     "value": "6.438,8 m²",
+     "label": null
+    }
+   ],
+   "location": "Đường Tân Lập, Phường Đông Hòa, Dĩ An, Bình Dương",
+   "summary": "Bcons Miền Đông là dự án căn hộ do Công ty CPXD Bcons làm chủ đầu tư với quy mô gồm 768 căn hộ và shophouse với mức giá chỉ từ 790 triệu đồng/căn ngay khu vực giao giữa Bình Dương với Tp.HCM.",
+   "images": [
+    "https://file4.batdongsan.com.vn/crop/240x180/2019/09/24/hmcVYWuR/20190924165540-1f92.jpg",
+    "https://file4.batdongsan.com.vn/crop/240x180/2019/09/24/hmcVYWuR/20190924165549-b50f.jpg",
+    "https://file4.batdongsan.com.vn/crop/240x180/2019/09/24/hmcVYWuR/20190924173537-3402.jpg"
+   ],
+   "imageCount": "12",
+   "trackingLabel": "ipos=4,pgno=7,prid=4546",
+   "provinceCode": "BD",
+   "cateId": 155
+  }
+ ],
+ "Bcons Suối Tiên": [
+  {
+   "pjId": "3727",
+   "href": "/du-an-can-ho-chung-cu-di-an-bd/bcons-suoi-tien-pj3727",
+   "name": "Bcons Suối Tiên",
+   "status": "",
+   "statusNote": "",
+   "config": [
+    {
+     "value": "32 triệu/m²",
+     "label": null
+    },
+    {
+     "value": "5.875 m²",
+     "label": null
+    },
+    {
+     "value": "653",
+     "label": "653 căn hộ"
+    }
+   ],
+   "location": "195/7 Đường Tân Lập, Phường Đông Hòa, Dĩ An, Bình Dương",
+   "summary": "Bcons Suối Tiên là dự án căn hộ tiếp theo của chủ đầu tư BCONS sau thành công của các dự án khách sạn 4 sao Bcons Bình Dương và Bcons Tower Quận Bình Thạnh. Đây là khu chung cư hiện đại có quy mô 2 block với tổng số 655 căn hộ giá rẻ, được chào bán chỉ với 800 triệu/căn.",
+   "images": [
+    "https://file4.batdongsan.com.vn/crop/240x180/2018/08/16/hmcVYWuR/20180816173532-1b5a.jpg",
+    "https://file4.batdongsan.com.vn/crop/240x180/2018/08/16/hmcVYWuR/20180816173540-d533.jpg",
+    "https://file4.batdongsan.com.vn/crop/240x180/2018/08/16/hmcVYWuR/20180816173552-35ab.jpg"
+   ],
+   "imageCount": "13",
+   "trackingLabel": "ipos=10,pgno=7,prid=3727",
+   "provinceCode": "BD",
+   "cateId": 155
+  }
+ ],
+ "Benhill": [
+  {
+   "pjId": "6099",
+   "href": "/du-an-can-ho-chung-cu-thuan-an-bd/ben-hill-pj6099",
+   "name": "Ben Hill",
+   "status": "",
+   "statusNote": "",
+   "config": [
+    {
+     "value": "7.302 m²",
+     "label": null
+    },
+    {
+     "value": "852",
+     "label": "852 căn hộ"
+    }
+   ],
+   "location": "Đường Thuận Giao 24, Phường Thuận Giao, Thành phố Thuận An, Bình Dương",
+   "summary": "Dự án Ben Hill là dự án căn hộ tọa lạc tại đường Thuận Giao 24, TP Thuận An, tỉnh Bình Dương của chủ đầu tư Công ty Cổ phần đầu tư Ben House. Dự án gồm 4 block với các sản phẩm về căn hộ, Shophouse, Officetel",
+   "images": [
+    "https://file4.batdongsan.com.vn/crop/240x180/2026/02/09/20260209093633-40b5_wm.jpg",
+    "https://file4.batdongsan.com.vn/crop/240x180/2026/02/09/20260209091921-1412_wm.jpg",
+    "https://file4.batdongsan.com.vn/crop/240x180/2026/02/09/20260209091807-52e1_wm.jpg"
+   ],
+   "imageCount": "5",
+   "trackingLabel": "ipos=3,pgno=4,prid=6099",
+   "provinceCode": "BD",
+   "cateId": 155
+  }
+ ],
+ "Botanica": [
+  {
+   "pjId": "2059",
+   "href": "/du-an-can-ho-chung-cu-tan-binh/the-botanica-pj2059",
+   "name": "The Botanica",
+   "status": "",
+   "statusNote": "",
+   "config": [
+    {
+     "value": "30 triệu/m²",
+     "label": null
+    },
+    {
+     "value": "6.528 m²",
+     "label": null
+    },
+    {
+     "value": "564",
+     "label": "564 căn hộ"
+    }
+   ],
+   "location": "104 Phổ Quang, Phường 2, Tân Bình, Hồ Chí Minh",
+   "summary": "The Botanica (còn gọi là Soho Residence) tọa lạc tại số 104 đường Phổ Quang, Phường 2, ngay trung tâm của quận Tân Bình, cách đại lộ Phạm Văn Đồng - một trong những tuyến đường chính trong hệ thống vành đai của TP. Hồ Chí Minh chỉ 2km, cách sân bay Tân Sơn Nhất chưa tới 5 phút di chuyển. The Botanica cao 21 tầng, cung cấp 459 căn hộ và 11.928 m2 sàn bán lẻ.",
+   "images": [
+    "https://i.ytimg.com/vi/0R8czwkssFU/mqdefault.jpg",
+    "https://i.ytimg.com/vi/0R8czwkssFU/mqdefault.jpg",
+    "https://file4.batdongsan.com.vn/crop/240x180/2016/08/25/eGYiO6Tq/20160825155502-abc8.jpg"
+   ],
+   "imageCount": "21",
+   "trackingLabel": "ipos=7,pgno=59,prid=2059",
+   "provinceCode": "SG",
+   "cateId": 155
+  }
+ ],
+ "CTL Tham Lương": [
+  {
+   "pjId": "6004",
+   "href": "/du-an-can-ho-chung-cu-quan-12/chung-cu-stown-tham-luong-pj6004",
+   "name": "Chung cư Stown Tham Lương",
+   "status": "",
+   "statusNote": "",
+   "config": [
+    {
+     "value": "3,36 ha",
+     "label": null
+    },
+    {
+     "value": "986",
+     "label": "986 căn hộ"
+    },
+    {
+     "value": "2",
+     "label": "2 tòa nhà"
+    }
+   ],
+   "location": "Đường Dương Thị Giang, Phường Tân Thới Nhất,  Quận 12, Hồ Chí Minh",
+   "summary": "Dự án Stown Tham Lương được đánh giá là một trong những dự án căn hộ chung cư nổi bật tại Quận 12, TP.HCM. Sở hữu quy mô lớn, cùng với vị trí tại trung tâm quận. Dự án nằm tại mặt tiền đường Dương Thị Giang, phường Tân Thới Nhất, cách metro số 2 Bến Thành - Tham Lương chỉ 300m, thuận tiện kết nối  về Tân Phú, Tân Bình và trung tâm TP qua cầu Tham Lương, đường Trường Chính, Tân Thới Nhất,...",
+   "images": [
+    "https://file4.batdongsan.com.vn/crop/240x180/2024/01/09/20240109081117-e6a3_wm.jpg",
+    "https://file4.batdongsan.com.vn/crop/240x180/2024/01/09/20240109081110-4879_wm.jpg",
+    "https://file4.batdongsan.com.vn/crop/240x180/2024/01/09/20240109081101-4283_wm.jpg"
+   ],
+   "imageCount": "6",
+   "trackingLabel": "ipos=1,pgno=5,prid=6004",
+   "provinceCode": "SG",
+   "cateId": 155
+  }
+ ],
+ "Cantavil": [
+  {
+   "pjId": "713",
+   "href": "/du-an-can-ho-chung-cu-quan-2/cantavil-an-phu-cantavil-premier-pj713",
+   "name": "Cantavil An Phú - Cantavil Premier",
+   "status": "",
+   "statusNote": "",
+   "config": [
+    {
+     "value": "4,66 ha",
+     "label": null
+    },
+    {
+     "value": "390",
+     "label": "390 căn hộ"
+    }
+   ],
+   "location": "Đường Xa Lộ Hà Nội, Phường An Phú, Quận 2, Hồ Chí Minh",
+   "summary": "Khu phức hợp An Phú Có diện tích quy hoạch 46.605 m2, dự án gồm khu biệt thự và căn hộ cao cấp, nằm trên quận 2, TP.Hồ Chí Minh.",
+   "images": [
+    "https://file4.batdongsan.com.vn/crop/240x180/2016/04/06/0I4XNtd4/20160406092817-3b65.jpg",
+    "https://file4.batdongsan.com.vn/crop/240x180/2016/10/18/lGk9zKqg/20161018153446-c39c.jpg",
+    "https://file4.batdongsan.com.vn/crop/240x180/2016/10/18/lGk9zKqg/20161018153454-bbe7.jpg"
+   ],
+   "imageCount": "15",
+   "trackingLabel": "ipos=5,pgno=45,prid=713",
+   "provinceCode": "SG",
+   "cateId": 155
+  }
+ ],
+ "Cao ốc Thịnh Vượng": [
+  {
+   "pjId": "1314",
+   "href": "/du-an-can-ho-chung-cu-quan-2/cao-oc-thinh-vuong-pj1314",
+   "name": "Cao ốc Thịnh Vượng",
+   "status": "",
+   "statusNote": "",
+   "config": [
+    {
+     "value": "3.500 m²",
+     "label": null
+    }
+   ],
+   "location": "Phường Bình Trưng Đông,  Quận 2, Hồ Chí Minh",
+   "summary": "Cao ốc Thịnh Vượng là dự án chung cư cao tầng nằm trên đường Nguyễn Duy Trinh, phường Bình Trưng Đông, quận 2, Tp.HCM. Dự án có quy mô 3500m2 và mức đầu tư 127 tỷ đồng do Công ty CP Đầu tư Kinh doanh Nhà (INTRESCO) làm chủ đầu tư.",
+   "images": [
+    "https://file4.batdongsan.com.vn/crop/240x180/2017/09/21/hmcVYWuR/20170921163147-2c94.jpg",
+    "https://file4.batdongsan.com.vn/crop/240x180/2016/10/10/rSV267QK/20161010153117-236d.jpg",
+    "https://file4.batdongsan.com.vn/crop/240x180/2016/10/10/rSV267QK/20161010153126-f3d3.jpg"
+   ],
+   "imageCount": "6",
+   "trackingLabel": "ipos=3,pgno=62,prid=1314",
+   "provinceCode": "SG",
+   "cateId": 155
+  }
+ ],
+ "Celadon City": [
+  {
+   "pjId": "807",
+   "href": "/du-an-khu-phuc-hop-tan-phu/celadon-city-pj807",
+   "name": "Celadon City",
+   "status": "",
+   "statusNote": "",
+   "config": [
+    {
+     "value": "40 triệu/m²",
+     "label": null
+    },
+    {
+     "value": "82 ha",
+     "label": null
+    }
+   ],
+   "location": "Số 88 đường N1, phường Sơn Kỳ, quận Tân Phú, Tp.HCM",
+   "summary": "Với mong muốn phát triển một khu đô thị hiện đại, sang trọng, với không khí trong lành và tiện nghi bậc nhất tại TP.HCM, Sacomreal đã hợp tác cùng Tập đoàn Gamuda Berhad – một đơn vị có uy tín và hơn 30 năm kinh nghiệm trong việc xây dựng cơ sở hạ tầng và phát triển đô thị tại Malaysia, Ấn Độ, Đài Loan…để cùng phát triển dự án Celadon City",
+   "images": [
+    "https://file4.batdongsan.com.vn/crop/240x180/2016/08/26/us6Zzrro/20160826111005-d9b8.jpg",
+    "https://file4.batdongsan.com.vn/crop/240x180/2016/12/20/0I4XNtd4/20161220133433-9883.jpg",
+    "https://file4.batdongsan.com.vn/crop/240x180/2016/12/20/0I4XNtd4/20161220133443-3de1.jpg"
+   ],
+   "imageCount": "18",
+   "trackingLabel": "ipos=1,pgno=12,prid=807",
+   "provinceCode": "SG",
+   "cateId": 160
+  }
+ ],
+ "Central Home Saigon": [
+  {
+   "pjId": "3678",
+   "href": "/du-an-can-ho-chung-cu-binh-thanh/central-home-saigon-pj3678",
+   "name": "Central Home Saigon",
+   "status": "",
+   "statusNote": "",
+   "config": [
+    {
+     "value": "50 triệu/m²",
+     "label": null
+    },
+    {
+     "value": "920,7 m²",
+     "label": null
+    },
+    {
+     "value": "59",
+     "label": "59 căn hộ"
+    },
+    {
+     "value": "1",
+     "label": "1 tòa nhà"
+    }
+   ],
+   "location": "471 Đường Nơ Trang Long, Phường 13, Bình Thạnh, Hồ Chí Minh",
+   "summary": "Central Home Saigon là dự án chung cư cao 11 tầng nổi và 2 tầng hầm, gồm 59 căn hộ Duplex thông tầng nằm trên mặt tiền đường Nơ Trang Long, Phường 13, quận Bình Thạnh, TP Hồ Chí Minh. Dự án nằm ngay chân cầu Bình Lợi, giao với đường Phạm Văn Đồng thuận tiện di chuyển vào trung tâm thành phố",
+   "images": [
+    "https://file4.batdongsan.com.vn/crop/240x180/2024/10/24/20241024140520-2623_wm.jpg",
+    "https://file4.batdongsan.com.vn/crop/240x180/2024/10/24/20241024140515-7588_wm.jpg",
+    "https://file4.batdongsan.com.vn/crop/240x180/2022/11/21/20221121092216-71ce_wm.jpg"
+   ],
+   "imageCount": "20",
+   "trackingLabel": "ipos=9,pgno=12,prid=3678",
+   "provinceCode": "SG",
+   "cateId": 155
+  }
+ ],
+ "Charmora City": [
+  {
+   "pjId": "6438",
+   "href": "/du-an-khu-do-thi-moi-nha-trang-kh/charmora-city-pj6438",
+   "name": "Charmora City",
+   "status": "",
+   "statusNote": "",
+   "config": [
+    {
+     "value": "226,7 ha",
+     "label": null
+    }
+   ],
+   "location": "Xã Vĩnh Thái và Phường Phước Long, Thành phố Nha Trang, Khánh Hòa",
+   "summary": "Charmora City (Khu đô thị hỗn hợp TP Nha Trang) với quy mô 227ha nằm trong khu vực Đồng Bò và cửa sông Quán Trường, thuộc địa bàn xã Vĩnh Thái và phường Phước Long, TP Nha Trang, do Liên danh Công ty TNHH Mặt trời Hạ Long (thuộc Sun Group) và CTCP Du lịch Asean Hạ Long làm chủ đầu tư. Dự án được định hướng hình thành khu đô thị có công năng phục vụ hỗn hợp, đồng bộ bao gồm nhà ở thương mại, các công trình dịch vụ, du lịch nghỉ dưỡng, cơ sở lưu trú du lịch, cùng nhiều hạng mục khác như trường học, công viên chuyên đề, cây xanh, khu dịch vụ, bãi đỗ xe...",
+   "images": [
+    "https://file4.batdongsan.com.vn/crop/240x180/2025/09/11/20250911163817-2d53_wm.jpg",
+    "https://file4.batdongsan.com.vn/crop/240x180/2025/09/11/20250911163723-194c_wm.jpg",
+    "https://file4.batdongsan.com.vn/crop/240x180/2025/09/11/20250911163440-7c1c_wm.jpg"
+   ],
+   "imageCount": "5",
+   "trackingLabel": "ipos=1,pgno=1,prid=6438",
+   "provinceCode": "KH",
+   "cateId": 150
+  }
+ ],
+ "Citi Alto": [
+  {
+   "pjId": "3946",
+   "href": "/du-an-can-ho-chung-cu-quan-2/can-ho-citi-alto-pj3946",
+   "name": "Căn hộ Citi Alto",
+   "status": "",
+   "statusNote": "",
+   "config": [
+    {
+     "value": "25 triệu/m²",
+     "label": null
+    },
+    {
+     "value": "1,7 ha",
+     "label": null
+    },
+    {
+     "value": "675",
+     "label": "675 căn hộ"
+    }
+   ],
+   "location": "Đường Nguyễn Thị Định, KĐT Cát Lái, Phường Cát Lái, Quận 2, Hồ Chí Minh",
+   "summary": "Dự án căn hộ Citi Alto là dự án được chủ đầu tư Công ty cổ phần Kiến Á phát triển ngay trung tâm Khu đô thị Cát Lái, phường Cát Lái, Quận 2 - tiếp sau thành công của chuỗi căn hộ Citi như CitiSoho, CitiHome,….",
+   "images": [
+    "https://file4.batdongsan.com.vn/crop/240x180/2018/11/15/hmcVYWuR/20181115093936-d715.jpg",
+    "https://file4.batdongsan.com.vn/crop/240x180/2018/11/15/hmcVYWuR/20181115093956-e57c.jpg",
+    "https://file4.batdongsan.com.vn/crop/240x180/2018/11/15/hmcVYWuR/20181115094006-96a7.jpg"
+   ],
+   "imageCount": "17",
+   "trackingLabel": "ipos=7,pgno=19,prid=3946",
+   "provinceCode": "SG",
+   "cateId": 155
+  }
+ ],
+ "Citigrand": [
+  {
+   "pjId": "4797",
+   "href": "/du-an-can-ho-chung-cu-quan-2/can-ho-citi-grand-pj4797",
+   "name": "Căn hộ Citi Grand",
+   "status": "",
+   "statusNote": "",
+   "config": [
+    {
+     "value": "9.357,4 m²",
+     "label": null
+    },
+    {
+     "value": "667",
+     "label": "667 căn hộ"
+    }
+   ],
+   "location": "Đường Nguyễn Thị Định, Phường Cát Lái, Quận 2, Hồ Chí Minh",
+   "summary": "Citi Grand là dự án căn hộ được đầu tư bởi Công ty TNHH Đầu tư Vĩnh Phú với Quy mô gồm: Khối A( chung cư có 667 căn hộ) và khối B, khối C (Thương mại - Dịch vụ- Văn phòng)",
+   "images": [
+    "https://file4.batdongsan.com.vn/crop/240x180/2025/02/12/20250212105807-97d5_wm.jpg",
+    "https://file4.batdongsan.com.vn/crop/240x180/2025/02/12/20250212105803-3859_wm.jpg",
+    "https://file4.batdongsan.com.vn/crop/240x180/2025/02/12/20250212105759-a968_wm.jpg"
+   ],
+   "imageCount": "14",
+   "trackingLabel": "ipos=7,pgno=20,prid=4797",
+   "provinceCode": "SG",
+   "cateId": 155
+  }
+ ],
+ "City Gate": [
+  {
+   "pjId": "470",
+   "href": "/du-an-khu-phuc-hop-quan-8/city-gate-towers-pj470",
+   "name": "City Gate Towers",
+   "status": "",
+   "statusNote": "",
+   "config": [
+    {
+     "value": "17 triệu/m²",
+     "label": null
+    },
+    {
+     "value": "1,93 ha",
+     "label": null
+    },
+    {
+     "value": "1.092",
+     "label": "1092 căn hộ"
+    },
+    {
+     "value": "4",
+     "label": "4 tòa nhà"
+    }
+   ],
+   "location": "Đường Võ Văn Kiệt, Phường 16, Quận 8, Hồ Chí Minh",
+   "summary": "Dự án được thiết kế với một phong cách hoàn toàn mới lạ do các Kiến trúc sư Công ty Tư vấn Đầu tư và Xây dựng Quốc tế ICIC chủ trì thực hiện. Nhìn từ bên ngoài các Block của công trình sừng sững như các tòa tháp lớn tại cửa ngõ Thành phố với những đường nét thiết kế và bài trí tinh tế đến từng căn hộ với tiêu chí đưa không gian sống và tiện nghi sinh hoạt lên hàng đầu",
+   "images": [
+    "https://i.ytimg.com/vi/CbkbFn4FBuI/mqdefault.jpg",
+    "https://file4.batdongsan.com.vn/crop/240x180/2017/04/05/hmcVYWuR/20170405143622-d16e.jpg",
+    "https://file4.batdongsan.com.vn/crop/240x180/2020/08/25/hmcVYWuR/20200825111244-51d5.jpg"
+   ],
+   "imageCount": "17",
+   "trackingLabel": "ipos=7,pgno=8,prid=470",
+   "provinceCode": "SG",
+   "cateId": 160
+  }
+ ],
+ "De Capella": [
+  {
+   "pjId": "2345",
+   "href": "/du-an-can-ho-chung-cu-quan-2/de-capella-pj2345",
+   "name": "De Capella",
+   "status": "",
+   "statusNote": "",
+   "config": [
+    {
+     "value": "4.684 m²",
+     "label": null
+    },
+    {
+     "value": "380",
+     "label": "380 căn hộ"
+    },
+    {
+     "value": "2",
+     "label": "2 tòa nhà"
+    }
+   ],
+   "location": "Phố Lương Định Của, Phường An Khánh,  Quận 2, Hồ Chí Minh",
+   "summary": "Dự án căn hộ De Capella tọa lạc mặt tiền đường Lương Định Của, phường Quận 2, TP.HCM, chủ đầu tư là Công ty CP Quốc Cường Gia Lai. Sở hữu căn hộ De Capella, chủ nhân sẽ có được không gian sống tiện nghi, thoải mái ngay giữa trung tâm Sài Gòn hoa lệ.",
+   "images": [
+    "https://file4.batdongsan.com.vn/crop/240x180/2015/12/10/lGk9zKqg/20151210151442-2480.jpg",
+    "https://file4.batdongsan.com.vn/crop/240x180/2016/08/25/rSV267QK/20160825152722-f0c4.jpg",
+    "https://file4.batdongsan.com.vn/crop/240x180/2016/08/25/rSV267QK/20160825152730-abff.jpg"
+   ],
+   "imageCount": "71",
+   "trackingLabel": "ipos=7,pgno=54,prid=2345",
+   "provinceCode": "SG",
+   "cateId": 155
+  }
+ ],
+ "De La Sol": [
+  {
+   "pjId": "3464",
+   "href": "/du-an-can-ho-chung-cu-quan-4/de-la-sol-pj3464",
+   "name": "De La Sol",
+   "status": "",
+   "statusNote": "",
+   "config": [
+    {
+     "value": "1,45 ha",
+     "label": null
+    },
+    {
+     "value": "870",
+     "label": "870 căn hộ"
+    },
+    {
+     "value": "3",
+     "label": "3 tòa nhà"
+    }
+   ],
+   "location": "Phường 1,  Quận 4, Hồ Chí Minh",
+   "summary": "De La Sol là dự án căn hộ hạng sang tọa lạc ngay trung tâm Quận 4, TP.HCM. Dự án sở hữu vị trí đắc địa, nhìn bao quát toàn cảnh sông Kênh Tẻ - sông Sài Gòn.",
+   "images": [
+    "https://file4.batdongsan.com.vn/crop/240x180/2023/06/06/20230606145705-087e_wm.jpg",
+    "https://file4.batdongsan.com.vn/crop/240x180/2018/08/21/0I4XNtd4/20180821094359-3da0.jpg",
+    "https://file4.batdongsan.com.vn/crop/240x180/2018/04/23/0I4XNtd4/20180423182149-5d9d.jpg"
+   ],
+   "imageCount": "14",
+   "trackingLabel": "ipos=10,pgno=10,prid=3464",
+   "provinceCode": "SG",
+   "cateId": 155
+  }
+ ],
+ "Diamond Riverside": [
+  {
+   "pjId": "788",
+   "href": "/du-an-can-ho-chung-cu-quan-8/diamond-riverside-pj788",
+   "name": "Diamond Riverside",
+   "status": "",
+   "statusNote": "",
+   "config": [
+    {
+     "value": "27 triệu/m²",
+     "label": null
+    },
+    {
+     "value": "4,15 ha",
+     "label": null
+    },
+    {
+     "value": "1.668",
+     "label": "1668 căn hộ"
+    },
+    {
+     "value": "4",
+     "label": "4 tòa nhà"
+    }
+   ],
+   "location": "Đường Võ Văn Kiệt, Phường 16, Quận 8, Hồ Chí Minh",
+   "summary": "Diamond Riverside là dự án căn hộ chung cư nằm trong khu quần thể Carina Plaza – Diamond Riverside – City Gate Towers, nằm ngay mặt tiền đại lộ Võ Văn Kiệt, phường 16, quận 8, TP.HCM.",
+   "images": [
+    "https://file4.batdongsan.com.vn/crop/240x180/2021/07/22/20210722104824-a63a.jpg",
+    "https://file4.batdongsan.com.vn/crop/240x180/2016/08/26/us6Zzrro/20160826132714-9176.jpg",
+    "https://file4.batdongsan.com.vn/crop/240x180/2016/08/26/us6Zzrro/20160826132725-3d87.jpg"
+   ],
+   "imageCount": "22",
+   "trackingLabel": "ipos=6,pgno=71,prid=788",
+   "provinceCode": "SG",
+   "cateId": 155
+  }
+ ],
+ "Eaton Park": [
+  {
+   "pjId": "5738",
+   "href": "/du-an-can-ho-chung-cu-quan-2/eaton-park-pj5738",
+   "name": "Eaton Park",
+   "status": "",
+   "statusNote": "",
+   "config": [
+    {
+     "value": "3,77 ha",
+     "label": null
+    },
+    {
+     "value": "2.000",
+     "label": "2000 căn hộ"
+    },
+    {
+     "value": "6",
+     "label": "6 tòa nhà"
+    }
+   ],
+   "location": "Đường Mai Chí Thọ, Phường An Phú,  Quận 2, Hồ Chí Minh",
+   "summary": "Dự án Eaton Park là khu căn hộ cao cấp với quy mô 2000 căn do chủ đầu tư Gamuda Land triển khai trên trục đường Mai Chí Thọ, Quận 2, TP.HCM. Với vị trí đắc địa, quy mô lớn, chủ đầu tư uy tín và chính sách bán hàng nhiều ưu đãi, căn hộ Eaton Park Quận 2 hứa hẹn sẽ là một trong những dự án căn hộ TP.HCM “hot” nhất năm 2024.",
+   "images": [
+    "https://file4.batdongsan.com.vn/crop/240x180/2024/01/27/20240127014757-0109_wm.jpg",
+    "https://file4.batdongsan.com.vn/crop/240x180/2024/01/27/20240127014751-b8a5_wm.jpg",
+    "https://file4.batdongsan.com.vn/crop/240x180/2024/01/27/20240127014600-78ef_wm.jpg"
+   ],
+   "imageCount": "8",
+   "trackingLabel": "ipos=2,pgno=6,prid=5738",
+   "provinceCode": "SG",
+   "cateId": 155
+  }
+ ],
+ "Eco Retreat": [
+  {
+   "pjId": "5836",
+   "href": "/du-an-khu-do-thi-moi-ben-luc-la/eco-retreat-long-an-pj5836",
+   "name": "Eco Retreat Long An",
+   "status": "Đang cập nhật",
+   "statusNote": "",
+   "config": [
+    {
+     "value": "219,5 ha",
+     "label": null
+    }
+   ],
+   "location": "Xã Thanh Phú, Huyện Bến Lức, Long An",
+   "summary": "Dự án Eco Retreat Long An (Ecopark Bến Lức) là khu đô thị sinh thái, thương mại du lịch tại xã Thanh Phú, huyện Bến Lức, tỉnh Long An. Chủ đầu tư dự án là Liên danh Công ty TNHH MTV Đầu tư và Phát triển DB và Công ty CP Tập đoàn Ecopark. Quy mô dự án Eco Retreat Long An rộng khoảng 219,5ha, gồm 3.927 lô đất nhà ở thấp tầng và khu cao tầng có quy hoạch tầng cao xây dựng tối đa 41 tầng.",
+   "images": [
+    "https://file4.batdongsan.com.vn/crop/240x180/2025/04/09/20250409093040-53ef_wm.jpg",
+    "https://file4.batdongsan.com.vn/crop/240x180/2025/04/09/20250409093024-e604_wm.jpg",
+    "https://file4.batdongsan.com.vn/crop/240x180/2025/04/09/20250409093013-d4f3_wm.jpg"
+   ],
+   "imageCount": "10",
+   "trackingLabel": "ipos=5,pgno=2,prid=5836",
+   "provinceCode": "LA",
+   "cateId": 150
+  }
+ ],
+ "EcoGreen": [
+  {
+   "pjId": "3507",
+   "href": "/du-an-khu-phuc-hop-quan-7/eco-green-sai-gon-pj3507",
+   "name": "Eco Green Sài Gòn",
+   "status": "",
+   "statusNote": "",
+   "config": [
+    {
+     "value": "14,36 ha",
+     "label": null
+    },
+    {
+     "value": "4.000",
+     "label": "4000 căn hộ"
+    },
+    {
+     "value": "7",
+     "label": "7 tòa nhà"
+    }
+   ],
+   "location": "Đường Nguyễn Văn Linh, Phường Tân Thuận Tây,  Quận 7, Hồ Chí Minh",
+   "summary": "Dự án Eco Green Sài Gòn là khu phức hợp thương mại, dịch vụ, khách sạn 5 sao, shophouse, căn hộ cao cấp do Công ty CP Đầu tư và Xây dựng Xuân Mai triển khai tại đường Nguyễn Văn Linh, Quận 7, TP.HCM. Với tổng diện tích hơn 14ha, Eco Green Sài Gòn hiện là dự án phức hợp có quy mô lớn hàng đầu khu Nam Sài Gòn.",
+   "images": [
+    "https://file4.batdongsan.com.vn/crop/240x180/2021/07/13/20210713134504-7a53.jpg",
+    "https://file4.batdongsan.com.vn/crop/240x180/2021/05/07/20210507163821-b814.jpg",
+    "https://file4.batdongsan.com.vn/crop/240x180/2021/07/04/20210704121021-0cd7.jpg"
+   ],
+   "imageCount": "13",
+   "trackingLabel": "ipos=3,pgno=2,prid=3507",
+   "provinceCode": "SG",
+   "cateId": 160
+  }
+ ],
+ "Emeral 68": [
+  {
+   "pjId": "5693",
+   "href": "/du-an-can-ho-chung-cu-thuan-an-bd/the-emerald-68-pj5693",
+   "name": "The Emerald 68",
+   "status": "",
+   "statusNote": "",
+   "config": [
+    {
+     "value": "2,8 ha",
+     "label": null
+    },
+    {
+     "value": "770",
+     "label": "770 căn hộ"
+    },
+    {
+     "value": "2",
+     "label": "2 tòa nhà"
+    }
+   ],
+   "location": "68 Đường Vĩnh Phú 16, Phường Vĩnh Phú, Thành phố Thuận An, Bình Dương",
+   "summary": "The Emerald 68 là dự án căn hộ cao cấp thứ hai của chủ đầu tư Lê Phong tại TP. Thuận An, Bình Dương, sau dự án Emerald Golf View đã triển khai vào năm 2020. Căn hộ The Emerald 68 gây chú ý bởi vị trí trung tâm Thuận An, liền kề TP. Thủ Đức và Quận 12 TP.HCM.",
+   "images": [
+    "https://file4.batdongsan.com.vn/crop/240x180/2022/09/19/20220919121247-3f76_wm.jpg",
+    "https://file4.batdongsan.com.vn/crop/240x180/2022/09/19/20220919175408-4940_wm.jpg",
+    "https://file4.batdongsan.com.vn/crop/240x180/2022/09/19/20220919175404-9f6f_wm.jpg"
+   ],
+   "imageCount": "6",
+   "trackingLabel": "ipos=2,pgno=5,prid=5693",
+   "provinceCode": "BD",
+   "cateId": 155
+  }
+ ],
+ "Emeral Boulevard": [
+  {
+   "pjId": "6567",
+   "href": "/du-an-can-ho-chung-cu-thuan-an-bd/the-emerald-boulevard-pj6567",
+   "name": "The Emerald Boulevard",
+   "status": "Đang cập nhật",
+   "statusNote": "",
+   "config": [
+    {
+     "value": "9.500,6 m²",
+     "label": null
+    }
+   ],
+   "location": "Đường Quốc Lộ 13, Phường Vĩnh Phú, Thành phố Thuận An, Bình Dương",
+   "summary": "The Emerald Boulevard là dự án căn hộ cao cấp do Công ty TNHH Bất động sản Hiền Phúc (thuộc Tập đoàn Lê Phong) làm chủ đầu tư, tọa lạc tại mặt tiền Quốc lộ 13, phường Bình Hòa, thành phố Hồ Chí Minh (TP Thuận An, Bình Dương cũ). Dự án có quy mô 9.000m2 gồm 2 tòa tháp cao 40-45 tầng, 03 tầng hầm.",
+   "images": [
+    "https://file4.batdongsan.com.vn/crop/240x180/2026/01/19/20260119111053-372c_wm.jpg",
+    "https://file4.batdongsan.com.vn/crop/240x180/2026/01/19/20260119111036-2d57_wm.jpg",
+    "https://file4.batdongsan.com.vn/crop/240x180/2026/01/19/20260119111013-840d_wm.jpg"
+   ],
+   "imageCount": "5",
+   "trackingLabel": "ipos=2,pgno=2,prid=6567",
+   "provinceCode": "BD",
+   "cateId": 155
+  }
+ ],
+ "Empire City": [
+  {
+   "pjId": "2517",
+   "href": "/du-an-khu-do-thi-moi-quan-2/empire-city-thu-thiem-pj2517",
+   "name": "Empire City Thủ Thiêm",
+   "status": "",
+   "statusNote": "",
+   "config": [
+    {
+     "value": "14,5 ha",
+     "label": null
+    }
+   ],
+   "location": "Đường Mai Chí Thọ, phường Thủ Thiêm, quận 2, Tp.HCM",
+   "summary": "Khu đô thi Empire City Thủ Thiêm là dự án căn hộ chung cư hạng sang tại khu vực trung tâm Thủ Thiêm của thành phố mới Thủ Đức. Dự án là tổ hợp gồm khách sạn 5 sao, khu trung tâm thương mại cao cấp, văn phòng và tòa tháp đa năng cao 86 tầng",
+   "images": [
+    "https://file4.batdongsan.com.vn/crop/240x180/2021/07/28/20210728181526-d429.jpg",
+    "https://file4.batdongsan.com.vn/crop/240x180/2021/12/28/20211228160820-6b39.jpg",
+    "https://file4.batdongsan.com.vn/crop/240x180/2021/12/28/20211228160817-0824.jpg"
+   ],
+   "imageCount": "14",
+   "trackingLabel": "ipos=10,pgno=12,prid=2517",
+   "provinceCode": "SG",
+   "cateId": 150
+  }
+ ],
+ "Esme": [
+  {
+   "pjId": "5651",
+   "href": "/du-an-can-ho-chung-cu-di-an-bd/the-esme-di-an-pj5651",
+   "name": "The Esme Dĩ An",
+   "status": "Đang cập nhật",
+   "statusNote": "",
+   "config": [
+    {
+     "value": "4,31 ha",
+     "label": null
+    },
+    {
+     "value": "1.139",
+     "label": "1139 căn hộ"
+    },
+    {
+     "value": "3",
+     "label": "3 tòa nhà"
+    }
+   ],
+   "location": "Đường Quốc lộ 1K, Phường Đông Hòa, Thành phố Dĩ An, Bình Dương",
+   "summary": "The Esme Dĩ An là dự án khu nhà ở cao cấp tọa lạc tại mặt tiền Quốc lộ 1K, TP. Dĩ An, Bình Dương, do chủ đầu tư là Công ty TNHH Đầu tư Xây dựng Thiên Hà – Băng Dương triển khai phát triển. Dự án có quy mô 4,3ha, gồm 3 tòa căn hộ cao 39 tầng và khu thấp tầng với 42 lô nhà phố",
+   "images": [
+    "https://file4.batdongsan.com.vn/crop/240x180/2022/08/04/20220804142529-bd68_wm.jpg",
+    "https://file4.batdongsan.com.vn/crop/240x180/2022/08/04/20220804172740-1558_wm.jpg",
+    "https://file4.batdongsan.com.vn/crop/240x180/2022/08/04/20220804172735-f973_wm.jpg"
+   ],
+   "imageCount": "8",
+   "trackingLabel": "ipos=6,pgno=5,prid=5651",
+   "provinceCode": "BD",
+   "cateId": 155
+  }
+ ],
+ "Essensia Broadway": [
+  {
+   "pjId": "5554",
+   "href": "/du-an-can-ho-chung-cu-nha-be/essensia-sky-pj5554",
+   "name": "Essensia Sky",
+   "status": "",
+   "statusNote": "",
+   "config": [
+    {
+     "value": "1,05 ha",
+     "label": null
+    },
+    {
+     "value": "424",
+     "label": "424 căn hộ"
+    },
+    {
+     "value": "2",
+     "label": "2 tòa nhà"
+    }
+   ],
+   "location": "Đường Nguyễn Hữu Thọ, Xã Phước Kiển, Huyện Nhà Bè, Hồ Chí Minh",
+   "summary": "Essensia Sky là dự án chung cư của chủ đầu tư Phú Long tại huyện Nhà Bè, TP.HCM, kế thừa nhiều kinh nghiệm xây dựng từ các dự án thành công trước đó như Dragon Hill 1, Dragon Hill 2.",
+   "images": [
+    "https://file4.batdongsan.com.vn/crop/240x180/2022/04/18/20220418172112-edd3.jpg",
+    "https://file4.batdongsan.com.vn/crop/240x180/2022/04/18/20220418172106-8cdd.jpg",
+    "https://file4.batdongsan.com.vn/crop/240x180/2022/04/18/20220418173332-0bce.jpg"
+   ],
+   "imageCount": "15",
+   "trackingLabel": "ipos=1,pgno=7,prid=5554",
+   "provinceCode": "SG",
+   "cateId": 155
+  }
+ ],
+ "Estella Heights": [
+  {
+   "pjId": "2214",
+   "href": "/du-an-can-ho-chung-cu-quan-2/estella-heights-pj2214",
+   "name": "Estella Heights",
+   "status": "",
+   "statusNote": "",
+   "config": [
+    {
+     "value": "4,79 ha",
+     "label": null
+    },
+    {
+     "value": "872",
+     "label": "872 căn hộ"
+    },
+    {
+     "value": "4",
+     "label": "4 tòa nhà"
+    }
+   ],
+   "location": "Đường Song Hành, Phường An Phú,  Quận 2, Hồ Chí Minh",
+   "summary": "Dự án căn hộ Estella Heights - nối tiếp sự thành công của căn hộ The Estella quận 2 toạ lạc tại Khu đô thị mới City Horse phường An Phú, quận 2. Ở đây quy tụ những dự án cao cấp khác như Imperia, Cantavil, The Estella... với hệ thống Trung tâm thương mại lớn như Metro An Phú, Parkson, Big C, bên cạnh đó là c��m rạp phim Lotte Cinema.",
+   "images": [
+    "https://file4.batdongsan.com.vn/crop/240x180/2021/08/31/20210831143704-c4bf.jpg",
+    "https://file4.batdongsan.com.vn/crop/240x180/2021/08/30/20210830224759-46e7.jpg",
+    "https://file4.batdongsan.com.vn/crop/240x180/2021/08/30/20210830224754-57ba.jpg"
+   ],
+   "imageCount": "31",
+   "trackingLabel": "ipos=7,pgno=56,prid=2214",
+   "provinceCode": "SG",
+   "cateId": 155
+  }
+ ],
+ "Fenica": [
+  {
+   "pjId": "6543",
+   "href": "/du-an-can-ho-chung-cu-di-an-bd/fenica-pj6543",
+   "name": "Fenica",
+   "status": "",
+   "statusNote": "",
+   "config": [
+    {
+     "value": "5.537 m²",
+     "label": null
+    },
+    {
+     "value": "579",
+     "label": "579 căn hộ"
+    }
+   ],
+   "location": "Đường Trần Quang Diệu, Phường Tân Bình, Thành phố Dĩ An, Bình Dương",
+   "summary": "Fenica là dự án căn hộ tọa lạc ngay mặt tiền đường Trần Quang Diệu, thuộc phường Tân Đông Hiệp, thành phố Hồ Chí Minh, do Liên minh Dalat Realco (DLR), NK Properties và Công ty TNHH Đầu tư Dự án Phượng Hoàng (đại diện chủ đầu tư) hợp tác phát triển. Dự án gồm 2 block cao 22 tầng nổi và 02 hầm với số lượng 579 căn hộ.",
+   "images": [
+    "https://file4.batdongsan.com.vn/crop/240x180/2025/12/26/20251226154349-9f2b_wm.jpg",
+    "https://file4.batdongsan.com.vn/crop/240x180/2025/12/26/20251226154348-788b_wm.jpg",
+    "https://file4.batdongsan.com.vn/crop/240x180/2025/12/26/20251226154346-730c_wm.jpg"
+   ],
+   "imageCount": "6",
+   "trackingLabel": "ipos=5,pgno=2,prid=6543",
+   "provinceCode": "BD",
+   "cateId": 155
+  }
+ ],
+ "Flora Kikyo": [
+  {
+   "pjId": "2631",
+   "href": "/du-an-khu-phuc-hop-quan-9/kikyo-residence-pj2631",
+   "name": "Kikyo Residence",
+   "status": "",
+   "statusNote": "",
+   "config": [
+    {
+     "value": "1,75 ha",
+     "label": null
+    }
+   ],
+   "location": "Đường Đỗ Xuân Hợp, Phường Phú Hữu,  Quận 9, Hồ Chí Minh",
+   "summary": "Dự án Kikyo Residence tọa lạc tại phường Phú Hữu quận 9 Tp.HCM. Là khu phức hợp bao gồm khu biệt thự, nhà phố, căn hộ và khu nhà ở xã hội cùng các tiện ích đa năng như khu BBQ, hồ sinh thái, phòng GYM, bảo về 24/24 ... Tất cả sẽ đem đến cho cư dân một cuộc sống tiện ích, bình an và thịnh vượng ...",
+   "images": [
+    "https://file4.batdongsan.com.vn/crop/240x180/2017/09/28/0I4XNtd4/20170928081959-8cce.jpg",
+    "https://file4.batdongsan.com.vn/crop/240x180/2016/09/23/Nl3mS01v/20160923143807-a776.jpg",
+    "https://file4.batdongsan.com.vn/crop/240x180/2016/09/23/Nl3mS01v/20160923143823-998e.jpg"
+   ],
+   "imageCount": "14",
+   "trackingLabel": "ipos=3,pgno=4,prid=2631",
+   "provinceCode": "SG",
+   "cateId": 160
+  }
+ ],
+ "Florita": [
+  {
+   "pjId": "2126",
+   "href": "/du-an-can-ho-chung-cu-quan-7/can-ho-florita-pj2126",
+   "name": "Căn hộ Florita",
+   "status": "",
+   "statusNote": "",
+   "config": [
+    {
+     "value": "1,05 ha",
+     "label": null
+    },
+    {
+     "value": "313",
+     "label": "313 căn hộ"
+    }
+   ],
+   "location": "Phường Tân Hưng, Quận 7, Hồ Chí Minh",
+   "summary": "Dự án căn hộ Florita tọa lạc tại vị trí đắc địa của Khu đô thị mới Him Lam Tân Hưng, dự án là giao điểm của các trục đường chính như Đại lộ Nguyễn Văn Linh, đường Nguyễn Thị Thập,",
+   "images": [
+    "https://i.ytimg.com/vi/hpqeCmVQW0c/mqdefault.jpg",
+    "https://file4.batdongsan.com.vn/crop/240x180/2015/04/06/JGcIp0rf/20150406141144-08a2.jpg",
+    "https://file4.batdongsan.com.vn/crop/240x180/2016/08/25/rSV267QK/20160825140319-6682.jpg"
+   ],
+   "imageCount": "12",
+   "trackingLabel": "ipos=10,pgno=57,prid=2126",
+   "provinceCode": "SG",
+   "cateId": 155
+  }
+ ],
+ "Gia Hòa": [
+  {
+   "pjId": "2158",
+   "href": "/du-an-can-ho-chung-cu-quan-9/the-art-pj2158",
+   "name": "The Art",
+   "status": "",
+   "statusNote": "",
+   "config": [
+    {
+     "value": "3,05 ha",
+     "label": null
+    },
+    {
+     "value": "1.711",
+     "label": "1711 căn hộ"
+    },
+    {
+     "value": "10",
+     "label": "10 tòa nhà"
+    }
+   ],
+   "location": "523A Đỗ Xuân Hợp, Phường Phước Long B, Quận 9, Hồ Chí Minh",
+   "summary": "Dự án căn hộ trí thức trẻ Gia Hòa - khu căn hộ The Art tọa lạc trên diện tích hơn 3ha nằm trong khu dân cư cao cấp Gia Hòa, ven sông Rạch Chiếc, quận 9, TP HCM, gồm 10 tháp căn hộ cao 18 tầng cung cấp 1.711 căn hộ, một trung tâm thương mại, một tầng hầm, tổng diện tích khoảng 22.000m2.",
+   "images": [
+    "https://i.ytimg.com/vi/R3dLCpcFp3U/mqdefault.jpg",
+    "https://file4.batdongsan.com.vn/crop/240x180/2015/12/23/0I4XNtd4/20151223165832-ecaa.jpg",
+    "https://file4.batdongsan.com.vn/crop/240x180/2016/08/25/rSV267QK/20160825135615-3a2d.jpg"
+   ],
+   "imageCount": "16",
+   "trackingLabel": "ipos=3,pgno=57,prid=2158",
+   "provinceCode": "SG",
+   "cateId": 155
+  }
+ ],
+ "Gladia": [
+  {
+   "pjId": "5634",
+   "href": "/du-an-khu-do-thi-moi-quan-2/gladia-by-the-water-pj5634",
+   "name": "Gladia by The Water",
+   "status": "",
+   "statusNote": "",
+   "config": [
+    {
+     "value": "11,8 ha",
+     "label": null
+    }
+   ],
+   "location": "Đường Võ Chí Công, Phường Bình Trưng Đông,  Quận 2, Hồ Chí Minh",
+   "summary": "Tọa lạc tại trung tâm khu Đông Sài Gòn, Gladia by the Waters là dự án đánh dấu sự hợp tác đầu tiên giữa hai nhà phát triển bất động sản uy tín Keppel & Khang Điền. Với quy mô 11,8ha, Gladia by the Waters mang đến sản phẩm độc bản được bao bọc bởi sông Rạch Chiếc, bao gồm các căn nhà phố vườn, biệt thự đơn lập, song lập, tứ lập và khu căn hộ cao cấp.",
+   "images": [
+    "https://file4.batdongsan.com.vn/crop/240x180/2026/06/16/20260616110056-e954_wm.jpg",
+    "https://file4.batdongsan.com.vn/crop/240x180/2026/06/16/20260616110053-a903_wm.jpg",
+    "https://file4.batdongsan.com.vn/crop/240x180/2026/06/16/20260616110051-de4f_wm.jpg"
+   ],
+   "imageCount": "19",
+   "trackingLabel": "ipos=8,pgno=1,prid=5634",
+   "provinceCode": "SG",
+   "cateId": 150
+  }
+ ],
+ "Grand Marina": [
+  {
+   "pjId": "5218",
+   "href": "/du-an-can-ho-chung-cu-quan-1/grand-marina-saigon-pj5218",
+   "name": "Grand Marina Saigon",
+   "status": "",
+   "statusNote": "",
+   "config": [
+    {
+     "value": "4.000",
+     "label": "4000 căn hộ"
+    },
+    {
+     "value": "5",
+     "label": "5 tòa nhà"
+    }
+   ],
+   "location": "2 Phố Tôn Đức Thắng, Phường Bến Nghé, Quận 1, Hồ Chí Minh",
+   "summary": "Grand Marina Saigon là dự án phức hợp do Masterise Group làm chủ đầu tư, triển khai với quy mô 10ha tại số 2, đường Tôn Đức Thắng, phường Bến Nghé, Quận 1, TP.HCM.",
+   "images": [
+    "https://file4.batdongsan.com.vn/crop/240x180/2021/02/04/hmcVYWuR/20210204103126-2e15.jpg",
+    "https://file4.batdongsan.com.vn/crop/240x180/2021/02/04/hmcVYWuR/20210204103126-cac0.jpg",
+    "https://file4.batdongsan.com.vn/crop/240x180/2021/02/04/hmcVYWuR/20210204103126-fad6.jpg"
+   ],
+   "imageCount": "8",
+   "trackingLabel": "ipos=7,pgno=35,prid=5218",
+   "provinceCode": "SG",
+   "cateId": 155
+  }
+ ],
+ "Green Skyline": [
+  {
+   "pjId": "6163",
+   "href": "/du-an-can-ho-chung-cu-di-an-bd/green-skyline-pj6163",
+   "name": "Green Skyline",
+   "status": "",
+   "statusNote": "",
+   "config": [
+    {
+     "value": "1,32 ha",
+     "label": null
+    },
+    {
+     "value": "1.296",
+     "label": "1296 căn hộ"
+    },
+    {
+     "value": "4",
+     "label": "4 tòa nhà"
+    }
+   ],
+   "location": "Đường Quốc lộ 1K, Phường Đông Hòa, Thành phố Dĩ An, Bình Dương",
+   "summary": "Green Skyline là tổ hợp khu căn hộ, shophouse, thương mại nằm trong Khu phức hợp Green Square, gồm 4 block cao từ 28 đến 40 tầng, được kết nối với nhau bởi khối đế cao 3 tầng cung cấp cho thị trường hơn 1.200 sản phẩm với nhiều loại hình căn hộ khác nhau",
+   "images": [
+    "https://file4.batdongsan.com.vn/crop/240x180/2024/09/13/20240913151447-ae0d_wm.jpg",
+    "https://file4.batdongsan.com.vn/crop/240x180/2024/09/13/20240913151412-72a5_wm.jpg",
+    "https://file4.batdongsan.com.vn/crop/240x180/2024/09/13/20240913151019-2f8d_wm.jpg"
+   ],
+   "imageCount": "5",
+   "trackingLabel": "ipos=10,pgno=3,prid=6163",
+   "provinceCode": "BD",
+   "cateId": 155
+  }
+ ],
+ "Green Square Garden": [
+  {
+   "pjId": "344",
+   "href": "/du-an-khu-phuc-hop-di-an-bd/green-square-pj344",
+   "name": "Green Square",
+   "status": "",
+   "statusNote": "",
+   "config": [
+    {
+     "value": "45 ha",
+     "label": null
+    }
+   ],
+   "location": "Đường Quốc lộ 1K, Phường Đông Hòa, Dĩ An, Bình Dương",
+   "summary": "Khu phức hợp Green Square có quy mô hơn 45 ha, toạ lạc tại Đông Hoà, TP. Dĩ An, tỉnh Bình Dương, do TBSLand làm chủ đầu tư. Dự án nằm trong quần thể quy hoạch khu Thương mại - Trung tâm hành chính Dĩ An có diện tích 122 ha.",
+   "images": [
+    "https://file4.batdongsan.com.vn/crop/240x180/2017/02/10/hmcVYWuR/20170210150840-7891.jpg",
+    "https://file4.batdongsan.com.vn/crop/240x180/2017/02/10/hmcVYWuR/20170210150845-7177.jpg",
+    "https://file4.batdongsan.com.vn/crop/240x180/2017/02/10/hmcVYWuR/20170210151624-eb5b.jpg"
+   ],
+   "imageCount": "6",
+   "trackingLabel": "ipos=10,pgno=2,prid=344",
+   "provinceCode": "BD",
+   "cateId": 160
+  }
+ ],
+ "Happy One Mori": [
+  {
+   "pjId": "6402",
+   "href": "/du-an-can-ho-chung-cu-thuan-an-bd/happy-one-mori-pj6402",
+   "name": "Happy One Mori",
+   "status": "",
+   "statusNote": "",
+   "config": [
+    {
+     "value": "1,08 ha",
+     "label": null
+    },
+    {
+     "value": "1.144",
+     "label": "1144 căn hộ"
+    },
+    {
+     "value": "2",
+     "label": "2 tòa nhà"
+    }
+   ],
+   "location": "Đường Lái Thiêu 14, Phường Lái Thiêu, Thành phố Thuận An, Bình Dương",
+   "summary": "Tiếp nối thành công của 4 dự án thuộc thương hiệu Happy One gồm Happy One Phú Hòa - Happy One Premier - Happy One Central - Happy One Sora, chủ đầu tư Vạn Xuân Group tiếp tục ra mắt dự án thứ 5, mang tên Happy One Mori, dự án nằm ngay mặt tiền đường Lái Thiêu 14, phường Thuận An, thành phố Hồ Chí Minh (phường Lái Thiêu, TP Thuận An, Bình Dương cũ). Happy One Mori có quy mô hơn 1ha, gồm 2 Block cao 33 tầng nổi và 02 tầng hầm, cung cấp hơn 1.000 sản phẩm, đa dạng loại hình (gồm căn hộ, officetel, shophouse).",
+   "images": [
+    "https://file4.batdongsan.com.vn/crop/240x180/2026/02/06/20260206101407-bd35_wm.jpg",
+    "https://file4.batdongsan.com.vn/crop/240x180/2026/02/06/20260206100754-429c_wm.jpg",
+    "https://file4.batdongsan.com.vn/crop/240x180/2025/08/01/20250801090222-2883_wm.jpg"
+   ],
+   "imageCount": "4",
+   "trackingLabel": "ipos=2,pgno=3,prid=6402",
+   "provinceCode": "BD",
+   "cateId": 155
+  }
+ ],
+ "Habitat – GĐ 3": [
+  {
+   "pjId": "2236",
+   "href": "/du-an-can-ho-chung-cu-thuan-an-bd/the-habitat-binh-duong-pj2236",
+   "name": "The Habitat Binh Duong",
+   "status": "",
+   "statusNote": "",
+   "config": [
+    {
+     "value": "1,8 ha",
+     "label": null
+    },
+    {
+     "value": "793",
+     "label": "793 căn hộ"
+    },
+    {
+     "value": "6",
+     "label": "6 tòa nhà"
+    }
+   ],
+   "location": "Số 08 Đường Hữu Nghị, Phường Bình Hòa, Thành phố Thuận An, Bình Dương",
+   "summary": "Dự án The Habitat Binh Duong được phát triển bởi Công ty TNHH Phát triển VSIP – Sembcorp Gateway, hợp tác bởi ba đơn vị bao gồm VSIP, Tập đoàn Sembcorp Properties (trực thuộc Sembcorp Industries, Singapore) và MC Development Asia (trực thuộc Tập đoàn Mitsubishi, Nhật Bản)",
+   "images": [
+    "https://file4.batdongsan.com.vn/crop/240x180/2025/03/24/20250324143147-4b12_wm.jpg",
+    "https://file4.batdongsan.com.vn/crop/240x180/2025/03/24/20250324085708-4c06_wm.jpg",
+    "https://file4.batdongsan.com.vn/crop/240x180/2025/03/21/20250321105906-1a17_wm.jpg"
+   ],
+   "imageCount": "11",
+   "trackingLabel": "ipos=10,pgno=11,prid=2236",
+   "provinceCode": "BD",
+   "cateId": 155
+  }
+ ],
+ "Him Lam": [
+  {
+   "pjId": "1296",
+   "href": "/du-an-can-ho-chung-cu-quan-6/him-lam-cho-lon-pj1296",
+   "name": "Him Lam Chợ Lớn",
+   "status": "",
+   "statusNote": "",
+   "config": [
+    {
+     "value": "4,08 ha",
+     "label": null
+    },
+    {
+     "value": "1.488",
+     "label": "1488 căn hộ"
+    }
+   ],
+   "location": "Đường Hậu Giang, Phường 11,  Quận 6, Hồ Chí Minh",
+   "summary": "Him Lam Chợ Lớn được triển khai trên khu đất rộng 40.810 m2 tại quậ 6, Tp.HCM với mật độ xây dựng toàn khu chỉ 25,17%.",
+   "images": [
+    "https://file4.batdongsan.com.vn/crop/240x180/2017/03/17/hmcVYWuR/20170317111113-f2bc.jpg",
+    "https://file4.batdongsan.com.vn/crop/240x180/2016/08/25/rSV267QK/20160825142236-b425.jpg",
+    "https://file4.batdongsan.com.vn/crop/240x180/2016/08/25/rSV267QK/20160825142250-53bb.jpg"
+   ],
+   "imageCount": "13",
+   "trackingLabel": "ipos=10,pgno=29,prid=1296",
+   "provinceCode": "SG",
+   "cateId": 155
+  }
+ ],
+ "Him Lam Phú An": [
+  {
+   "pjId": "2679",
+   "href": "/du-an-can-ho-chung-cu-quan-9/him-lam-phu-an-pj2679",
+   "name": "Him Lam Phú An",
+   "status": "",
+   "statusNote": "",
+   "config": [
+    {
+     "value": "20 triệu/m²",
+     "label": null
+    },
+    {
+     "value": "1,82 ha",
+     "label": null
+    },
+    {
+     "value": "1.092",
+     "label": "1092 căn hộ"
+    },
+    {
+     "value": "4",
+     "label": "4 tòa nhà"
+    }
+   ],
+   "location": "Số 32 đường Thủy Lợi, phường Phước Long A, quận 9, Tp.HCM",
+   "summary": "Căn hộ Him Lam Phú An tọa lạc trong quần thể khu dân cư hiện đại bật nhất Tp.HCM, tiếp giáp Khu đô thị Thủ Thiêm tráng lệ.",
+   "images": [
+    "https://file4.batdongsan.com.vn/crop/240x180/2017/10/03/0I4XNtd4/20171003155144-e995.jpg",
+    "https://file4.batdongsan.com.vn/crop/240x180/2016/11/07/0I4XNtd4/20161107154801-3c12.jpg",
+    "https://file4.batdongsan.com.vn/crop/240x180/2016/11/07/0I4XNtd4/20161107154808-17a2.jpg"
+   ],
+   "imageCount": "29",
+   "trackingLabel": "ipos=7,pgno=18,prid=2679",
+   "provinceCode": "SG",
+   "cateId": 155
+  }
+ ],
+ "Him Lam Riverside": [
+  {
+   "pjId": "360",
+   "href": "/du-an-can-ho-chung-cu-quan-7/him-lam-riverside-pj360",
+   "name": "Him Lam Riverside",
+   "status": "",
+   "statusNote": "",
+   "config": [
+    {
+     "value": "31 triệu/m²",
+     "label": null
+    },
+    {
+     "value": "1,32 ha",
+     "label": null
+    },
+    {
+     "value": "2.938",
+     "label": "2938 căn hộ"
+    },
+    {
+     "value": "7",
+     "label": "7 tòa nhà"
+    }
+   ],
+   "location": "Đường D1, Phường Tân Hưng, Quận 7, Hồ Chí Minh",
+   "summary": "Nằm trong quần thể kiến trúc của khu đô thị mới HimLam Kênh Tẻ, và tọa lạc tại vị trí đắc địa nhất của khu vực Nam Sài Gòn, ngoài việc được thừa hưởng những thành quả hạ tầng xã hội và kỹ thuật sẵn có Him Lam Riverside còn là nơi cuộc sống hòa quyện cùng thiên nhiên.",
+   "images": [
+    "https://file4.batdongsan.com.vn/crop/240x180/2016/08/08/eGYiO6Tq/20160808154537-28b2.jpg",
+    "https://file4.batdongsan.com.vn/crop/240x180/2016/08/25/eGYiO6Tq/20160825143543-fee9.jpg",
+    "https://file4.batdongsan.com.vn/crop/240x180/2016/08/25/eGYiO6Tq/20160825143557-62d3.jpg"
+   ],
+   "imageCount": "42",
+   "trackingLabel": "ipos=1,pgno=51,prid=360",
+   "provinceCode": "SG",
+   "cateId": 155
+  }
+ ],
+ "Hồ Gươm Xanh": [
+  {
+   "pjId": "6561",
+   "href": "/du-an-khu-do-thi-moi-thuan-an-bd/khu-do-thi-ho-guom-xanh-pj6561",
+   "name": "Khu đô thị Hồ Gươm Xanh",
+   "status": "Đang cập nhật",
+   "statusNote": "",
+   "config": [
+    {
+     "value": "24,5 ha",
+     "label": null
+    }
+   ],
+   "location": "Đường Quốc Lộ 13, Phường Lái Thiêu, Thành phố Thuận An, Bình Dương",
+   "summary": "Khu đô thị Hồ Gươm Xanh là dự án được quy hoạch đồng bộ với định hướng trở thành đại đô thị kiểu mẫu tại phường Lái Thiêu, TP Hồ Chí Minh, do Công ty Cổ phần Thương mại và Du lịch Bình Dương làm chủ đầu tư và TBS Land (thành viên TBS Group) làm đơn vị phát triển. Dự án có quy mô 24,5ha với điểm nhấn là hồ trung tâm rộng 1,3ha, tái hiện hình ảnh Hồ Gươm và Tháp Rùa mang đậm nét văn hóa của thủ đô Hà Nội.",
+   "images": [
+    "https://file4.batdongsan.com.vn/crop/240x180/2026/01/16/20260116154503-15db_wm.jpg",
+    "https://file4.batdongsan.com.vn/crop/240x180/2026/01/16/20260116154500-c55a_wm.jpg",
+    "https://file4.batdongsan.com.vn/crop/240x180/2026/01/16/20260116154447-949e_wm.jpg"
+   ],
+   "imageCount": "9",
+   "trackingLabel": "ipos=3,pgno=1,prid=6561",
+   "provinceCode": "BD",
+   "cateId": 150
+  }
+ ],
+ "Jamila": [
+  {
+   "pjId": "2865",
+   "href": "/du-an-can-ho-chung-cu-quan-9/jamila-khang-dien-pj2865",
+   "name": "Jamila Khang Điền",
+   "status": "",
+   "statusNote": "",
+   "config": [
+    {
+     "value": "1,67 ha",
+     "label": null
+    },
+    {
+     "value": "867",
+     "label": "867 căn hộ"
+    },
+    {
+     "value": "4",
+     "label": "4 tòa nhà"
+    }
+   ],
+   "location": "Đường Song Hành, Phường Phú Hữu, Quận 9, Tp.HCM",
+   "summary": "Jamila Khang Điền là dự án căn hộ mới nhất của chủ đầu tư Khang Điền. Dự án nằm trên đường Song Hành, quận 9, kế bên là dự án The Venica cũng của Khang Điền.",
+   "images": [
+    "https://file4.batdongsan.com.vn/crop/240x180/2017/04/08/0I4XNtd4/20170408081211-de14.jpg",
+    "https://file4.batdongsan.com.vn/crop/240x180/2017/04/08/0I4XNtd4/20170408081216-8e25.jpg",
+    "https://file4.batdongsan.com.vn/crop/240x180/2017/04/08/0I4XNtd4/20170408081222-fc34.jpg"
+   ],
+   "imageCount": "10",
+   "trackingLabel": "ipos=7,pgno=15,prid=2865",
+   "provinceCode": "SG",
+   "cateId": 155
+  }
+ ],
+ "KITA Võ Văn Kiệt": [
+  {
+   "pjId": "5216",
+   "href": "/du-an-khu-phuc-hop-binh-tan/ansana-by-kita-pj5216",
+   "name": "Ansana By Kita",
+   "status": "Đang cập nhật",
+   "statusNote": "",
+   "config": [
+    {
+     "value": "3 ha",
+     "label": null
+    }
+   ],
+   "location": "Đường Võ Văn Kiệt, Phường An Lạc, Bình Tân, Hồ Chí Minh",
+   "summary": "Ansana By Kita là dự án Khu phức hợp Thương mại - Dịch vụ và Căn hộ Stella (Stella 69, Stella 79, Stella 89), tọa lạc ngay mặt tiền đường Võ Văn Kiệt, phường An Lạc, Thành phố Hồ Chí Minh, do Kita Group làm chủ đầu tư. Stella 69 là dự án đầu tiên trong cụm quy hoạch được cấp phép triển khai.",
+   "images": [
+    "https://file4.batdongsan.com.vn/crop/240x180/2022/09/07/20220907163401-0014_wm.jpg",
+    "https://file4.batdongsan.com.vn/crop/240x180/2021/02/01/hmcVYWuR/20210201114725-afe0.jpg",
+    "https://file4.batdongsan.com.vn/crop/240x180/2021/02/01/hmcVYWuR/20210201114725-bd72.jpg"
+   ],
+   "imageCount": "12",
+   "trackingLabel": "ipos=2,pgno=6,prid=5216",
+   "provinceCode": "SG",
+   "cateId": 160
+  }
+ ],
+ "LDG Sky": [
+  {
+   "pjId": "5080",
+   "href": "/du-an-can-ho-chung-cu-di-an-bd/can-ho-ldg-sky-pj5080",
+   "name": "Căn hộ LDG Sky",
+   "status": "",
+   "statusNote": "",
+   "config": [
+    {
+     "value": "30 triệu/m²",
+     "label": null
+    },
+    {
+     "value": "2,08 ha",
+     "label": null
+    },
+    {
+     "value": "1.659",
+     "label": "1659 căn hộ"
+    },
+    {
+     "value": "5",
+     "label": "5 tòa nhà"
+    }
+   ],
+   "location": "Khu đô thị Bình Nguyên (Làng Đại học Quốc gia), phường Bình Thắng, TP. Dĩ An, tỉnh Bình Dương",
+   "summary": "LDG Sky là dự án căn hộ chung cư được triển khai trên khu đất rộng hơn 20.800m2, nằm trong khu đô thị Bình Nguyên, phường Bình Thắng, thành phố Dĩ An, tỉnh Bình Dương, do Công ty Cổ phần Đầu tư LDG (LDG Group) làm chủ đầu tư. Quy mô dự án LDG Sky bao gồm 5 block, mỗi block cao 30 tầng, cung ứng cho thị trường tổng cộng 1.659 căn hộ với diện tích đa dạng, thiết kế từ 1-3 phòng ngủ.",
+   "images": [
+    "https://file4.batdongsan.com.vn/crop/240x180/2021/07/13/20210713135039-73a7.jpg",
+    "https://file4.batdongsan.com.vn/crop/240x180/2022/11/09/20221109093737-40df_wm.jpg",
+    "https://file4.batdongsan.com.vn/crop/240x180/2021/04/29/20210429104959-1657.jpg"
+   ],
+   "imageCount": "6",
+   "trackingLabel": "ipos=1,pgno=7,prid=5080",
+   "provinceCode": "BD",
+   "cateId": 155
+  }
+ ],
+ "La Pura": [
+  {
+   "pjId": "4868",
+   "href": "/du-an-can-ho-chung-cu-thuan-an-bd/la-pura-pj4868",
+   "name": "La Pura",
+   "status": "",
+   "statusNote": "",
+   "config": [
+    {
+     "value": "4,4 ha",
+     "label": null
+    },
+    {
+     "value": "4.982",
+     "label": "4982 căn hộ"
+    },
+    {
+     "value": "8",
+     "label": "8 tòa nhà"
+    }
+   ],
+   "location": "Đường Quốc Lộ 13, Phường Bình Hòa, Thuận An, Bình Dương",
+   "summary": "Dự án căn hộ La Pura (tên cũ: là Astral City) được Công ty CP Phát triển Bất động sản Phát Đạt triển khai trên quỹ đất rộng 4.4ha tại TP. Thuận An, tỉnh Bình Dương. Quy mô dự án gồm 04 phân khu với 08 block cao 39 tầng, cung ứng cho thị trường khu vực khoảng 5.920 căn hộ có thiết kế hiện đại.",
+   "images": [
+    "https://file4.batdongsan.com.vn/crop/240x180/2022/03/28/20220328092937-6f68.jpg",
+    "https://file4.batdongsan.com.vn/crop/240x180/2022/06/23/20220623102211-6fa2.jpg",
+    "https://file4.batdongsan.com.vn/crop/240x180/2025/03/27/20250327145011-be7b_wm.jpg"
+   ],
+   "imageCount": "16",
+   "trackingLabel": "ipos=2,pgno=9,prid=4868",
+   "provinceCode": "BD",
+   "cateId": 155
+  }
+ ],
+ "Lumiere Boulevard": [
+  {
+   "pjId": "5598",
+   "href": "/du-an-can-ho-chung-cu-quan-9/lumiere-boulevard-pj5598",
+   "name": "Lumiere Boulevard",
+   "status": "",
+   "statusNote": "",
+   "config": [
+    {
+     "value": "3,37 ha",
+     "label": null
+    },
+    {
+     "value": "2.422",
+     "label": "2422 căn hộ"
+    },
+    {
+     "value": "5",
+     "label": "5 tòa nhà"
+    }
+   ],
+   "location": "Phường Long Bình,  Quận 9, Hồ Chí Minh",
+   "summary": "Dự án căn hộ chung cư Lumiere Boulevard Quận 9 là một căn hộ chung cư cao cấp tọa lạc tại khu đất vàng Quận 9 được mệnh danh là trung tâm của trung tâm nằm ngay mặt tiền Nguyễn Xiển, Quận 9, TP.HCM với quy mô lên tới 31.161m2 bao gồm 5 toà tháp cao 35 tầng cung cấp 1000 căn hộ",
+   "images": [
+    "https://file4.batdongsan.com.vn/crop/240x180/2023/05/16/20230516100622-4d67_wm.jpg",
+    "https://file4.batdongsan.com.vn/crop/240x180/2022/06/16/20220616164155-afec.jpg",
+    "https://staticfile.batdongsan.com.vn/images/Product/no-image/sisu/card-full-addon-no-first-no-image.svg"
+   ],
+   "imageCount": "3",
+   "trackingLabel": "ipos=9,pgno=6,prid=5598",
+   "provinceCode": "SG",
+   "cateId": 155
+  }
+ ],
+ "Lumiere Midtown": [
+  {
+   "pjId": "6310",
+   "href": "/du-an-can-ho-chung-cu-quan-2/lumiere-midtown-pj6310",
+   "name": "Lumière Midtown",
+   "status": "Đang cập nhật",
+   "statusNote": "",
+   "config": [
+    {
+     "value": "808",
+     "label": "808 căn hộ"
+    },
+    {
+     "value": "2",
+     "label": "2 tòa nhà"
+    }
+   ],
+   "location": "Đường Liên Phường, Phường An Phú,  Quận 2, Hồ Chí Minh",
+   "summary": "Lumière Midtown là siêu phẩm căn hộ nằm ở trung tâm khu đô thị The Global City ngay mặt tiền đường Liên Phường, sát bên cao tốc Long Thành-Dầu Giây do Masterise Homes phát triển. Lumière Midtown gồm 2 tòa tháp cao 27 tầng với 808 căn hộ, đa dạng loại căn hộ từ 1PN đến 4PN, Penthouse và Duplex Penthouse",
+   "images": [
+    "https://file4.batdongsan.com.vn/crop/240x180/2025/05/07/20250507101923-c32e_wm.jpg",
+    "https://file4.batdongsan.com.vn/crop/240x180/2025/05/07/20250507101918-6b85_wm.jpg",
+    "https://file4.batdongsan.com.vn/crop/240x180/2025/05/07/20250507101904-5d0e_wm.jpg"
+   ],
+   "imageCount": "4",
+   "trackingLabel": "ipos=7,pgno=3,prid=6310",
+   "provinceCode": "SG",
+   "cateId": 155
+  }
+ ],
+ "Lumiere Riverside": [
+  {
+   "pjId": "4114",
+   "href": "/du-an-can-ho-chung-cu-quan-2/lumiere-riverside-pj4114",
+   "name": "Lumiere Riverside",
+   "status": "",
+   "statusNote": "",
+   "config": [
+    {
+     "value": "1,2 ha",
+     "label": null
+    },
+    {
+     "value": "2",
+     "label": "2 tòa nhà"
+    }
+   ],
+   "location": "628A Võ Nguyên Giáp, Phường An Phú,  Quận 2, Hồ Chí Minh",
+   "summary": "Lumiere Riverside là dự án chung cư cao cấp với các đồ nội thất được nhập từ nước ngoài. Dự án có nhiều dạng căn hộ, mang đến cho khách hàng nhiều sự lựa chọn như studio, 1, 2, 3, 4 phòng ngủ, duplex, penhouse.",
+   "images": [
+    "https://file4.batdongsan.com.vn/crop/240x180/2023/04/04/20230404145429-07fd_wm.jpg",
+    "https://file4.batdongsan.com.vn/crop/240x180/2025/08/29/20250829164544-a596_wm.jpg",
+    "https://file4.batdongsan.com.vn/crop/240x180/2025/08/29/20250829164520-787f_wm.jpg"
+   ],
+   "imageCount": "12",
+   "trackingLabel": "ipos=5,pgno=14,prid=4114",
+   "provinceCode": "SG",
+   "cateId": 155
+  }
+ ],
+ "MT Eastmark": [
+  {
+   "pjId": "647",
+   "href": "/du-an-can-ho-chung-cu-quan-9/chung-cu-mt-eastmark-city-pj647",
+   "name": "Chung cư MT Eastmark City",
+   "status": "",
+   "statusNote": "",
+   "config": [
+    {
+     "value": "42 triệu/m²",
+     "label": null
+    },
+    {
+     "value": "20 ha",
+     "label": null
+    },
+    {
+     "value": "1.720",
+     "label": "1720 căn hộ"
+    },
+    {
+     "value": "7",
+     "label": "7 tòa nhà"
+    }
+   ],
+   "location": "Đường Trường Lưu, Phường Long Trường,  Quận 9, Hồ Chí Minh",
+   "summary": "Chung cư MT Eastmark City là phân khu cao tầng thuộc dự án khu dân cư Centana City Điền Phúc Thành, tọa lạc tại phường Long Trường, TP.Thủ Đức (trước thuộc địa bàn Quận 9), TP.HCM. Dự án do Công ty TNHH Xây dựng và Kinh doanh nhà Điền Phúc Thành làm chủ đầu tư.",
+   "images": [
+    "https://file4.batdongsan.com.vn/crop/240x180/2022/07/14/20220714153053-e2c8_wm.jpg",
+    "https://file4.batdongsan.com.vn/crop/240x180/2022/07/14/20220714113035-d8a5_wm.jpg",
+    "https://file4.batdongsan.com.vn/crop/240x180/2021/06/24/akCJKkFO/20210624171743-b4ce.jpg"
+   ],
+   "imageCount": "28",
+   "trackingLabel": "ipos=6,pgno=48,prid=647",
+   "provinceCode": "SG",
+   "cateId": 155
+  }
+ ],
+ "Maison Grand": [
+  {
+   "pjId": "5705",
+   "href": "/du-an-can-ho-chung-cu-phu-my_1-vt/maison-grand-phu-my-pj5705",
+   "name": "Maison Grand Phú Mỹ",
+   "status": "",
+   "statusNote": "",
+   "config": [
+    {
+     "value": "1,21 ha",
+     "label": null
+    },
+    {
+     "value": "1.248",
+     "label": "1248 căn hộ"
+    },
+    {
+     "value": "2",
+     "label": "2 tòa nhà"
+    }
+   ],
+   "location": "Đường Quốc Lộ 51, Phường Phú Mỹ, Thị xã Phú Mỹ, Bà Rịa Vũng Tàu",
+   "summary": "Dự án Maison Grand Phú Mỹ là khu căn hộ cao cấp tại thị xã Phú Mỹ, Bà Rịa-Vũng Tàu, do Công ty TNHH Thương mại Tùng Mỹ đầu tư phát triển. Dự án gồm 2 tòa tháp cao 25 tầng nổi và 2 tầng hầm, cung ứng 1248 căn hộ và 55 căn shophouse.",
+   "images": [
+    "https://file4.batdongsan.com.vn/crop/240x180/2023/04/04/20230404155227-36fc_wm.jpg",
+    "https://file4.batdongsan.com.vn/crop/240x180/2022/09/28/20220928170434-17f8_wm.jpg",
+    "https://file4.batdongsan.com.vn/crop/240x180/2022/09/28/20220928173329-4a23_wm.jpg"
+   ],
+   "imageCount": "10",
+   "trackingLabel": "ipos=6,pgno=1,prid=5705",
+   "provinceCode": "VT",
+   "cateId": 155
+  }
+ ],
+ "Marina Tower": [
+  {
+   "pjId": "2843",
+   "href": "/du-an-can-ho-chung-cu-thuan-an-bd/marina-tower-pj2843",
+   "name": "Marina Tower",
+   "status": "",
+   "statusNote": "",
+   "config": [
+    {
+     "value": "1,07 ha",
+     "label": null
+    }
+   ],
+   "location": "Phường Vĩnh Phú, Thuận An, Bình Dương",
+   "summary": "Marina Tower là dự án căn hộ giá rẻ, phù hợp cho những người thu nhập thấp và trung bình ở vùng ven đô Tp.HCM, đặc biệt là khu vực Bình Dương giáp ranh Thủ Đức.",
+   "images": [
+    "https://file4.batdongsan.com.vn/crop/240x180/2017/05/09/0I4XNtd4/20170509094514-aff3.jpg",
+    "https://file4.batdongsan.com.vn/crop/240x180/2017/05/09/0I4XNtd4/20170509094919-be32.jpg",
+    "https://file4.batdongsan.com.vn/crop/240x180/2017/05/09/0I4XNtd4/20170509094924-e28f.jpg"
+   ],
+   "imageCount": "13",
+   "trackingLabel": "ipos=2,pgno=8,prid=2843",
+   "provinceCode": "BD",
+   "cateId": 155
+  }
+ ],
+ "Mizuki Park": [
+  {
+   "pjId": "2971",
+   "href": "/du-an-khu-do-thi-moi-binh-chanh/mizuki-park-pj2971",
+   "name": "Mizuki Park",
+   "status": "",
+   "statusNote": "",
+   "config": [
+    {
+     "value": "40 triệu/m²",
+     "label": null
+    },
+    {
+     "value": "26 ha",
+     "label": null
+    },
+    {
+     "value": "4.677",
+     "label": "4677 căn hộ"
+    },
+    {
+     "value": "8",
+     "label": "8 tòa nhà"
+    }
+   ],
+   "location": "Đường Nguyễn Văn Linh, xã Bình Hưng, huyện Bình Chánh, Tp.HCM",
+   "summary": "Mizuki Park là dự án khu đô thị phức hợp thương mại, nhà phố, biệt thự, shophouse & căn hộ rộng 26 ha tọa lạc phía Nam Sài Gòn do Tập đoàn Nam Long đầu tư. Dự án bao gồm khu căn hộ Flora, khu shophouse Valora Mizuki và biệt thự Valora. Mizuki Park Bình Chánh là dự án lớn nhất của Nam Long tại TP.HCM với quy mô 26 ha, mật độ xây dựng chỉ 29%, diện tích còn lại dành cho công viên cây xanh, hồ cảnh quan và hệ thống tiện ích nội khu.",
+   "images": [
+    "https://file4.batdongsan.com.vn/crop/240x180/2022/02/25/20220225095256-ca58.jpg",
+    "https://file4.batdongsan.com.vn/crop/240x180/2021/07/02/20210702121043-c4b1.jpg",
+    "https://file4.batdongsan.com.vn/crop/240x180/2021/07/02/20210702121927-4a60.jpg"
+   ],
+   "imageCount": "15",
+   "trackingLabel": "ipos=10,pgno=16,prid=2971",
+   "provinceCode": "SG",
+   "cateId": 150
+  }
+ ],
+ "Moonlight Residence": [
+  {
+   "pjId": "2571",
+   "href": "/du-an-khu-phuc-hop-thu-duc/moonlight-residences-pj2571",
+   "name": "Moonlight Residences",
+   "status": "",
+   "statusNote": "",
+   "config": [
+    {
+     "value": "20 triệu/m²",
+     "label": null
+    },
+    {
+     "value": "1,81 ha",
+     "label": null
+    },
+    {
+     "value": "534",
+     "label": "534 căn hộ"
+    },
+    {
+     "value": "2",
+     "label": "2 tòa nhà"
+    }
+   ],
+   "location": "Đường Đặng Văn Bi, phường Bình Thọ, quận Thủ Đức, Tp.HCM",
+   "summary": "Moonlight Residences (Moonlight Garden) là dự án khu phức hợp gồm căn hộ, nhà phố liền kề và trung tâm thương mại dịch vụ được đầu tư phát triển bởi Hưng Thịch Corp.",
+   "images": [
+    "https://i.ytimg.com/vi/iF1yPKp8xQY/mqdefault.jpg",
+    "https://file4.batdongsan.com.vn/crop/240x180/2021/08/25/20210825105528-1130.jpg",
+    "https://file4.batdongsan.com.vn/crop/240x180/2021/08/25/20210825105516-6468.jpg"
+   ],
+   "imageCount": "33",
+   "trackingLabel": "ipos=2,pgno=9,prid=2571",
+   "provinceCode": "SG",
+   "cateId": 160
+  }
+ ],
+ "One Era": [
+  {
+   "pjId": "6419",
+   "href": "/du-an-khu-do-thi-moi-thuan-an-bd/one-era-pj6419",
+   "name": "One Era",
+   "status": "Đang cập nhật",
+   "statusNote": "",
+   "config": [
+    {
+     "value": "49,5 ha",
+     "label": null
+    }
+   ],
+   "location": "Phường Thuận Giao, Thành phố Thuận An, Bình Dương",
+   "summary": "One Era là dự án khu đô thị có quy mô 49,5ha với tổng vốn đầu tư khoảng 1 tỷ USD, nằm trong khu dân cư Hòa Lân, phường Thuận Giao, Thành phố Hồ Chí Minh (TP Thuận An, Bình Dương cũ), do Liên doanh giữa Kim Oanh Group và 3 đối tác Nhật Bản (Sumitomo Forestry, Kumagai Gumi và NTT Urban Development) đầu tư phát triển. Dự án được quy hoạch thành 4 phân khu riêng biệt: Nizi, Nagi, Haru và Hoshi, dự kiến cung ứng ra thị trường hơn 10.000 sản phẩm với đa dạng loại hình (Biệt thự, liền kề, shophouse, căn hộ, văn phòng thương mại dịch vụ..).",
+   "images": [
+    "https://file4.batdongsan.com.vn/crop/240x180/2026/01/22/20260122151237-ef68_wm.jpg",
+    "https://file4.batdongsan.com.vn/crop/240x180/2026/01/22/20260122144653-6ed7_wm.jpg",
+    "https://file4.batdongsan.com.vn/crop/240x180/2026/01/22/20260122144652-fe3e_wm.jpg"
+   ],
+   "imageCount": "7",
+   "trackingLabel": "ipos=2,pgno=1,prid=6419",
+   "provinceCode": "BD",
+   "cateId": 150
+  }
+ ],
+ "Orchard Garden": [
+  {
+   "pjId": "2002",
+   "href": "/du-an-can-ho-chung-cu-phu-nhuan/orchard-garden-pj2002",
+   "name": "Orchard Garden",
+   "status": "",
+   "statusNote": "",
+   "config": [
+    {
+     "value": "31.2 triệu/m²",
+     "label": null
+    },
+    {
+     "value": "9.196 m²",
+     "label": null
+    },
+    {
+     "value": "181",
+     "label": "181 căn hộ"
+    }
+   ],
+   "location": "128 Đường Hồng Hà, Phường 9, Phú Nhuận, Hồ Chí Minh",
+   "summary": "Orchard Garden là tổ hợp căn hộ chung cư cao cấp, trung tâm thương mại và officetel tọa lạc ngay mặt tiền Số 128 Hồng Hà, quận Phú Nhuận do Novaland làm chủ đầu tư , dự án sở hữu vị trí giao thông vô cùng thuận tiện, kết nối liền kề với sân bay Tân Sơn Nhất và đại lộ Phạm Văn Đồng – tuyến giao thông huyết mạch của các quận Tân Bình, Phú Nhuận, Bình Thạnh, Thủ Đức. Đặc biệt, dự án nằm ngay sát công viên Gia Định – nơi được xem là “lá phổi xanh” của thành phố, hứa hẹn sẽ đem đến một không gian sống trong lành và yên tĩnh hiếm có ngay tại trung tâm thành phố.",
+   "images": [
+    "https://file4.batdongsan.com.vn/crop/240x180/2026/04/06/20260406120827-8a02_wm.jpg",
+    "https://file4.batdongsan.com.vn/crop/240x180/2026/04/06/20260406120806-8409_wm.jpg",
+    "https://file4.batdongsan.com.vn/crop/240x180/2026/04/06/20260406120742-5b18_wm.jpg"
+   ],
+   "imageCount": "14",
+   "trackingLabel": "ipos=3,pgno=40,prid=2002",
+   "provinceCode": "SG",
+   "cateId": 155
+  }
+ ],
+ "Palm City": [
+  {
+   "pjId": "2611",
+   "href": "/du-an-khu-do-thi-moi-quan-2/palm-city-pj2611",
+   "name": "Palm City",
+   "status": "",
+   "statusNote": "",
+   "config": [
+    {
+     "value": "30,2 ha",
+     "label": null
+    }
+   ],
+   "location": "Phường An Phú, Quận 2, Hồ Chí Minh",
+   "summary": "Palm City là một phần trong tổng thể dự án Khu dân cư Nam Rạch Chiếc (90,26ha) - Liền kề Trung tâm Tài chính Quốc tế Thủ Thiêm, do Công ty TNHH Nam Rạch Chiếc làm chủ đầu tư. Dự án có quy mô 30,2 ha với mật độ xanh lên đến 77%, sở hữu 3 mặt giáp sông và rạch tự nhiên. Palm City được chia thành nhiều giai đoạn phát triển với các chức năng khác nhau: Khu nhà ở thấp tầng, nhà phố thương mại; Khu căn hộ; cùng hệ thống các tiện ích như trung tâm thương mại, văn phòng, trường học, bệnh viện..",
+   "images": [
+    "https://file4.batdongsan.com.vn/crop/240x180/2026/04/09/20260409123514-951f_wm.jpg",
+    "https://file4.batdongsan.com.vn/crop/240x180/2026/04/09/20260409123329-1d64_wm.jpg",
+    "https://file4.batdongsan.com.vn/crop/240x180/2026/04/09/20260409123328-a870_wm.jpg"
+   ],
+   "imageCount": "10",
+   "trackingLabel": "ipos=6,pgno=12,prid=2611",
+   "provinceCode": "SG",
+   "cateId": 150
+  }
+ ],
+ "Park Vista": [
+  {
+   "pjId": "2337",
+   "href": "/du-an-can-ho-chung-cu-nha-be/park-vista-pj2337",
+   "name": "Park Vista",
+   "status": "",
+   "statusNote": "",
+   "config": [
+    {
+     "value": "19 triệu/m²",
+     "label": null
+    },
+    {
+     "value": "2,4 ha",
+     "label": null
+    }
+   ],
+   "location": "Đường Nguyễn Hữu Thọ, Xã Phước Kiển, Nhà Bè, Hồ Chí Minh",
+   "summary": "Tọa lạc trên trục đường Nguyễn Hữu Thọ - Nhà Bè, dự án Park Vista có tổng diện tích 2,4 ha, được thiết kế theo tiêu chuẩn của căn hộ cao cấp hạng A, đậm phong cách Châu Âu, mang đến một cuộc sống bình yên, hiện đại, phù hợp với mọi đối tượng khách hàng.",
+   "images": [
+    "https://file4.batdongsan.com.vn/crop/240x180/2016/08/18/eGYiO6Tq/20160818142216-0477.jpg",
+    "https://file4.batdongsan.com.vn/crop/240x180/2016/08/18/eGYiO6Tq/20160818142342-a7d8.jpg",
+    "https://file4.batdongsan.com.vn/crop/240x180/2016/08/26/eGYiO6Tq/20160826075849-6f5d.jpg"
+   ],
+   "imageCount": "32",
+   "trackingLabel": "ipos=8,pgno=54,prid=2337",
+   "provinceCode": "SG",
+   "cateId": 155
+  }
+ ],
+ "Phú Đông Sky Garden": [
+  {
+   "pjId": "4964",
+   "href": "/du-an-can-ho-chung-cu-di-an-bd/phu-dong-sky-garden-pj4964",
+   "name": "Phú Đông Sky Garden",
+   "status": "",
+   "statusNote": "",
+   "config": [
+    {
+     "value": "6.015 m²",
+     "label": null
+    },
+    {
+     "value": "640",
+     "label": "640 căn hộ"
+    },
+    {
+     "value": "1",
+     "label": "1 tòa nhà"
+    }
+   ],
+   "location": "Đường An Bình, Phường An Bình, Dĩ An, Bình Dương",
+   "summary": "Phú Đông Sky Garden là dự án chung cư thứ ba tại khu vực tiệm cận TP.HCM do Phú Đông Group làm chủ đầu tư. Dự án có vị trí được đánh giá là đắc địa khi gần kề tuyến đường nội đô đẹp nhất Sài Gòn là Đại lộ Phạm Văn Đồng, thuận tiện cho di chuyển vào khu trung tâm thành phố.",
+   "images": [
+    "https://file4.batdongsan.com.vn/crop/240x180/2025/06/09/20250609153402-b60c_wm.jpg",
+    "https://file4.batdongsan.com.vn/crop/240x180/2025/06/09/20250609153320-fed1_wm.jpg",
+    "https://file4.batdongsan.com.vn/crop/240x180/2025/06/09/20250609153208-e926_wm.jpg"
+   ],
+   "imageCount": "17",
+   "trackingLabel": "ipos=10,pgno=8,prid=4964",
+   "provinceCode": "BD",
+   "cateId": 155
+  }
+ ],
+ "Phước Thiện": [
+  {
+   "pjId": "2135",
+   "href": "/du-an-khu-do-thi-moi-quan-9/khu-dan-cu-phuoc-thien-pj2135",
+   "name": "Khu dân cư Phước Thiện",
+   "status": "Đang cập nhật",
+   "statusNote": "",
+   "config": [],
+   "location": "Đường Phước Thiện, Phường Long Bình, Quận 9, Hồ Chí Minh",
+   "summary": "Khu dân cư Phước Thiện được xây dựng tại mặt tiền đường Phước Thiện, Phường Long Bình, Quận 9, ngay khu dân cư hiện hữu.",
+   "images": [
+    "https://file4.batdongsan.com.vn/crop/240x180/2015/04/11/JGcIp0rf/20150411104811-6a6c.jpg",
+    "https://file4.batdongsan.com.vn/crop/240x180/2016/09/24/lGk9zKqg/20160924165449-2c22.jpg",
+    "https://file4.batdongsan.com.vn/crop/240x180/2016/09/24/lGk9zKqg/20160924172428-4cc1.jpg"
+   ],
+   "imageCount": "6",
+   "trackingLabel": "ipos=8,pgno=14,prid=2135",
+   "provinceCode": "SG",
+   "cateId": 150
+  }
+ ],
+ "Pi City Sky Park – Skyzen": [
+  {
+   "pjId": "6393",
+   "href": "/du-an-can-ho-chung-cu-di-an-bd/skyzen-pj6393",
+   "name": "SkyZen",
+   "status": "",
+   "statusNote": "",
+   "config": [
+    {
+     "value": "3.353 m²",
+     "label": null
+    },
+    {
+     "value": "650",
+     "label": "650 căn hộ"
+    },
+    {
+     "value": "1",
+     "label": "1 tòa nhà"
+    }
+   ],
+   "location": "Phường An Bình, Thành phố Dĩ An, Bình Dương",
+   "summary": "SkyZen là phân khu căn hộ cao cấp thuộc PiCity Sky Park tọa lạc tại phường Dĩ An, Thành phố Hồ Chí Minh (Phường An Bình, TP Dĩ An, Bình Dương cũ) do Tập đoàn Pi Group phát triển. Dự án gồm tòa tháp cao 38 tầng nổi và 02 tầng hầm với tổng số lượng 650 sản phẩm, trong đó gồm 227 căn Officetel, 97 căn Studio, 322 căn hộ (2PN-3PN) và 04 căn Shophouse.",
+   "images": [
+    "https://file4.batdongsan.com.vn/crop/240x180/2025/07/24/20250724111040-8e50_wm.jpg",
+    "https://file4.batdongsan.com.vn/crop/240x180/2025/07/24/20250724111030-4f9d_wm.jpg",
+    "https://file4.batdongsan.com.vn/crop/240x180/2025/07/24/20250724111020-2075_wm.jpg"
+   ],
+   "imageCount": "5",
+   "trackingLabel": "ipos=4,pgno=3,prid=6393",
+   "provinceCode": "BD",
+   "cateId": 155
+  }
+ ],
+ "Precia": [
+  {
+   "pjId": "4956",
+   "href": "/du-an-can-ho-chung-cu-quan-2/can-ho-precia-quan-2-pj4956",
+   "name": "Căn hộ Precia Quận 2",
+   "status": "",
+   "statusNote": "",
+   "config": [
+    {
+     "value": "55 triệu/m²",
+     "label": null
+    },
+    {
+     "value": "333",
+     "label": "333 căn hộ"
+    },
+    {
+     "value": "1",
+     "label": "1 tòa nhà"
+    }
+   ],
+   "location": "Đường Nguyễn Thị Định, Phường An Phú, Quận 2, Hồ Chí Minh",
+   "summary": "Precia Quận 2 là dự án căn hộ cao cấp tại trung tâm Quận 2 do công ty CP Đầu tư BĐS Rio Land phát triển. Dự án sở hữu vị trí đắc địa ngay góc đường Nguyễn Thị Định - Mai Chí Thọ, với quy mô 23 tầng nổi, 1 tầng hầm. Tổng sản phẩm cung ứng ra thị trường giới hạn chỉ 333 căn hộ và 8 căn TM-DV.",
+   "images": [
+    "https://file4.batdongsan.com.vn/crop/240x180/2020/12/04/hmcVYWuR/20201204134139-fb5e.jpg",
+    "https://file4.batdongsan.com.vn/crop/240x180/2020/12/04/hmcVYWuR/20201204134139-fb5e.jpg",
+    "https://file4.batdongsan.com.vn/crop/240x180/2020/12/04/hmcVYWuR/20201204134138-254d.jpg"
+   ],
+   "imageCount": "33",
+   "trackingLabel": "ipos=6,pgno=20,prid=4956",
+   "provinceCode": "SG",
+   "cateId": 155
+  }
+ ],
+ "Prosper Phố Đông": [
+  {
+   "pjId": "4735",
+   "href": "/du-an-can-ho-chung-cu-thu-duc/prosper-pho-dong-pj4735",
+   "name": "Prosper Phố Đông",
+   "status": "",
+   "statusNote": "",
+   "config": [
+    {
+     "value": "51 triệu/m²",
+     "label": null
+    },
+    {
+     "value": "5.951,4 m²",
+     "label": null
+    },
+    {
+     "value": "596",
+     "label": "596 căn hộ"
+    },
+    {
+     "value": "2",
+     "label": "2 tòa nhà"
+    }
+   ],
+   "location": "Đường Tô Ngọc Vân, Phường Tam Bình, Thủ Đức, Hồ Chí Minh",
+   "summary": "Prosper Phố Đông là dự án căn hộ do Tập đoàn Phúc Yên Prosper làm chủ đầu tư được triển khai trên quỹ đất rộng gần 6.000m2 tại ngã tư đường Tô Ngọc Vân giao Phạm Văn Đồng, Phường Tam Bình, quận Thủ Đức, TP.HCM. Với quy mô gồm 2 block cao 25 tầng nổi, 02 tầng hầm, dự án cung cấp ra thị trường 596 căn hộ. Sở hữu vị trí cực kỳ đắc địa cùng hệ thống các tiện ích được chắt lọc và thiết kế riêng để đáp ứng nhu cầu của cư dân một cách tốt nhất, Prosper Phố Đông sẽ mở ra một chốn an cư lý tưởng cho những khách hàng tại khu vực Thủ Đức.",
+   "images": [
+    "https://file4.batdongsan.com.vn/crop/240x180/2026/05/29/20260529143301-5871_wm.jpg",
+    "https://file4.batdongsan.com.vn/crop/240x180/2019/12/19/hmcVYWuR/20191219100606-11bd.jpg",
+    "https://file4.batdongsan.com.vn/crop/240x180/2019/12/19/hmcVYWuR/20191219100616-17da.jpg"
+   ],
+   "imageCount": "10",
+   "trackingLabel": "ipos=2,pgno=9,prid=4735",
+   "provinceCode": "SG",
+   "cateId": 155
+  }
+ ],
+ "Q7 Boulevard": [
+  {
+   "pjId": "4384",
+   "href": "/du-an-can-ho-chung-cu-quan-7/q7-boulevard-pj4384",
+   "name": "Q7 Boulevard",
+   "status": "",
+   "statusNote": "",
+   "config": [
+    {
+     "value": "1,64 ha",
+     "label": null
+    },
+    {
+     "value": "1.008",
+     "label": "1008 căn hộ"
+    },
+    {
+     "value": "4",
+     "label": "4 tòa nhà"
+    }
+   ],
+   "location": "Đường Nguyễn Lương Bằng, Phường Phú Mỹ, Quận 7, Hồ Chí Minh",
+   "summary": "Q7 Boulevard là sự kết hợp tinh tế giữa kiến trúc hiện đại với không gian thiên nhiên khu vực và chuỗi tiện ích đỉnh cao, hứa hẹn đem đến cho các chủ nhân tương lai một không gian sống xứng tầm đẳng cấp giữa lòng đô thị thịnh vượng.",
+   "images": [
+    "https://file4.batdongsan.com.vn/crop/240x180/2021/08/23/20210823154834-21cb.jpg",
+    "https://file4.batdongsan.com.vn/crop/240x180/2021/08/23/20210823154828-4c47.jpg",
+    "https://file4.batdongsan.com.vn/crop/240x180/2021/08/23/20210823154824-005c.jpg"
+   ],
+   "imageCount": "14",
+   "trackingLabel": "ipos=9,pgno=28,prid=4384",
+   "provinceCode": "SG",
+   "cateId": 155
+  }
+ ],
+ "Q7 Riverside": [
+  {
+   "pjId": "2624",
+   "href": "/du-an-can-ho-chung-cu-quan-7/q7-saigon-riverside-pj2624",
+   "name": "Q7 Saigon Riverside",
+   "status": "",
+   "statusNote": "",
+   "config": [
+    {
+     "value": "7,52 ha",
+     "label": null
+    },
+    {
+     "value": "3.580",
+     "label": "3580 căn hộ"
+    },
+    {
+     "value": "4",
+     "label": "4 tòa nhà"
+    }
+   ],
+   "location": "Đường Đào Trí, Phường Phú Thuận, Quận 7, TP.HCM",
+   "summary": "Q7 Saigon Riverside là dự án căn hộ với quy mô lên đến hơn 7 ha của tập đoàn Hưng Thịnh tại khu đô thị Nam Sài Gòn. Dự án Q7 Riverside sẽ đem lại cho cư dân một cuộc sống thịnh vượng, gần gũi với thiên nhiên, an ninh và môi trường sống trong lành đẳng cấp.",
+   "images": [
+    "https://file4.batdongsan.com.vn/crop/240x180/2023/09/12/20230912141150-833d_wm.jpg",
+    "https://file4.batdongsan.com.vn/crop/240x180/2023/09/12/20230912141147-a290_wm.jpg",
+    "https://file4.batdongsan.com.vn/crop/240x180/2023/09/12/20230912141143-198f_wm.jpg"
+   ],
+   "imageCount": "14",
+   "trackingLabel": "ipos=2,pgno=70,prid=2624",
+   "provinceCode": "SG",
+   "cateId": 155
+  }
+ ],
+ "Ricca": [
+  {
+   "pjId": "4648",
+   "href": "/du-an-can-ho-chung-cu-quan-9/can-ho-ricca-quan-9-pj4648",
+   "name": "Căn hộ Ricca Quận 9",
+   "status": "",
+   "statusNote": "",
+   "config": [
+    {
+     "value": "29 triệu/m²",
+     "label": null
+    },
+    {
+     "value": "1,27 ha",
+     "label": null
+    },
+    {
+     "value": "549",
+     "label": "549 căn hộ"
+    },
+    {
+     "value": "2",
+     "label": "2 tòa nhà"
+    }
+   ],
+   "location": "68A Gò Cát, Phường Phú Hữu, Quận 9, Hồ Chí Minh",
+   "summary": "Căn hộ Ricca là GĐ 2 của Khu Dân Cư Rio Centro, dự án tọa lạc ngay mặt tiền đường D7 đoạn giao với đường Gò Cát, phường Phú Hữu, Quận 9, Tp.HCM.",
+   "images": [
+    "https://file4.batdongsan.com.vn/crop/240x180/2019/11/06/hmcVYWuR/20191106154250-021b.jpg",
+    "https://file4.batdongsan.com.vn/crop/240x180/2019/11/06/hmcVYWuR/20191106154302-fa15.jpg",
+    "https://file4.batdongsan.com.vn/crop/240x180/2019/11/06/hmcVYWuR/20191106154324-d246.jpg"
+   ],
+   "imageCount": "11",
+   "trackingLabel": "ipos=7,pgno=9,prid=4648",
+   "provinceCode": "SG",
+   "cateId": 155
+  }
+ ],
+ "Sadora & Sarina": [
+  {
+   "pjId": "4049",
+   "href": "/du-an-can-ho-chung-cu-quan-2/sadora-sala-pj4049",
+   "name": "Sadora Sala",
+   "status": "",
+   "statusNote": "",
+   "config": [
+    {
+     "value": "1,78 ha",
+     "label": null
+    }
+   ],
+   "location": "Đường Mai Chí Thọ, Phường An Lợi Đông,  Quận 2, Hồ Chí Minh",
+   "summary": "Chung cư Sadora Sala ở quận 2, Tp.HCM do Công ty CP Đầu tư Địa ốc Đại Quang Minh đầu tư là dự án căn hộ cao tầng cao cấp đầu tiên nằm trong Khu đô thị Sala.",
+   "images": [
+    "https://file4.batdongsan.com.vn/crop/240x180/2019/01/02/zk7ggeWN/20190102111637-85f8.jpg",
+    "https://file4.batdongsan.com.vn/crop/240x180/2019/01/02/zk7ggeWN/20190102111648-4396.jpg",
+    "https://file4.batdongsan.com.vn/crop/240x180/2019/01/02/zk7ggeWN/20190102111656-439d.jpg"
+   ],
+   "imageCount": "17",
+   "trackingLabel": "ipos=10,pgno=14,prid=4049",
+   "provinceCode": "SG",
+   "cateId": 155
+  },
+  {
+   "pjId": "4972",
+   "href": "/du-an-can-ho-chung-cu-quan-2/sarina-condominium-pj4972",
+   "name": "Sarina Condominium",
+   "status": "",
+   "statusNote": "",
+   "config": [
+    {
+     "value": "8.880 m²",
+     "label": null
+    }
+   ],
+   "location": "Đường Mai Chí Thọ, Phường An Lợi Đông, Quận 2, Hồ Chí Minh",
+   "summary": "Sarina Condominium là dự án khu căn hộ thấp tầng có vị trí tại trung tâm khu đô thị Sala, quận 2, TP.HCM.",
+   "images": [
+    "https://file4.batdongsan.com.vn/crop/240x180/2020/07/01/hmcVYWuR/20200701112646-2eee.jpg",
+    "https://file4.batdongsan.com.vn/crop/240x180/2020/07/01/hmcVYWuR/20200701112648-b931.jpg",
+    "https://file4.batdongsan.com.vn/crop/240x180/2020/07/01/hmcVYWuR/20200701112652-2d56.jpg"
+   ],
+   "imageCount": "8",
+   "trackingLabel": "ipos=5,pgno=20,prid=4972",
+   "provinceCode": "SG",
+   "cateId": 155
+  }
+ ],
+ "Sala": [
+  {
+   "pjId": "1583",
+   "href": "/du-an-khu-do-thi-moi-quan-2/sala-dai-quang-minh-pj1583",
+   "name": "Sala Đại Quang Minh",
+   "status": "",
+   "statusNote": "",
+   "config": [
+    {
+     "value": "37 ha",
+     "label": null
+    }
+   ],
+   "location": "Số 10 Mai Chí Thọ, An Lợi Đông, Quận 2, Hồ Chí Minh",
+   "summary": "Khu đô thị Sala Thủ Thiêm (Dự án Đại Quang Minh) thuộc khu chức năng số 5 khu đô thị Thủ Thiêm Quận 2. Cách trung tâm tài chính Thủ thiêm 1km. Dự án do Công ty CP Đầu tư địa ốc Đại Quang Minh làm CĐT",
+   "images": [
+    "https://file4.batdongsan.com.vn/crop/240x180/2017/01/24/Nl3mS01v/20170124155954-2fd4.jpg",
+    "https://file4.batdongsan.com.vn/crop/240x180/2017/11/01/hmcVYWuR/20171101091004-48fe.jpg",
+    "https://file4.batdongsan.com.vn/crop/240x180/2017/11/01/hmcVYWuR/20171101091012-ffc3.jpg"
+   ],
+   "imageCount": "25",
+   "trackingLabel": "ipos=7,pgno=5,prid=1583",
+   "provinceCode": "SG",
+   "cateId": 150
+  }
+ ],
+ "Scenic Valley": [
+  {
+   "pjId": "1860",
+   "href": "/du-an-can-ho-chung-cu-quan-7/scenic-valley-1-pj1860",
+   "name": "Scenic Valley 1",
+   "status": "",
+   "statusNote": "",
+   "config": [
+    {
+     "value": "45 triệu/m²",
+     "label": null
+    },
+    {
+     "value": "3,2 ha",
+     "label": null
+    },
+    {
+     "value": "1.202",
+     "label": "1202 căn hộ"
+    },
+    {
+     "value": "7",
+     "label": "7 tòa nhà"
+    }
+   ],
+   "location": "Đường Tôn Dật Tiên, Phường Tân Phú, Quận 7, Hồ Chí Minh",
+   "summary": "Scenic Valley 1 được xây dựng ngay trong khu y tế điều dưỡng, thuộc khu đô thị Phú Mỹ Hưng, Quận 7, TP.HCM. Dự án bao gồm 7 block nhà, có độ cao t�� 16 - 24 tầng, cung cấp ra thị trường 1202 căn hộ với diện tích từ 70 - 155m2.",
+   "images": [
+    "https://file4.batdongsan.com.vn/crop/240x180/2021/08/28/20210828205938-e4fa.jpg",
+    "https://file4.batdongsan.com.vn/crop/240x180/2021/08/28/20210828205927-1da7.jpg",
+    "https://file4.batdongsan.com.vn/crop/240x180/2021/08/28/20210828205917-2324.jpg"
+   ],
+   "imageCount": "17",
+   "trackingLabel": "ipos=3,pgno=43,prid=1860",
+   "provinceCode": "SG",
+   "cateId": 155
+  },
+  {
+   "pjId": "2415",
+   "href": "/du-an-can-ho-chung-cu-quan-7/scenic-valley-2-pj2415",
+   "name": "Scenic Valley 2",
+   "status": "",
+   "statusNote": "",
+   "config": [
+    {
+     "value": "30 triệu/m²",
+     "label": null
+    },
+    {
+     "value": "1,39 ha",
+     "label": null
+    }
+   ],
+   "location": "Đường Nguyễn Văn Linh, phường Tân Phú, quận 7, Tp.HCM",
+   "summary": "Ngày 20/2/2016, chủ đầu tư Phú Mỹ Hưng đã giới thiệu ra thị trường dự án Scenic Valley 2 với nhiều ưu điểm vượt trội về mọi mặt. Hoạt động này nhằm tiếp nối thành công của Scenic Valley 1 và đem tới những cơ hội sở hữu nhà mới cho khác hàng, nhất là những gia đình trẻ.",
+   "images": [
+    "https://file4.batdongsan.com.vn/crop/240x180/2016/09/19/us6Zzrro/20160919143309-6059.jpg",
+    "https://file4.batdongsan.com.vn/crop/240x180/2016/02/24/0I4XNtd4/20160224083753-5100.jpg",
+    "https://file4.batdongsan.com.vn/crop/240x180/2016/08/26/us6Zzrro/20160826162756-aaea.jpg"
+   ],
+   "imageCount": "19",
+   "trackingLabel": "ipos=3,pgno=53,prid=2415",
+   "provinceCode": "SG",
+   "cateId": 155
+  }
+ ],
+ "Seita Edenia": [
+  {
+   "pjId": "6404",
+   "href": "/du-an-can-ho-chung-cu-thuan-an-bd/setia-edenia-pj6404",
+   "name": "Setia Edenia",
+   "status": "",
+   "statusNote": "",
+   "config": [
+    {
+     "value": "1,24 ha",
+     "label": null
+    },
+    {
+     "value": "865",
+     "label": "865 căn hộ"
+    },
+    {
+     "value": "3",
+     "label": "3 tòa nhà"
+    }
+   ],
+   "location": "Phường Lái Thiêu, Thành phố Thuận An, Bình Dương",
+   "summary": "Setia Edenia là phân khu cao tầng nằm trong khu đô thị sinh thái EcoXuân, thuộc phường Lái Thiêu, TP Hồ Chí Minh (Thuận An, Bình Dương cũ), do Setia - Tập đoàn bất động sản hàng đầu Malaysia phát triển. Dự án gồm 3 tòa tháp cao 27-28 tầng, với thiết kế mặt ngoài được lấy cảm hứng từ dải lụa mềm mại kết hợp phong cách thiết kế hiện đại, các căn hộ tại Setia Edenia được thiết kế mở với ban công, ô cửa sổ rộng giúp tối ưu không gian, đón được ánh sáng và gió thiên nhiên.",
+   "images": [
+    "https://file4.batdongsan.com.vn/crop/240x180/2026/02/06/20260206091456-1cef_wm.jpg",
+    "https://file4.batdongsan.com.vn/crop/240x180/2025/08/05/20250805112152-b691_wm.jpg",
+    "https://file4.batdongsan.com.vn/crop/240x180/2025/08/05/20250805112140-3324_wm.jpg"
+   ],
+   "imageCount": "7",
+   "trackingLabel": "ipos=1,pgno=3,prid=6404",
+   "provinceCode": "BD",
+   "cateId": 155
+  }
+ ],
+ "Sky 9": [
+  {
+   "pjId": "1998",
+   "href": "/du-an-can-ho-chung-cu-quan-9/sky-9-pj1998",
+   "name": "Sky 9",
+   "status": "",
+   "statusNote": "",
+   "config": [
+    {
+     "value": "16 triệu/m²",
+     "label": null
+    },
+    {
+     "value": "1,83 ha",
+     "label": null
+    }
+   ],
+   "location": "Đường Liên Phường, Phường Phú Hữu, Quận 9, Hồ Chí Minh",
+   "summary": "First Home Premium Khang Việt là dự án căn hộ chung cư cao cấp dành cho người có thu nhập trung bình và khá của chủ đầu tư N.H.O",
+   "images": [
+    "https://file4.batdongsan.com.vn/crop/240x180/2016/08/08/eGYiO6Tq/20160808094552-e194.jpg",
+    "https://file4.batdongsan.com.vn/crop/240x180/2016/08/25/eGYiO6Tq/20160825141142-4c4c.jpg",
+    "https://file4.batdongsan.com.vn/crop/240x180/2016/08/25/eGYiO6Tq/20160825141203-a3ba.jpg"
+   ],
+   "imageCount": "23",
+   "trackingLabel": "ipos=5,pgno=40,prid=1998",
+   "provinceCode": "SG",
+   "cateId": 155
+  }
+ ],
+ "Sky Center": [
+  {
+   "pjId": "2047",
+   "href": "/du-an-can-ho-chung-cu-tan-binh/sky-center-pj2047",
+   "name": "Sky Center",
+   "status": "",
+   "statusNote": "",
+   "config": [
+    {
+     "value": "58 triệu/m²",
+     "label": null
+    },
+    {
+     "value": "1,2 ha",
+     "label": null
+    },
+    {
+     "value": "495",
+     "label": "495 căn hộ"
+    },
+    {
+     "value": "4",
+     "label": "4 tòa nhà"
+    }
+   ],
+   "location": "16 Phổ Quang, Phường 2, Tân Bình, Hồ Chí Minh",
+   "summary": "Sky Center Phổ Quang là dự án căn hộ chung cư được đầu tư và phát triển bởi tập đoàn Hưng Thịnh tại quận Tân Bình. Sky Center thừa hưởng những lợi thế về hạ tầng và tiện ích khi tọa lạc khu vực kết nối sân bay Tân Sơn Nhất, liền kề công viên Hoàng Văn Thụ.",
+   "images": [
+    "https://file4.batdongsan.com.vn/crop/240x180/2021/08/18/20210818115837-edca.jpg",
+    "https://file4.batdongsan.com.vn/crop/240x180/2016/09/22/lGk9zKqg/20160922163143-8acd.jpg",
+    "https://file4.batdongsan.com.vn/crop/240x180/2016/09/22/lGk9zKqg/20160922164531-25db.jpg"
+   ],
+   "imageCount": "11",
+   "trackingLabel": "ipos=9,pgno=59,prid=2047",
+   "provinceCode": "SG",
+   "cateId": 155
+  }
+ ],
+ "Sky Garden 3": [
+  {
+   "pjId": "488",
+   "href": "/du-an-can-ho-chung-cu-quan-7/sky-garden-3-pj488",
+   "name": "Sky Garden 3",
+   "status": "",
+   "statusNote": "",
+   "config": [
+    {
+     "value": "34 triệu/m²",
+     "label": null
+    },
+    {
+     "value": "4,27 ha",
+     "label": null
+    },
+    {
+     "value": "22",
+     "label": "22 tòa nhà"
+    }
+   ],
+   "location": "68 Phạm Văn Nghị, Phường Tân Phong, Quận 7, Hồ Chí Minh",
+   "summary": "Sky Garden 3 là khu căn hộ nằm trong tổng thể dự án Sky Garden (gồm 3 giai đoạn 1, 2, 3) của Công ty TNHH Phát triển Phú Mỹ Hưng. Trong đó, Sky Garden 3 là khu căn hộ quy mô lớn nhất, với 22 block cao từ 12-20 tầng, tổng cộng 1715 căn hộ và 56 shophouse.",
+   "images": [
+    "https://file4.batdongsan.com.vn/crop/240x180/2016/08/25/eGYiO6Tq/20160825141853-99be.jpg",
+    "https://file4.batdongsan.com.vn/crop/240x180/2021/08/31/20210831001155-c1aa.jpg",
+    "https://file4.batdongsan.com.vn/crop/240x180/2021/08/31/20210831001152-9dea.jpg"
+   ],
+   "imageCount": "11",
+   "trackingLabel": "ipos=8,pgno=49,prid=488",
+   "provinceCode": "SG",
+   "cateId": 155
+  }
+ ],
+ "Solia": [
+  {
+   "pjId": "4348",
+   "href": "/du-an-khu-do-thi-moi-ben-luc-la/the-solia-pj4348",
+   "name": "The Solia",
+   "status": "",
+   "statusNote": "",
+   "config": [
+    {
+     "value": "20,5 ha",
+     "label": null
+    }
+   ],
+   "location": "Đường Tỉnh lộ 830, Xã Lương Hòa và Thị trấn Bến Lức, Huyện Bến Lức, Long An",
+   "summary": "Dự án The Solia là khu đô thị tọa lạc tại đường Tỉnh lộ 830 (Vành đai 4), huyện Bến Lức, tỉnh Long An. Khu đô thị The Solia do Công ty TNHH Đầu tư Phát triển Thịnh Hưng Holdings làm chủ đầu tư và Tập đoàn Solia làm đơn vị phát triển.",
+   "images": [
+    "https://file4.batdongsan.com.vn/crop/240x180/2025/08/12/20250812082223-802d_wm.jpg",
+    "https://file4.batdongsan.com.vn/crop/240x180/2025/08/12/20250812084811-d7cf_wm.jpg",
+    "https://file4.batdongsan.com.vn/crop/240x180/2025/08/12/20250812084750-8b40_wm.jpg"
+   ],
+   "imageCount": "16",
+   "trackingLabel": "ipos=10,pgno=2,prid=4348",
+   "provinceCode": "LA",
+   "cateId": 150
+  }
+ ],
+ "Stown Gate Way": [
+  {
+   "pjId": "4164",
+   "href": "/du-an-can-ho-chung-cu-thuan-an-bd/stown-gateway-pj4164",
+   "name": "Stown Gateway",
+   "status": "Đang cập nhật",
+   "statusNote": "Quý II/2023: Giới thiệu ra thị trường",
+   "config": [
+    {
+     "value": "19 triệu/m²",
+     "label": null
+    },
+    {
+     "value": "8.552,2 m²",
+     "label": null
+    }
+   ],
+   "location": "Đường Quốc Lộ 13, Phường Vĩnh Phú, Thuận An, Bình Dương",
+   "summary": "Stown Gateway do Công ty CP Tecco Sài Gòn đầu tư tại Thuận An, Bình Dương. Dự án được xây dựng trên khu đất rộng 8.552,2m2, gồm 2 block, cung cấp ra thị trường 1.000 căn hộ.",
+   "images": [
+    "https://file4.batdongsan.com.vn/crop/240x180/2019/03/07/zk7ggeWN/20190307150730-66ee.jpg",
+    "https://file4.batdongsan.com.vn/crop/240x180/2019/03/07/zk7ggeWN/20190307150737-8bfd.jpg",
+    "https://file4.batdongsan.com.vn/crop/240x180/2019/03/07/zk7ggeWN/20190307162229-fc75.jpg"
+   ],
+   "imageCount": "8",
+   "trackingLabel": "ipos=1,pgno=8,prid=4164",
+   "provinceCode": "BD",
+   "cateId": 155
+  }
+ ],
+ "Sunrise City": [
+  {
+   "pjId": "527",
+   "href": "/du-an-khu-phuc-hop-quan-7/sunrise-city-pj527",
+   "name": "Sunrise City",
+   "status": "",
+   "statusNote": "",
+   "config": [
+    {
+     "value": "40 triệu/m²",
+     "label": null
+    },
+    {
+     "value": "5,1 ha",
+     "label": null
+    },
+    {
+     "value": "2.200",
+     "label": "2200 căn hộ"
+    }
+   ],
+   "location": "Đường Nguyễn Hữu Thọ, Phường Tân Hưng, Quận 7, Hồ Chí Minh",
+   "summary": "Dự án gồm 12 tòa tháp với chiều cao từ 31-35 tầng. Với trục cửa ngõ vào khu Nam Sài Gòn và nối liền Trung tâm tài chính Thủ Thiêm, Sunrise City được đầu tư theo tiêu chuẩn cao cấp và chất lượng quốc tế. Các yếu tố tiện ích và cộng đồng cũng rất được chú trọng: ngay dưới chân tòa nhà là Khu trung tâm dịch vụ rộng trên 50,000 m2. Sống ở Sunrise City, các cư dân sẽ được tận hưởng tiện ích của cả một thành phố.",
+   "images": [
+    "https://file4.batdongsan.com.vn/crop/240x180/2016/08/26/us6Zzrro/20160826105658-52e0.jpg",
+    "https://file4.batdongsan.com.vn/crop/240x180/2016/08/08/us6Zzrro/20160808092505-4268.jpg",
+    "https://file4.batdongsan.com.vn/crop/240x180/2016/08/08/us6Zzrro/20160808092455-4984.jpg"
+   ],
+   "imageCount": "52",
+   "trackingLabel": "ipos=4,pgno=12,prid=527",
+   "provinceCode": "SG",
+   "cateId": 160
+  }
+ ],
+ "Sunrise Riverside": [
+  {
+   "pjId": "2233",
+   "href": "/du-an-can-ho-chung-cu-nha-be/sunrise-riverside-pj2233",
+   "name": "Sunrise Riverside",
+   "status": "",
+   "statusNote": "",
+   "config": [
+    {
+     "value": "40 triệu/m²",
+     "label": null
+    },
+    {
+     "value": "3,93 ha",
+     "label": null
+    },
+    {
+     "value": "2.200",
+     "label": "2200 căn hộ"
+    },
+    {
+     "value": "8",
+     "label": "8 tòa nhà"
+    }
+   ],
+   "location": "Nguyễn Hữu Thọ, Xã Phước Kiển, Nhà Bè, Hồ Chí Minh",
+   "summary": "Sunrise Riverside là dự án căn hộ tại huyện Nhà Bè đã hoàn thiện của tập đoàn Novaland. Căn hộ Sunrise Riverside nằm tại đường Nguyễn Hữu Thọ, trong quần thể khu dân cư Trần Thái, cách khu đô thị Phú Mỹ Hưng, Quận 7 khoảng 5 phút di chuyển.",
+   "images": [
+    "https://file4.batdongsan.com.vn/crop/240x180/2021/07/29/20210729153225-fa77.jpg",
+    "https://file4.batdongsan.com.vn/crop/240x180/2016/08/26/us6Zzrro/20160826141728-4407.jpg",
+    "https://file4.batdongsan.com.vn/crop/240x180/2016/08/26/us6Zzrro/20160826141724-11fc.jpg"
+   ],
+   "imageCount": "44",
+   "trackingLabel": "ipos=7,pgno=69,prid=2233",
+   "provinceCode": "SG",
+   "cateId": 155
+  }
+ ],
+ "Sunshine City": [
+  {
+   "pjId": "3952",
+   "href": "/du-an-can-ho-chung-cu-quan-7/sunshine-sky-city-pj3952",
+   "name": "Sunshine Sky City",
+   "status": "",
+   "statusNote": "",
+   "config": [
+    {
+     "value": "4,25 ha",
+     "label": null
+    },
+    {
+     "value": "3.455",
+     "label": "3455 căn hộ"
+    },
+    {
+     "value": "9",
+     "label": "9 tòa nhà"
+    }
+   ],
+   "location": "Đường Phú Thuận, Phường Tân Phú, Quận 7, Hồ Chí Minh",
+   "summary": "Sunshine Sky City (tên cũ: Sunshine City Sài Gòn) là dự án căn hộ do Sunshine Group làm chủ đầu tư, xây dựng trên quỹ đất vàng ngay khu vực đang phát triển mạnh mẽ của quận 7 với quy mô 99.174,5m2. Theo dự kiến, dự án sẽ gồm 9 block căn hộ hạng sang cao từ 26-38 tầng mang phong cách thiết kế ấn tượng đậm dấu ấn thương hiệu \"Sunshine\" đẳng cấp.",
+   "images": [
+    "https://file4.batdongsan.com.vn/crop/240x180/2021/07/13/20210713135645-c092.jpg",
+    "https://file4.batdongsan.com.vn/crop/240x180/2021/07/07/20210707230032-688b.jpg",
+    "https://file4.batdongsan.com.vn/crop/240x180/2021/07/07/20210707225642-c865.jpg"
+   ],
+   "imageCount": "22",
+   "trackingLabel": "ipos=6,pgno=19,prid=3952",
+   "provinceCode": "SG",
+   "cateId": 155
+  }
+ ],
+ "Symlife": [
+  {
+   "pjId": "6033",
+   "href": "/du-an-can-ho-chung-cu-thuan-an-bd/symlife-thuan-an-pj6033",
+   "name": "Symlife Thuận An",
+   "status": "",
+   "statusNote": "",
+   "config": [
+    {
+     "value": "7.028 m²",
+     "label": null
+    },
+    {
+     "value": "659",
+     "label": "659 căn hộ"
+    },
+    {
+     "value": "1",
+     "label": "1 tòa nhà"
+    }
+   ],
+   "location": "Đường Quốc Lộ 13, Phường Vĩnh Phú, Thành phố Thuận An, Bình Dương",
+   "summary": "Dự án Symlife Thuận An Bình Dương gồm 1 tòa tháp cao cao 27 tầng và 01 tầng hầm rộng rãi, cung ứng tổng cộng 659 căn hộ với diện tích đa dạng, thiết kế từ 1 - 3 phòng ngủ. Căn hộ Symlife được bàn giao với nội thất cao cấp, mang lại sự tiện nghi và thoải mái cho cư dân sinh sống tại đây",
+   "images": [
+    "https://file4.batdongsan.com.vn/crop/240x180/2024/03/08/20240308161703-aabf_wm.jpg",
+    "https://file4.batdongsan.com.vn/crop/240x180/2024/03/08/20240308161645-a26f_wm.jpg",
+    "https://file4.batdongsan.com.vn/crop/240x180/2024/03/08/20240308161628-3c2d_wm.jpg"
+   ],
+   "imageCount": "6",
+   "trackingLabel": "ipos=6,pgno=4,prid=6033",
+   "provinceCode": "BD",
+   "cateId": 155
+  }
+ ],
+ "TT Avio": [
+  {
+   "pjId": "6124",
+   "href": "/du-an-can-ho-chung-cu-di-an-bd/tt-avio-pj6124",
+   "name": "TT AVIO",
+   "status": "",
+   "statusNote": "",
+   "config": [],
+   "location": "Đường Tỉnh lộ 743C, Phường Tân Đông Hiệp, Thành phố Dĩ An, Bình Dương",
+   "summary": "TT AVIO là tổ hợp trung tâm thương mại và căn hộ thuộc phân khúc trung cấp tại Dĩ An, Bình Dương do Công ty Cổ phần Đầu tư TT Capital làm chủ đầu tư.",
+   "images": [
+    "https://file4.batdongsan.com.vn/crop/240x180/2024/07/31/20240731013436-3c6c_wm.jpg",
+    "https://file4.batdongsan.com.vn/crop/240x180/2024/07/31/20240731013342-ff3b_wm.jpg",
+    "https://file4.batdongsan.com.vn/crop/240x180/2024/07/31/20240731013339-c1e8_wm.jpg"
+   ],
+   "imageCount": "6",
+   "trackingLabel": "ipos=1,pgno=4,prid=6124",
+   "provinceCode": "BD",
+   "cateId": 155
+  }
+ ],
+ "The Aspira": [
+  {
+   "pjId": "6387",
+   "href": "/du-an-can-ho-chung-cu-di-an-bd/the-aspira-pj6387",
+   "name": "The Aspira",
+   "status": "",
+   "statusNote": "",
+   "config": [
+    {
+     "value": "9.372 m²",
+     "label": null
+    },
+    {
+     "value": "1.212",
+     "label": "1212 căn hộ"
+    },
+    {
+     "value": "2",
+     "label": "2 tòa nhà"
+    }
+   ],
+   "location": "Đường Nguyễn Thị Minh Khai, Phường Tân Đông Hiệp, thành phố Hồ Chí Minh",
+   "summary": "The Aspira là dự án căn hộ tọa lạc tại phường Tân Đông Hiệp, thành phố Hồ Chí Minh (Dĩ An, Bình Dương cũ) do Công ty TNHH Đầu tư Bất động sản Phúc An Gia làm chủ đầu tư và Công ty Cổ phần Đầu tư Sài Gòn High Rise làm đơn vị phát triển. Dự án gồm 2 tòa tháp cao 30 tầng và 02 tầng hầm, cung cấp cho thị trường 1.204 căn hộ để ở và 08 căn hộ thương mại. Các căn hộ được thiết kế theo phong cách hiện đại cùng hệ thống tiện ích nội khu đa dạng, tiện nghi đáp ứng nhu cầu “sống - làm việc - tận hưởng” của cư dân.",
+   "images": [
+    "https://file4.batdongsan.com.vn/crop/240x180/2025/07/18/20250718153738-9020_wm.jpg",
+    "https://file4.batdongsan.com.vn/crop/240x180/2025/07/18/20250718153736-a141_wm.jpg",
+    "https://file4.batdongsan.com.vn/crop/240x180/2025/07/18/20250718153734-1a51_wm.jpg"
+   ],
+   "imageCount": "5",
+   "trackingLabel": "ipos=5,pgno=3,prid=6387",
+   "provinceCode": "BD",
+   "cateId": 155
+  }
+ ],
+ "The Beverly": [
+  {
+   "pjId": "5407",
+   "href": "/du-an-can-ho-chung-cu-quan-9/the-beverly-vinhomes-grand-park-pj5407",
+   "name": "The Beverly - Vinhomes Grand Park",
+   "status": "",
+   "statusNote": "",
+   "config": [
+    {
+     "value": "8 ha",
+     "label": null
+    },
+    {
+     "value": "5.088",
+     "label": "5088 căn hộ"
+    },
+    {
+     "value": "10",
+     "label": "10 tòa nhà"
+    }
+   ],
+   "location": "Phường Long Bình,  Quận 9, Hồ Chí Minh",
+   "summary": "The Beverly là một phân khu trong khu đô thị Vinhomes Grand Park Quận 9, TP.HCM, cũng là phân khu cao tầng thứ 4 được triển khai của đại dự án này. Phân khu The Beverly - Vinhomes Grand Park có quy mô gần 80.000m2, gồm 10 tòa căn hộ cao từ 30-35 tầng, cung ứng cho thị trường 5.088 căn hộ, trong đó bao gồm 134 shophouse.",
+   "images": [
+    "https://file4.batdongsan.com.vn/crop/240x180/2022/07/25/20220725104043-349c_wm.jpg",
+    "https://file4.batdongsan.com.vn/crop/240x180/2021/11/09/20211109164726-7883.jpg",
+    "https://file4.batdongsan.com.vn/crop/240x180/2021/12/20/20211220111141-1b94.jpg"
+   ],
+   "imageCount": "17",
+   "trackingLabel": "ipos=6,pgno=7,prid=5407",
+   "provinceCode": "SG",
+   "cateId": 155
+  }
+ ],
+ "The Elysian": [
+  {
+   "pjId": "4221",
+   "href": "/du-an-can-ho-chung-cu-quan-9/chung-cu-elysian-pj4221",
+   "name": "Chung cư Elysian",
+   "status": "",
+   "statusNote": "",
+   "config": [
+    {
+     "value": "2,8 ha",
+     "label": null
+    },
+    {
+     "value": "1.398",
+     "label": "1398 căn hộ"
+    },
+    {
+     "value": "4",
+     "label": "4 tòa nhà"
+    }
+   ],
+   "location": "170 đường Lò Lu, Phường Trường Thạnh, Quận 9, Hồ Chí Minh",
+   "summary": "Elysian (tên cũ: Hausnima) là dự án căn hộ có quy mô lớn, được đầu tư bởi Gamuda Land. Dự án nằm trên mặt tiền đường Lò Lu hướng view ven sông, kế cận khu công nghệ cao Samsung.",
+   "images": [
+    "https://file4.batdongsan.com.vn/crop/240x180/2023/04/04/20230404143456-b11c_wm.jpg",
+    "https://file4.batdongsan.com.vn/crop/240x180/2019/04/08/zk7ggeWN/20190408165047-c339.jpg",
+    "https://file4.batdongsan.com.vn/crop/240x180/2019/04/08/zk7ggeWN/20190408175644-2b63.jpg"
+   ],
+   "imageCount": "10",
+   "trackingLabel": "ipos=6,pgno=29,prid=4221",
+   "provinceCode": "SG",
+   "cateId": 155
+  }
+ ],
+ "The Felix": [
+  {
+   "pjId": "6075",
+   "href": "/du-an-can-ho-chung-cu-thuan-an-bd/the-felix-thuan-an-pj6075",
+   "name": "The Felix Thuận An",
+   "status": "",
+   "statusNote": "",
+   "config": [
+    {
+     "value": "8.596,4 m²",
+     "label": null
+    }
+   ],
+   "location": "Đường Nguyễn Du, Phường Bình Hòa, Thành phố Thuận An, Bình Dương",
+   "summary": "Dự án The Felix Thuận An (hay Chung cư Hạnh Phúc) là dự án căn hộ chung cư cao cấp do Tập đoàn C-Holdings Quốc Cường làm chủ đầu tư. Dự án có quy mô lên tới 8.596,4m², với 2 tháp 40 tầng nổi, 1 tầng hầm, cung ứng 873 căn hộ từ 1 đến 3 phòng ngủ.",
+   "images": [
+    "https://file4.batdongsan.com.vn/crop/240x180/2024/06/13/20240613235851-d65d_wm.jpg",
+    "https://file4.batdongsan.com.vn/crop/240x180/2024/06/13/20240613235847-b34f_wm.jpg",
+    "https://file4.batdongsan.com.vn/crop/240x180/2024/06/13/20240613235840-0470_wm.jpg"
+   ],
+   "imageCount": "6",
+   "trackingLabel": "ipos=5,pgno=4,prid=6075",
+   "provinceCode": "BD",
+   "cateId": 155
+  }
+ ],
+ "The Global City": [
+  {
+   "pjId": "5378",
+   "href": "/du-an-khu-do-thi-moi-quan-2/the-global-city-pj5378",
+   "name": "The Global City",
+   "status": "",
+   "statusNote": "",
+   "config": [
+    {
+     "value": "117,42 ha",
+     "label": null
+    }
+   ],
+   "location": "Phường An Phú,  Quận 2, Hồ Chí Minh",
+   "summary": "Dự án The Global City (các tên cũ: Sài Gòn Bình An, Him Lam City) là khu đô thị cao cấp do Masterise Homes (thuộc Masterise Group) đầu tư phát triển tại phường An Phú, TP. Thủ Đức, TP.HCM. Đây là một trong những dự án bất động sản quy mô lớn nhất khu vực Quận 2 cũ, với tổng diện tích 117ha, bao gồm khu nhà ở và khu liên hợp sân golf",
+   "images": [
+    "https://file4.batdongsan.com.vn/crop/240x180/2022/04/25/20220425163231-06f2.jpg",
+    "https://file4.batdongsan.com.vn/crop/240x180/2021/09/14/20210914172335-76d1.jpg",
+    "https://file4.batdongsan.com.vn/crop/240x180/2021/09/14/20210914172326-38ae.jpg"
+   ],
+   "imageCount": "9",
+   "trackingLabel": "ipos=2,pgno=2,prid=5378",
+   "provinceCode": "SG",
+   "cateId": 150
+  }
+ ],
+ "The Infinity – Charm City": [
+  {
+   "pjId": "5384",
+   "href": "/du-an-can-ho-chung-cu-di-an-bd/the-infinity-pj5384",
+   "name": "The Infinity",
+   "status": "",
+   "statusNote": "",
+   "config": [
+    {
+     "value": "5,01 ha",
+     "label": null
+    },
+    {
+     "value": "547",
+     "label": "547 căn hộ"
+    },
+    {
+     "value": "1",
+     "label": "1 tòa nhà"
+    }
+   ],
+   "location": "Đường ĐT 743, Phường Dĩ An, Thành phố Dĩ An, Bình Dương",
+   "summary": "The Infinity là tòa tháp căn hộ thứ ba trong tổng thể dự án Charm City tại Dĩ An, Bình Dương của Công ty TNHH DCT Partners Việt Nam, sau hai tòa tháp mở bán trước đó là Charm Sapphire và Charm Ruby. Quy mô The Infinity gồm 35 tầng căn hộ cao cấp, 10 tầng khách sạn 5 sao, 2 tầng hầm và dãy phố thương mại Charm Bazaar",
+   "images": [
+    "https://file4.batdongsan.com.vn/crop/240x180/2022/07/26/20220726164657-3c60_wm.jpg",
+    "https://file4.batdongsan.com.vn/crop/240x180/2025/04/04/20250404141221-958d_wm.jpg",
+    "https://file4.batdongsan.com.vn/crop/240x180/2025/04/04/20250404141210-a469_wm.jpg"
+   ],
+   "imageCount": "18",
+   "trackingLabel": "ipos=8,pgno=6,prid=5384",
+   "provinceCode": "BD",
+   "cateId": 155
+  }
+ ],
+ "The Prive": [
+  {
+   "pjId": "3332",
+   "href": "/du-an-can-ho-chung-cu-quan-2/the-prive-pj3332",
+   "name": "The Privé",
+   "status": "",
+   "statusNote": "",
+   "config": [
+    {
+     "value": "6,7 ha",
+     "label": null
+    },
+    {
+     "value": "3.175",
+     "label": "3175 căn hộ"
+    },
+    {
+     "value": "12",
+     "label": "12 tòa nhà"
+    }
+   ],
+   "location": "Đường Song Hành, phường An Phú, quận 2, Tp.HCM",
+   "summary": "The Privé là dự án căn hộ đẳng cấp sang trọng với quy mô lớn và công viên mặt nước nội khu lên tới 7ha duy nhất tại Quận 2, TP.HCM do Đất Xanh Group phát triển.",
+   "images": [
+    "https://file4.batdongsan.com.vn/crop/240x180/2018/06/15/0I4XNtd4/20180615134134-8b4c.jpg",
+    "https://file4.batdongsan.com.vn/crop/240x180/2022/08/09/20220809093129-6130_wm.jpg",
+    "https://file4.batdongsan.com.vn/crop/240x180/2018/06/15/0I4XNtd4/20180615142644-cd98.jpg"
+   ],
+   "imageCount": "22",
+   "trackingLabel": "ipos=8,pgno=11,prid=3332",
+   "provinceCode": "SG",
+   "cateId": 155
+  }
+ ],
+ "The Vista": [
+  {
+   "pjId": "141",
+   "href": "/du-an-can-ho-chung-cu-quan-2/the-vista-an-phu-pj141",
+   "name": "The Vista An Phú",
+   "status": "",
+   "statusNote": "",
+   "config": [
+    {
+     "value": "25,45 ha",
+     "label": null
+    },
+    {
+     "value": "850",
+     "label": "850 căn hộ"
+    },
+    {
+     "value": "5",
+     "label": "5 tòa nhà"
+    }
+   ],
+   "location": "Đường Xa Lộ Hà Nội, Phường An Phú, Quận 2, Hồ Chí Minh",
+   "summary": "The Vista An Phú là một trong những dự án lớn nhất nằm tại khu dân cư cao cấp, hiện đại bậc nhất khu vực Thảo Điền, Quận 2, TP.HCM, với kết nối giao thông vô cùng thuận lợi về trung tâm thành phố cũng như đi các quận lân cận.",
+   "images": [
+    "https://file4.batdongsan.com.vn/crop/240x180/2022/08/25/20220825164212-64e2_wm.jpg",
+    "https://file4.batdongsan.com.vn/crop/240x180/2022/08/25/20220825162827-7022_wm.jpg",
+    "https://file4.batdongsan.com.vn/crop/240x180/2022/08/25/20220825162821-c6b6_wm.jpg"
+   ],
+   "imageCount": "10",
+   "trackingLabel": "ipos=6,pgno=65,prid=141",
+   "provinceCode": "SG",
+   "cateId": 155
+  }
+ ],
+ "The Western Capital": [
+  {
+   "pjId": "2704",
+   "href": "/du-an-can-ho-chung-cu-quan-6/the-western-capital-pj2704",
+   "name": "The Western Capital",
+   "status": "",
+   "statusNote": "",
+   "config": [
+    {
+     "value": "1,85 ha",
+     "label": null
+    },
+    {
+     "value": "1.233",
+     "label": "1233 căn hộ"
+    },
+    {
+     "value": "3",
+     "label": "3 tòa nhà"
+    }
+   ],
+   "location": "Số 116 Lý Chiêu Hoàng, phường 10, quận 6, Tp.HCM",
+   "summary": "Căn hộ The Western Capital nằm ngay trên đường Lý Chiêu Hoàng, một trong những tuyến đường huyết mạch quận 6, Tp.HCM.",
+   "images": [
+    "https://i.ytimg.com/vi/O7kYtJuFk70/mqdefault.jpg",
+    "https://file4.batdongsan.com.vn/crop/240x180/2016/12/05/0I4XNtd4/20161205145028-aa8d.jpg",
+    "https://file4.batdongsan.com.vn/crop/240x180/2016/12/05/0I4XNtd4/20161205145105-f6aa.jpg"
+   ],
+   "imageCount": "12",
+   "trackingLabel": "ipos=1,pgno=18,prid=2704",
+   "provinceCode": "SG",
+   "cateId": 155
+  }
+ ],
+ "Topaz Elite": [
+  {
+   "pjId": "2940",
+   "href": "/du-an-can-ho-chung-cu-quan-8/topaz-elite-pj2940",
+   "name": "Topaz Elite",
+   "status": "",
+   "statusNote": "",
+   "config": [
+    {
+     "value": "38 triệu/m²",
+     "label": null
+    },
+    {
+     "value": "4 ha",
+     "label": null
+    },
+    {
+     "value": "2.339",
+     "label": "2339 căn hộ"
+    },
+    {
+     "value": "4",
+     "label": "4 tòa nhà"
+    }
+   ],
+   "location": "Số 195 Cao Lỗ, phường 4, quận 8, Tp.HCM",
+   "summary": "Căn hộ Topaz Elite là dự án khu phức hợp đô thị xanh nằm trong tổng thể quy hoạch khu Công viên – Văn hóa – Du lịch – Thể thao phía Nam đường Tạ Quang Bửu, Phường 4, Quận 8 với, TP.HCM với quy mô 4 ha.",
+   "images": [
+    "https://file4.batdongsan.com.vn/crop/240x180/2017/06/12/0I4XNtd4/20170612142037-5909.jpg",
+    "https://file4.batdongsan.com.vn/crop/240x180/2017/06/12/0I4XNtd4/20170612140454-858c.jpg",
+    "https://file4.batdongsan.com.vn/crop/240x180/2017/06/12/0I4XNtd4/20170612155137-74c8.jpg"
+   ],
+   "imageCount": "15",
+   "trackingLabel": "ipos=2,pgno=71,prid=2940",
+   "provinceCode": "SG",
+   "cateId": 155
+  }
+ ],
+ "Victoria Village": [
+  {
+   "pjId": "2858",
+   "href": "/du-an-khu-phuc-hop-quan-2/victoria-village-pj2858",
+   "name": "Victoria Village",
+   "status": "",
+   "statusNote": "",
+   "config": [
+    {
+     "value": "4,27 ha",
+     "label": null
+    },
+    {
+     "value": "1.136",
+     "label": "1136 căn hộ"
+    }
+   ],
+   "location": "Đường Đồng Văn Cống, Phường  Thạnh Mỹ Lợi,  Quận 2, Hồ Chí Minh",
+   "summary": "Victoria Village là dự án do Tập đoàn Novaland làm chủ đầu tư, bao gồm khu căn hộ và khu nhà phố và biệt thự. Dự án có vị trí ngay \"tam giác vàng\" Thủ Thiêm - Thạnh Mỹ Lợi - Phú Mỹ Hưng, giúp cho việc di chuyển thuận lợi của cư dân sinh sống tại đây.",
+   "images": [
+    "https://file4.batdongsan.com.vn/crop/240x180/2021/06/25/20210625092526-24e7.jpg",
+    "https://file4.batdongsan.com.vn/crop/240x180/2021/06/25/20210625092024-d457.jpg",
+    "https://file4.batdongsan.com.vn/crop/240x180/2021/06/25/20210625092021-f6d5.jpg"
+   ],
+   "imageCount": "11",
+   "trackingLabel": "ipos=1,pgno=2,prid=2858",
+   "provinceCode": "SG",
+   "cateId": 160
+  }
+ ],
+ "Vinhomes Central Park": [
+  {
+   "pjId": "1883",
+   "href": "/du-an-khu-do-thi-moi-binh-thanh/vinhomes-central-park-pj1883",
+   "name": "Vinhomes Central Park",
+   "status": "",
+   "statusNote": "",
+   "config": [
+    {
+     "value": "60 triệu/m²",
+     "label": null
+    },
+    {
+     "value": "43,91 ha",
+     "label": null
+    },
+    {
+     "value": "13.000",
+     "label": "13000 căn hộ"
+    },
+    {
+     "value": "18",
+     "label": "18 tòa nhà"
+    }
+   ],
+   "location": "Phường 22, Quận Bình Thạnh, Hồ Chí Minh",
+   "summary": "Vinhomes Central Park (tên cũ Vinhomes Tân Cảng) tọa lạc tại cảng Tân Cảng, quận Bình Thạnh, TP.HCM.",
+   "images": [
+    "https://file4.batdongsan.com.vn/crop/240x180/2024/08/02/20240802004815-e780_wm.jpg",
+    "https://file4.batdongsan.com.vn/crop/240x180/2024/08/02/20240802004811-f0ae_wm.jpg",
+    "https://file4.batdongsan.com.vn/crop/240x180/2024/08/02/20240802004803-5dbc_wm.jpg"
+   ],
+   "imageCount": "49",
+   "trackingLabel": "ipos=9,pgno=16,prid=1883",
+   "provinceCode": "SG",
+   "cateId": 150
+  }
+ ],
+ "Vinhomes Cần Giờ": [
+  {
+   "pjId": "5789",
+   "href": "/du-an-khu-do-thi-moi-can-gio/vinhomes-green-paradise-pj5789",
+   "name": "Vinhomes Green Paradise",
+   "status": "",
+   "statusNote": "",
+   "config": [
+    {
+     "value": "2.866 ha",
+     "label": null
+    }
+   ],
+   "location": "Xã Long Hòa, Huyện Cần Giờ, Hồ Chí Minh",
+   "summary": "Vinhomes Green Paradise là dự án lấn biển được mong chờ nhất trong hiện tại, đáp ứng nhu cầu đầu tư đất nền tại vùng ven TP.HCM đang gia tăng mạnh mẽ những năm gần đây.",
+   "images": [
+    "https://file4.batdongsan.com.vn/crop/240x180/2025/05/13/20250513165645-2d40_wm.jpg",
+    "https://file4.batdongsan.com.vn/crop/240x180/2025/05/13/20250513165638-d71d_wm.jpg",
+    "https://file4.batdongsan.com.vn/crop/240x180/2023/01/18/20230118162943-b639_wm.jpg"
+   ],
+   "imageCount": "12",
+   "trackingLabel": "ipos=5,pgno=1,prid=5789",
+   "provinceCode": "SG",
+   "cateId": 150
+  }
+ ],
+ "Vinhomes Golden River": [
+  {
+   "pjId": "2393",
+   "href": "/du-an-khu-phuc-hop-quan-1/vinhomes-golden-river-ba-son-pj2393",
+   "name": "Vinhomes Golden River Ba Son",
+   "status": "",
+   "statusNote": "",
+   "config": [
+    {
+     "value": "2,53 ha",
+     "label": null
+    },
+    {
+     "value": "5",
+     "label": "5 tòa nhà"
+    }
+   ],
+   "location": "Phố Tôn Đức Thắng, Phường Bến Nghé,  Quận 1, Hồ Chí Minh",
+   "summary": "Vinhomes Golden River là dự án chung cư Quận 1 được tập đoàn Vingroup xây dựng và phát triển. Dự án Vinhomes Ba Son sở hữu vị trí đất vàng số 2 Tôn Đức Thắng, Bến Nghé, Quận 1.",
+   "images": [
+    "https://file4.batdongsan.com.vn/crop/240x180/2023/09/15/20230915142152-8dc6_wm.jpg",
+    "https://file4.batdongsan.com.vn/crop/240x180/2016/08/10/RigI3kCz/20160810135101-a0fa.jpg",
+    "https://file4.batdongsan.com.vn/crop/240x180/2016/08/10/RigI3kCz/20160810135101-fcb6.jpg"
+   ],
+   "imageCount": "39",
+   "trackingLabel": "ipos=8,pgno=11,prid=2393",
+   "provinceCode": "SG",
+   "cateId": 160
+  }
+ ],
+ "Vinhomes Grand Park": [
+  {
+   "pjId": "2711",
+   "href": "/du-an-khu-phuc-hop-quan-9/vinhomes-grand-park-pj2711",
+   "name": "Vinhomes Grand Park",
+   "status": "",
+   "statusNote": "",
+   "config": [
+    {
+     "value": "271 ha",
+     "label": null
+    },
+    {
+     "value": "71",
+     "label": "71 tòa nhà"
+    }
+   ],
+   "location": "Phường Long Thạnh Mỹ, Quận 9, Tp.HCM",
+   "summary": "Dự án Vinhomes Grand Park là đại đô thị gồm căn hộ chung cư, nhà phố, biệt hựt, shophouse tọa lạc ngay tại mặt tiền Nguyễn Xiển – Phước Thiện, phường Long Thạnh Mỹ – Long Bình, TP Thủ Đức. Dự án được đầu tư và phát triển bởi tập đoàn Vingroup.",
+   "images": [
+    "https://file4.batdongsan.com.vn/crop/240x180/2026/04/13/20260413150825-e97f_wm.jpg",
+    "https://file4.batdongsan.com.vn/crop/240x180/2026/04/08/20260408082552-4bec_wm.jpg",
+    "https://file4.batdongsan.com.vn/crop/240x180/2026/04/08/20260408082551-c8f0_wm.jpg"
+   ],
+   "imageCount": "23",
+   "trackingLabel": "ipos=10,pgno=11,prid=2711",
+   "provinceCode": "SG",
+   "cateId": 160
+  }
+ ],
+ "Vista Verde": [
+  {
+   "pjId": "1819",
+   "href": "/du-an-can-ho-chung-cu-quan-2/vista-verde-pj1819",
+   "name": "Vista Verde",
+   "status": "",
+   "statusNote": "",
+   "config": [
+    {
+     "value": "66 triệu/m²",
+     "label": null
+    },
+    {
+     "value": "2,53 ha",
+     "label": null
+    },
+    {
+     "value": "1.152",
+     "label": "1152 căn hộ"
+    },
+    {
+     "value": "4",
+     "label": "4 tòa nhà"
+    }
+   ],
+   "location": "Số 2 đường Phan Văn Đáng, Phường  Thạnh Mỹ Lợi,  Quận 2, Hồ Chí Minh",
+   "summary": "Vista Verde là dự án căn hộ chung cư của chủ đầu tư Capitaland tại số 2 Phan Văn Đáng, Thạnh Mỹ Lợi, TP. Thủ Đức. Vista Verde cung cấp cho thị trường 1152 căn hộ thiết kế 1 – 3 phòng ngủ, penthouse & duplex.",
+   "images": [
+    "https://file4.batdongsan.com.vn/crop/240x180/2021/07/03/20210703161619-9f50.jpg",
+    "https://file4.batdongsan.com.vn/crop/240x180/2016/08/25/eGYiO6Tq/20160825170146-c5f9.jpg",
+    "https://file4.batdongsan.com.vn/crop/240x180/2016/08/12/eGYiO6Tq/20160812135958-dfe8.jpg"
+   ],
+   "imageCount": "58",
+   "trackingLabel": "ipos=7,pgno=70,prid=1819",
+   "provinceCode": "SG",
+   "cateId": 155
+  }
+ ],
+ "Viva Plaza": [
+  {
+   "pjId": "2806",
+   "href": "/du-an-can-ho-chung-cu-quan-7/viva-plaza-pj2806",
+   "name": "Viva Plaza",
+   "status": "Đang cập nhật",
+   "statusNote": "",
+   "config": [
+    {
+     "value": "5.852,04 m²",
+     "label": null
+    },
+    {
+     "value": "295",
+     "label": "295 căn hộ"
+    },
+    {
+     "value": "1",
+     "label": "1 tòa nhà"
+    }
+   ],
+   "location": "15B Đường Nguyễn Lương Bằng, phường Phú Mỹ, Quận 7, Hồ Chí Minh",
+   "summary": "Viva Plaza là dự án căn hộ cao cấp nằm ngay mặt tiền đường Nguyễn Lương Bằng Quận 7, gần KĐT Phú Mỹ Hưng với hàng loạt tiện ích hàng đầu khu Nam Sài Gòn. Dự án gồm 1 block cao 24 tầng, trong đó có 3 tầng thương mại, tổng cộng 295 căn hộ cao cấp.",
+   "images": [
+    "https://file4.batdongsan.com.vn/crop/240x180/2017/03/07/hmcVYWuR/20170307113017-c70b.jpg",
+    "https://file4.batdongsan.com.vn/crop/240x180/2017/03/07/hmcVYWuR/20170307113029-5a85.jpg",
+    "https://file4.batdongsan.com.vn/crop/240x180/2017/03/07/hmcVYWuR/20170307113623-1f4c.jpg"
+   ],
+   "imageCount": "13",
+   "trackingLabel": "ipos=4,pgno=16,prid=2806",
+   "provinceCode": "SG",
+   "cateId": 155
+  }
+ ],
+ "Waterpoint": [
+  {
+   "pjId": "1241",
+   "href": "/du-an-khu-do-thi-moi-ben-luc-la/khu-do-thi-waterpoint-pj1241",
+   "name": "Khu đô thị Waterpoint",
+   "status": "",
+   "statusNote": "",
+   "config": [
+    {
+     "value": "355 ha",
+     "label": null
+    }
+   ],
+   "location": "Tỉnh lộ 824, Xã An Thạnh, Bến Lức, Long An",
+   "summary": "Dự án Waterpoint tọa lạc tại huyện Bến Lức tỉnh Long An là dự án lớn nhất của Công ty Cổ phần Đầu tư Nam Long tính cho đến nay. Với quy mô lên đến 355 hecta, dự án hứa hẹn sẽ trở thành một trong những đô thị kiểu mẫu đầu tiên của tỉnh Long An.",
+   "images": [
+    "https://file4.batdongsan.com.vn/crop/240x180/2022/06/07/20220607180215-9b66.jpg",
+    "https://file4.batdongsan.com.vn/crop/240x180/2022/05/26/20220526145313-b72d.jpg",
+    "https://file4.batdongsan.com.vn/crop/240x180/2016/10/14/lGk9zKqg/20161014165840-13de.jpg"
+   ],
+   "imageCount": "6",
+   "trackingLabel": "ipos=3,pgno=7,prid=1241",
+   "provinceCode": "LA",
+   "cateId": 150
+  }
+ ],
+ "West Gate": [
+  {
+   "pjId": "4613",
+   "href": "/du-an-can-ho-chung-cu-binh-chanh/westgate-pj4613",
+   "name": "Westgate",
+   "status": "",
+   "statusNote": "",
+   "config": [
+    {
+     "value": "42 triệu/m²",
+     "label": null
+    },
+    {
+     "value": "3,1 ha",
+     "label": null
+    },
+    {
+     "value": "2.000",
+     "label": "2000 căn hộ"
+    },
+    {
+     "value": "4",
+     "label": "4 tòa nhà"
+    }
+   ],
+   "location": "Đường Tân Túc, Thị trấn Tân Túc, Bình Chánh, Hồ Chí Minh",
+   "summary": "Westgate là một dự án căn hộ của Tập đoàn Bất Động Sản An Gia, được xây dựng trong khu dân cư sầm uất với quy hoạch đồng bộ tại Tân Túc, Bình Chánh, Tp.HCM.",
+   "images": [
+    "https://file4.batdongsan.com.vn/crop/240x180/2022/02/25/20220225095016-11b5.jpg",
+    "https://file4.batdongsan.com.vn/crop/240x180/2019/10/23/hmcVYWuR/20191023094409-fadf.jpg",
+    "https://file4.batdongsan.com.vn/crop/240x180/2019/10/23/hmcVYWuR/20191023094454-35ae.jpg"
+   ],
+   "imageCount": "13",
+   "trackingLabel": "ipos=2,pgno=10,prid=4613",
+   "provinceCode": "SG",
+   "cateId": 155
+  }
+ ]
+}
