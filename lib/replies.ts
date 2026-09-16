@@ -2,8 +2,8 @@
 // Reviews are flat documents; the UI renders them as a tree via voz_post_id
 // (parent) and reply_post_id (child pointer), fetching 4 levels deep.
 
-import type { Dict } from "@/lib/db/queries";
-import { getPostsByIds, getRepliesForPosts } from "@/lib/db/queries";
+import type { Dict } from "./db/queries";
+import { getPostsByIds, getRepliesForPosts } from "./db/queries";
 
 function replySortKey(item: Dict): number {
   const value = item.post_date || item.created_at;
@@ -86,4 +86,62 @@ export async function buildReplyContext(
   }
 
   return { reviewByPostId, replyChildrenByPostId, topLevelReviews };
+}
+
+const MAX_ANCESTOR_HOPS = 10;
+const MAX_CONVERSATION_DEPTH = 10;
+
+/**
+ * Full conversation for a post: walk up the reply chain to the root ancestor,
+ * then collect the entire reply tree below it (vs buildReplyContext, which
+ * only fetches context around the current page's reviews).
+ */
+export async function buildFullConversation(
+  postId: string,
+  fetchers: {
+    getPostsByIds?: typeof getPostsByIds;
+    getRepliesForPosts?: typeof getRepliesForPosts;
+  } = {},
+): Promise<{
+  root: Dict | null;
+  childrenByPostId: Record<string, Dict[]>;
+}> {
+  const fetchPostsByIds = fetchers.getPostsByIds ?? getPostsByIds;
+  const fetchRepliesForPosts = fetchers.getRepliesForPosts ?? getRepliesForPosts;
+
+  let root = (await fetchPostsByIds([postId]))[0] ?? null;
+  if (!root) return { root: null, childrenByPostId: {} };
+
+  const visited = new Set([String(root.voz_post_id ?? postId)]);
+  for (let hop = 0; hop < MAX_ANCESTOR_HOPS && root.reply_post_id; hop++) {
+    const parentId = String(root.reply_post_id);
+    if (visited.has(parentId)) break;
+    visited.add(parentId);
+    const parent = (await fetchPostsByIds([parentId]))[0];
+    if (!parent) break;
+    root = parent;
+  }
+
+  const childrenByPostId: Record<string, Dict[]> = {};
+  let frontier = [String(root.voz_post_id ?? postId)];
+  for (let level = 0; level < MAX_CONVERSATION_DEPTH && frontier.length; level++) {
+    const replies = await fetchRepliesForPosts(frontier);
+    const next: string[] = [];
+    for (const child of replies) {
+      const parentId = child.reply_post_id ? String(child.reply_post_id) : "";
+      if (!parentId) continue;
+      if (!childrenByPostId[parentId]) childrenByPostId[parentId] = [];
+      if (childrenByPostId[parentId].some((c) => String(c.voz_post_id) === String(child.voz_post_id))) {
+        continue;
+      }
+      childrenByPostId[parentId].push(child);
+      if (child.voz_post_id) next.push(String(child.voz_post_id));
+    }
+    frontier = next;
+  }
+
+  for (const children of Object.values(childrenByPostId)) {
+    children.sort((a, b) => replySortKey(a) - replySortKey(b));
+  }
+  return { root, childrenByPostId };
 }

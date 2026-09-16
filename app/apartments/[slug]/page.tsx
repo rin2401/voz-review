@@ -195,7 +195,13 @@ export default async function ApartmentPage({
       {topLevelReviews.length > 0 ? (
         <div className="space-y-3">
           {topLevelReviews.map((review) => (
-            <ReviewCard key={String(review.voz_post_id ?? review._id ?? Math.random())} review={review} replyChildrenByPostId={replyChildrenByPostId} entityMap={entityMap} />
+            <ReviewCard
+              key={String(review.voz_post_id ?? review._id ?? Math.random())}
+              review={review}
+              replyChildrenByPostId={replyChildrenByPostId}
+              entityMap={entityMap}
+              convBasePath={`/apartments/${apartmentSlug}`}
+            />
           ))}
         </div>
       ) : (

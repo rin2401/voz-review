@@ -16,12 +16,16 @@ function ReplyNode({
   defaultVisible,
   depth,
   entityMap,
+  convBasePath,
+  highlightPostId,
 }: {
   node: Dict;
   childrenByPostId: Record<string, Dict[]>;
   defaultVisible: number;
   depth: number;
   entityMap?: EntityMap;
+  convBasePath?: string;
+  highlightPostId?: string;
 }) {
   const [showAll, setShowAll] = useState(false);
   const children = childrenByPostId[String(node.voz_post_id)] || [];
@@ -32,10 +36,16 @@ function ReplyNode({
     () => (entityMap ? createEntityLinker(entityMap).split(String(node.content || "")) : null),
     [entityMap, node.content],
   );
+  const highlighted = highlightPostId && String(node.voz_post_id) === highlightPostId;
 
   return (
     <div className="space-y-2">
-      <div className="rounded-lg border bg-muted/40 p-3">
+      <div
+        className={cn(
+          "rounded-lg border bg-muted/40 p-3",
+          highlighted && "ring-2 ring-primary/60 border-primary/40",
+        )}
+      >
         <div className="flex flex-wrap items-center justify-between gap-2 text-sm">
           <span className="font-medium text-orange-500">{node.author}</span>
           <span className="text-muted-foreground">
@@ -44,6 +54,18 @@ function ReplyNode({
               <a href={node.url} target="_blank" rel="noreferrer" className="hover:underline">
                 View on Voz
               </a>
+            ) : null}
+            {convBasePath && node.voz_post_id ? (
+              <>
+                {" | "}
+                <Link
+                  href={`${convBasePath}/conv/${node.voz_post_id}`}
+                  title="Xem full conversation"
+                  className="font-medium text-primary hover:underline"
+                >
+                  🧵 Conv
+                </Link>
+              </>
             ) : null}
           </span>
         </div>
@@ -76,6 +98,8 @@ function ReplyNode({
               defaultVisible={defaultVisible}
               depth={depth + 1}
               entityMap={entityMap}
+              convBasePath={convBasePath}
+              highlightPostId={highlightPostId}
             />
           ))}
           {depth > 1 && children.length > defaultVisible && !showAll && (
@@ -99,26 +123,41 @@ export function ReplyTree({
   childrenByPostId,
   defaultVisible = 3,
   entityMap,
+  convBasePath,
+  highlightPostId,
 }: {
   postId: string;
   children: Dict[];
   childrenByPostId: Record<string, Dict[]>;
   defaultVisible?: number;
   entityMap?: EntityMap;
+  convBasePath?: string;
+  highlightPostId?: string;
 }) {
   const [open, setOpen] = useState(false);
 
   return (
     <Collapsible open={open} onOpenChange={setOpen} className="mt-3">
-      <CollapsibleTrigger
-        className={cn(
-          buttonVariants({ variant: "ghost", size: "sm" }),
-          "h-7 gap-1 px-2 text-primary",
-        )}
-      >
-        <span className={cn("transition-transform", open && "rotate-90")}>▶</span>
-        {open ? `Ẩn reply (${children.length})` : `Xem reply (${children.length})`}
-      </CollapsibleTrigger>
+      <div className="flex flex-wrap items-center gap-2">
+        <CollapsibleTrigger
+          className={cn(
+            buttonVariants({ variant: "ghost", size: "sm" }),
+            "h-7 gap-1 px-2 text-primary",
+          )}
+        >
+          <span className={cn("transition-transform", open && "rotate-90")}>▶</span>
+          {open ? `Ẩn reply (${children.length})` : `Xem reply (${children.length})`}
+        </CollapsibleTrigger>
+        {convBasePath && postId ? (
+          <Link
+            href={`${convBasePath}/conv/${postId}`}
+            title="Xem full conversation"
+            className="text-xs font-medium text-primary hover:underline"
+          >
+            🧵 Full conversation
+          </Link>
+        ) : null}
+      </div>
       <CollapsibleContent className="mt-2">
         <div className="space-y-2">
           {children.map((child) => (
@@ -129,6 +168,8 @@ export function ReplyTree({
               defaultVisible={defaultVisible}
               depth={1}
               entityMap={entityMap}
+              convBasePath={convBasePath}
+              highlightPostId={highlightPostId}
             />
           ))}
         </div>

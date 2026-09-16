@@ -1,27 +1,35 @@
+import Link from "next/link";
+
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { ReadMore } from "@/components/read-more";
 import { CompanyChips, ReplyTree } from "@/components/reply-tree";
 import type { Dict } from "@/lib/db/queries";
 import type { EntityMap } from "@/lib/entity-links";
 import { formatDtVn } from "@/lib/format";
+import { cn } from "@/lib/utils";
 
 export function ReviewCard({
   review,
   replyChildrenByPostId,
   defaultVisibleReplies = 3,
   entityMap,
+  convBasePath,
+  highlightPostId,
 }: {
   review: Dict;
   replyChildrenByPostId: Record<string, Dict[]>;
   defaultVisibleReplies?: number;
   entityMap?: EntityMap;
+  convBasePath?: string;
+  highlightPostId?: string;
 }) {
   const companies: string[] = review.companies || [];
   const parentReview = review.parent_review;
   const childReplies = replyChildrenByPostId[String(review.voz_post_id)] || [];
+  const highlighted = highlightPostId && String(review.voz_post_id) === highlightPostId;
 
   return (
-    <Card>
+    <Card className={cn(highlighted && "ring-2 ring-primary/60 border-primary/40")}>
       <CardHeader className="flex flex-row flex-wrap items-center justify-between gap-2 space-y-0">
         <div className="flex flex-wrap items-center gap-2">
           <span className="font-medium text-orange-500">{review.author}</span>
@@ -44,7 +52,20 @@ export function ReviewCard({
         {companies.length > 1 && <CompanyChips companies={companies} />}
         {parentReview ? (
           <div className="rounded-md border border-dashed bg-muted/40 p-2 text-sm">
-            <div className="text-xs font-medium text-muted-foreground">↳ Reply to {parentReview.author}</div>
+            <div className="flex flex-wrap items-center justify-between gap-2">
+              <div className="text-xs font-medium text-muted-foreground">
+                ↳ Reply to {parentReview.author}
+              </div>
+              {convBasePath && parentReview.voz_post_id ? (
+                <Link
+                  href={`${convBasePath}/conv/${parentReview.voz_post_id}`}
+                  title="Xem full conversation"
+                  className="text-xs font-medium text-primary hover:underline"
+                >
+                  🧵 Xem full conversation
+                </Link>
+              ) : null}
+            </div>
             <div className="mt-1 text-muted-foreground">
               <ReadMore content={String(parentReview.content || "")} entityMap={entityMap} />
             </div>
@@ -62,6 +83,8 @@ export function ReviewCard({
             childrenByPostId={replyChildrenByPostId}
             defaultVisible={defaultVisibleReplies}
             entityMap={entityMap}
+            convBasePath={convBasePath}
+            highlightPostId={highlightPostId}
           />
         )}
       </CardContent>
