@@ -368,6 +368,9 @@ async def crawl_apartment_thread(crawler, extractor, db, url: str, max_pages: in
 
     state = await get_thread_state(thread_id=thread_id, url=url)
     start_page = max(1, int(state.get("last_page") or 1)) if state else 1
+    if start_page > total_pages > 0:
+        # Stale state (thread shrank or bad page count): re-crawl the last page.
+        start_page = total_pages
     end_page = total_pages if max_pages == 0 else min(total_pages, start_page + max_pages - 1)
     print(f"Thread {url}: {total_pages} pages detected, resume from {start_page}, crawl until {end_page}")
 

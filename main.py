@@ -606,6 +606,9 @@ async def crawl_thread(url: str, max_pages: int):
             start_page = 1
             if thread_state and thread_state.get('last_page'):
                 start_page = max(1, int(thread_state['last_page']))
+            if start_page > total_pages > 0:
+                # Stale state (thread shrank or bad page count): re-crawl the last page.
+                start_page = total_pages
 
             end_page = total_pages if max_pages == 0 else min(total_pages, start_page + max_pages - 1)
             print(f"📊 Thread: {total_pages} pages detected, resume from page {start_page}, crawl until {end_page}")
